@@ -20,7 +20,8 @@ io.on('connection',(socket)=>{
     
 
     socket.on('emittingEvent',(msg)=>{
-        io.emit('emittingEvent',msg);
+        
+        io.emit('receivingEvent',msg);
     })
 })
 
