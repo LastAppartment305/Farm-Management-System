@@ -1,0 +1,11 @@
+.dropdown-btn{
+    width: -webkit-fill-available;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.form-select{
+    height: 64px;
+    line-height: 2.5!important;
+    border-radius: 5rem!important;
+}

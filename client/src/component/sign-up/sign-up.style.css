@@ -1,0 +1,57 @@
+.form-container{
+    width: 36%;
+    padding:50px;
+    height: 100vh;
+    background-color: #fff9!important;
+    backdrop-filter: blur(14px);
+    display: flex;
+    align-items: center;
+}
+.circleX{
+    color: #28252a7d;
+}
+.form-header{
+    display: flex;
+    justify-content: center;
+    font-size: 2rem;
+}
+.screen-wrapper{
+    height: 100vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    
+}
+.main-wrapper{
+    background-image: url("../assets/img/ricefield.jpg");
+    background-size: cover;
+    background-position: center center;
+}
+.submit-btn{
+    height: 64px;
+    border-radius: 5rem!important;
+}
+.clear-btn{
+    top:50%;
+    transform: translateY(-50%);
+    right: 19px;
+    border: none;
+    background: none;
+}
+
+@media (max-width:768px){
+    .screen-wrapper{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+    }
+    .form-container{
+        width: 100%;
+        padding:50px;
+        background-color: #fff9;
+        backdrop-filter: blur(14px);
+        height:fit-content;
+        border-radius:10px;
+    }
+}

@@ -1,20 +1,12 @@
-import io from 'socket.io-client';
-import {useEffect, useState} from 'react';
-import {Routes,Route} from 'react-router-dom';
-import Home from './component/Home/home.component';
-import Join from './component/join_chat/join_room.component';
+import './App.css';
+import SignUp from './component/sign-up/sign-up.component';
 
 const App=()=>{
-
-  //const socket=io.connect("http://localhost:5000");
-  
   return(
     
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='join' element={<Join/>}/>
-      </Routes>
-    
+    <div>
+      <SignUp/>
+    </div>
   )
 }
 export default App;

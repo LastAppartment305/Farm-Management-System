@@ -1,0 +1,8 @@
+.inputbox{
+    width: -webkit-fill-available;
+    border: 1px solid #ced4da;
+    border-radius: 5rem;
+    height: 64px;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
