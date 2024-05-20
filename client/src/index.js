@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-
+//import App from './App';
+import SignUp from './routes/sign-up/sign-up.component';
+import Login from './routes/login-in/login-in.component';
 import reportWebVitals from './reportWebVitals';
-import { BrowserRouter } from "react-router-dom";
+
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 
 
 // Bootstrap CSS
@@ -12,14 +17,31 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
+const router = createBrowserRouter([
+  {
+    // path: "/signup",
+    // element: <SignUp/>,
+    // index:true,
+    path:"/",
+    children:[
+      {path:"signup",
+      index:true,
+      element:<SignUp/>,
+    },
+    {
+      path:"login",
+      element:<Login/>,
+    },
+    ]
+  },
+  
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   
     <React.StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </React.StrictMode>
   
   

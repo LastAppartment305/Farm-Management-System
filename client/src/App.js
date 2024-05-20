@@ -1,10 +1,11 @@
 import './App.css';
-import SignUp from './component/sign-up/sign-up.component';
+import SignUp from './routes/sign-up/sign-up.component';
 
 const App=()=>{
   return(
     
     <div>
+      
       <SignUp/>
     </div>
   )

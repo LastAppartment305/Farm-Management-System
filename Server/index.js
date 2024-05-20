@@ -3,11 +3,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
+import test from './routes/test.js';
+//require('dotenv').config();
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
+app.use('/',test);
 
 const connection = mysql2.createConnection({
   host: 'localhost',
@@ -21,7 +24,7 @@ connection.connect(function(err) {
   console.log("Connected to the Database!");
 });
 
-app.post('/', async(req, res) => {
+app.post('/signup', async(req, res) => {
   const { name, phone, password, userRole } = req.body;
   
   const isoDate = new Date();

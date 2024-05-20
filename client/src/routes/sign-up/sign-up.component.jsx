@@ -1,9 +1,10 @@
-import InputBox from "../InputBox/InputBox.component";
-import SelectBox from "../select-box/selectbox.component";
+import InputBox from "../../component/InputBox/InputBox.component";
+import SelectBox from "../../component/select-box/selectbox.component";
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import "./sign-up.style.css";
 import { CircleX, EyeOff, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const [data, setdata] = useState({
@@ -166,7 +167,7 @@ const SignUp = () => {
                 </button>
               </div>
               <p className="d-flex justify-content-center mt-3">
-                <a href="#">အကောင့်ရှိပီးသားလား</a>
+                <Link to="/login">အကောင့်ရှိပီးသားလား</Link>
               </p>
             </div>
           </div>
