@@ -31,7 +31,7 @@ const SignUp = () => {
     if (data.password === data.confirm_password) {
       console.log("it is the same password");
       try {
-        const response = await axios.post("http://localhost:5000/", data);
+        const response = await axios.post("http://localhost:5000/signup", data);
         console.log("Response from Server", response.data);
       } catch (error) {
         console.log("Error at sending data", error);
