@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import test from './routes/test.js';
 import registerUser from './routes/users.js';
-//require('dotenv').config();
+import dashbordDetail from './routes/dashboard.js';
 
 const app = express();
 
@@ -25,6 +25,7 @@ connection.connect(function(err) {
 });
 
 app.use('/',registerUser);
+app.use('/dashboard',dashbordDetail);
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server is running at port ${PORT}`));

@@ -1,10 +1,10 @@
 import InputBox from "../../component/InputBox/InputBox.component";
 import SelectBox from "../../component/select-box/selectbox.component";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "./sign-up.style.css";
 import { CircleX, EyeOff, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [data, setdata] = useState({
@@ -18,6 +18,8 @@ const SignUp = () => {
   const checkConfirmPassword = useRef(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [registered, setRegistered] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,12 +29,22 @@ const SignUp = () => {
     }));
   };
 
+  useEffect(() => {
+    console.log(registered);
+  });
+
+  //navigate to another route after register
+  if (registered) {
+    navigate("/login", { replace: true });
+  }
+
   const handleClick = async () => {
     if (data.password === data.confirm_password) {
       console.log("it is the same password");
       try {
         const response = await axios.post("http://localhost:5000/signup", data);
         console.log("Response from Server", response.data);
+        setRegistered(true);
       } catch (error) {
         console.log("Error at sending data", error);
       }

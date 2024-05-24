@@ -2,14 +2,14 @@ import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcrypt';
 import { connection } from '../index.js';
 
+//put new user information into database
 export const registerController=asyncHandler(async(req,res)=>{
     const { name, phone, password, userRole } = req.body;
   
   const isoDate = new Date();
   const mySQLDateString = isoDate.toJSON().slice(0, 19).replace('T', ' ');
 
-  //const values = [name, phone, userRole, mySQLDateString, password];
-  
+  //hashing with bcrypt
   const storePassword=async (plainPassword)=>{
     const saltRounds=10;
     const hashedPassword=await bcrypt.hash(plainPassword,saltRounds);
@@ -17,7 +17,6 @@ export const registerController=asyncHandler(async(req,res)=>{
   }
 
    const encodedPassword=await storePassword(password);
-   //const sql = `INSERT INTO user (Name, Phone_no, User_role, Created_at, Password) VALUES ("${name}","${phone}","${userRole}","${mySQLDateString}","${encodedPassword}")`;
    const sql = 'INSERT INTO user (Name, Phone_no, User_role, Created_at, Password) VALUES (?,?,?,?,?)';
 
   const values=[name,phone,userRole,mySQLDateString,encodedPassword];
@@ -32,3 +31,41 @@ export const registerController=asyncHandler(async(req,res)=>{
     }
   });
 });
+
+//retrieve data and compare necessary checks at login
+export const loginCheck=asyncHandler(async(req,res)=>{
+    const {password,name}=req.body;
+    //console.log(receiveData);
+    const sql='select Password from user where Name=?';
+    const values=[name];
+    connection.query(sql,values, function(err, result) {
+        if (err) {
+          console.error("Error retrieving data:", err);
+        } else {
+          
+            const storedHash=result[0].Password;
+            bcrypt.compare(password, storedHash, (err, result) => {
+                if(err) throw err;
+                if(result){
+                  res.send(result)
+                    console.log("password is correct");
+                }else{
+                    console.log("incorrect password");
+                }
+            })
+
+        }
+      });
+})
+
+// //retrieve data for dashboard
+// export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
+//   const sql="select * from user";
+//   connection.query(sql,(err,result)=>{
+//     if(err) throw err;
+//     if(result){
+//       console.log(result.length);
+//       return res.json(result.length);
+//     }
+//   })
+// })

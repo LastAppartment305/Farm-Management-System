@@ -5,6 +5,8 @@ import './index.css';
 import SignUp from './routes/sign-up/sign-up.component';
 import Login from './routes/login-in/login-in.component';
 import reportWebVitals from './reportWebVitals';
+import DashBoard from './routes/dashboard/dashboard.component';
+import DashboardHome from './routes/dashboard-content/dashboard-content.component';
 
 import {
   createBrowserRouter,
@@ -32,6 +34,16 @@ const router = createBrowserRouter([
       path:"login",
       element:<Login/>,
     },
+    {
+      path:"dashboard",
+      element:<DashBoard/>,
+      children:[
+        {
+          index:true,
+          element:<DashboardHome/>,
+        }
+      ],
+    }
     ]
   },
   

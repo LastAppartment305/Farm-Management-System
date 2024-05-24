@@ -2,6 +2,7 @@ import "./login-in.style.css";
 import { useState } from "react";
 import InputBox from "../../component/InputBox/InputBox.component";
 import { CircleX, Eye, EyeOff } from "lucide-react";
+import { usePost } from "../../custom-hook/axios-post/axios-post";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -9,6 +10,11 @@ const Login = () => {
     name: "",
     password: "",
   });
+
+  const { response, postData, loading } = usePost(
+    "http://localhost:5000/login"
+  );
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setdata((prevData) => ({
@@ -23,7 +29,10 @@ const Login = () => {
       name: "",
     }));
   };
-  console.log(data);
+
+  const handleClick = async () => {
+    await postData(data);
+  };
   return (
     <div>
       <div className="screen-wrapper m-0">
@@ -79,8 +88,9 @@ const Login = () => {
             <button
               type="button"
               className="btn btn-primary w-100 mt-5 submit-btn"
+              onClick={handleClick}
             >
-              စာရင်းသွင်းရန်
+              ဝင်ရောက်ရန်
             </button>
           </div>
         </div>

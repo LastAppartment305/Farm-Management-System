@@ -1,0 +1,20 @@
+.card {
+  border-radius: 8px;
+}
+.icon-wrapper {
+  display: flex;
+  width: 60px;
+  height: 60px;
+  justify-content: center;
+  align-items: center;
+  background-color: rebeccapurple;
+  border-radius: 50%;
+}
+.card.row.col-md-4 {
+  width: fit-content;
+}
+.lucide-users {
+  width: 30px !important;
+  height: 30px !important;
+  color: white;
+}

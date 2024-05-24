@@ -1,0 +1,47 @@
+.toggle-btn {
+  display: none !important;
+}
+/* .dashboard {
+  display: flex;
+  background-color: #adb5bd40;
+  overflow: hidden;
+} */
+.side-bar {
+  background-color: black;
+  width: 250px;
+  left: 0;
+  z-index: 99999;
+  margin-left: 0 auto;
+  position: fixed;
+  height: 100vh;
+}
+.profile-icon {
+  border: none;
+}
+.profile-image {
+  width: 45px;
+  height: 45px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.dashboard-content {
+  margin-left: 250px;
+  background-color: #adb5bd4f;
+}
+.offcanvas-start {
+  width: 250px !important;
+}
+@media (max-width: 1024px) {
+  .toggle-btn {
+    display: block !important;
+    margin-right: 5px;
+    background-color: none !important;
+    border-color: none !important;
+  }
+  .side-bar {
+    display: none;
+  }
+  .dashboard-content {
+    margin-left: 0px;
+  }
+}
