@@ -1,0 +1,23 @@
+.dashboard-text {
+  font-size: 18px;
+  margin-left: 12px;
+}
+.side-bar-button {
+  width: 250px;
+  text-decoration: none;
+  margin-bottom: 13px;
+  color: #6b7280;
+}
+
+.side-bar-button:hover {
+  color: white;
+  background-color: #6b728080;
+}
+.button-content {
+  height: 50px;
+}
+.side-bar-button.active {
+  color: white;
+  background-color: #6b728080;
+  border-left: 5px solid white;
+}

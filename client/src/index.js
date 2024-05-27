@@ -6,7 +6,9 @@ import SignUp from './routes/sign-up/sign-up.component';
 import Login from './routes/login-in/login-in.component';
 import reportWebVitals from './reportWebVitals';
 import DashBoard from './routes/dashboard/dashboard.component';
-import DashboardHome from './routes/dashboard-content/dashboard-content.component';
+import DashboardContent from './routes/dashboard-content/dashboard-content.component';
+import DashboardPermission from './routes/dashboard-content/dashboard-content-permission.component';
+import AssignWorker from './routes/dashboard-content/dashboard-content-assignworker.component';
 
 import {
   createBrowserRouter,
@@ -39,8 +41,17 @@ const router = createBrowserRouter([
       element:<DashBoard/>,
       children:[
         {
+          path:"home",
           index:true,
-          element:<DashboardHome/>,
+          element:<DashboardContent/>,
+        },
+        {
+          path:"permission",
+          element:<DashboardPermission/>
+        },
+        {
+          path:"assign-worker",
+          element:<AssignWorker/>
         }
       ],
     }

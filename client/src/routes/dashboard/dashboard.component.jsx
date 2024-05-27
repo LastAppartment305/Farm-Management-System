@@ -1,19 +1,46 @@
 import { useEffect, useState, Fragment } from "react";
 import "./dashboard.style.css";
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
-import { Bell } from "lucide-react";
+import { Bell, PieChart, Captions, Pickaxe } from "lucide-react";
 
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 import image from "../../component/assets/img/ricefield.jpg";
+import SideBarButton from "../../component/side_bar_button/side_bar_button.component";
 
 const DashBoard = () => {
+  const [isActive, setIsActive] = useState(null);
+  const navigate = useNavigate();
+
+  const handleClick = (buttontext) => {
+    setIsActive(buttontext);
+    navigate(`/dashboard/${buttontext}`);
+  };
   return (
     <Fragment>
       <div className="side-bar">
         <h2 className="text-white my-5 d-flex justify-content-center">
           Dashboard
         </h2>
+
+        <SideBarButton
+          icon={PieChart}
+          buttonText={"Dashboard"}
+          isActive={isActive === "home"}
+          onclick={() => handleClick("home")}
+        />
+        <SideBarButton
+          icon={Captions}
+          buttonText={"Permission"}
+          isActive={isActive === "permission"}
+          onclick={() => handleClick("permission")}
+        />
+        <SideBarButton
+          icon={Pickaxe}
+          buttonText={"Assign Worker"}
+          isActive={isActive === "assign-worker"}
+          onclick={() => handleClick("assign-worker")}
+        />
       </div>
       <div className="dashboard-content">
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-primary border-bottom border-4">
@@ -49,53 +76,25 @@ const DashBoard = () => {
               id="offcanvasExample"
               aria-labelledby="offcanvasExampleLabel"
             >
-              <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasExampleLabel">
-                  Offcanvas
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close text-reset"
-                  data-bs-dismiss="offcanvas"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="offcanvas-body">
-                <div>
-                  Some text as placeholder. In real life you can have the
-                  elements you have chosen. Like, text, images, lists, etc.
-                </div>
-                <div class="dropdown mt-3">
-                  <button
-                    class="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-bs-toggle="dropdown"
-                  >
-                    Dropdown button
-                  </button>
-                  <ul
-                    class="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton"
-                  >
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        Action
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        Another action
-                      </a>
-                    </li>
-                    <li>
-                      <a class="dropdown-item" href="#">
-                        Something else here
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <h2 className=" my-5 d-flex justify-content-center">Dashboard</h2>
+              <SideBarButton
+                icon={PieChart}
+                buttonText={"Dashboard"}
+                isActive={isActive === "home"}
+                onclick={() => handleClick("home")}
+              />
+              <SideBarButton
+                icon={Captions}
+                buttonText={"Permission"}
+                isActive={isActive === "permission"}
+                onclick={() => handleClick("permission")}
+              />
+              <SideBarButton
+                icon={Pickaxe}
+                buttonText={"Assign Worker"}
+                isActive={isActive === "assign-worker"}
+                onclick={() => handleClick("assign-worker")}
+              />
             </div>
           </div>
         </nav>

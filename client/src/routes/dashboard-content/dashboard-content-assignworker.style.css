@@ -1,0 +1,54 @@
+.icon {
+  width: 36px;
+  height: 36px;
+  stroke-width: 1.5px;
+  margin-right: 13px;
+}
+.add-worker-btn-wrapper {
+  position: fixed;
+  margin-right: 34px;
+  margin-bottom: 34px;
+  right: 0;
+  bottom: 0;
+}
+.add-worker-btn {
+  border: none;
+  background-color: #6ed0fe9c;
+  padding: 13px;
+  color: black;
+  text-decoration: none;
+  border-radius: 15px;
+  box-shadow: 3px 5px 10px -5px;
+}
+.add-worker-btn:hover {
+  color: black;
+}
+.add-worker-btn-text {
+  font-weight: 600 !important;
+}
+.adduser-form-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.assign-worker-form {
+  padding: 32px;
+  width: 600px;
+  justify-content: center;
+  z-index: 99999999;
+  background-color: white;
+  flex-direction: column;
+}
+.cancel-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 10px;
+  margin-top: 10px;
+}

@@ -19,6 +19,8 @@ export const connection = mysql2.createConnection({
   database: 'farm_management'
 });
 
+console.log(connection.config.user);
+
 connection.connect(function(err) {
   if (err) throw err;
   console.log("Connected to the Database!");

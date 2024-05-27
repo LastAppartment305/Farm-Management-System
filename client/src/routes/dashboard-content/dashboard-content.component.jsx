@@ -3,24 +3,35 @@ import { Users } from "lucide-react";
 import { useGet } from "../../custom-hook/axios-post/axios-post";
 import "./dashboard-content.style.css";
 import { useRef, useState } from "react";
-const DashboardHome = () => {
-  const rollNo = useRef(1);
+const DashboardContent = () => {
   const { response, loading } = useGet("http://localhost:5000/dashboard");
-  const userdata = response?.data;
-  console.log(userdata);
+  const userdata = response?.data.user;
+  const workerdata = response?.data.worker;
 
   return (
     <div className="m-5 dashboard-body h-100">
       <div className="user-detail-card">
         <div className="row g-2">
           <div className="col-lg-4 col-md-6">
-            <DetailCard icon={Users} response={response} />
+            <DetailCard
+              icon={Users}
+              response={userdata?.length}
+              cardTitle={"Total Users"}
+            />
           </div>
           <div className="col-lg-4 col-md-6">
-            <DetailCard icon={Users} response={response} />
+            <DetailCard
+              icon={Users}
+              response={workerdata?.length}
+              cardTitle={"Total Worker"}
+            />
           </div>
           <div className="col-lg-4 col-md-6">
-            <DetailCard icon={Users} response={response} />
+            <DetailCard
+              icon={Users}
+              response={workerdata?.length}
+              cardTitle={"Total Worker"}
+            />
           </div>
         </div>
       </div>
@@ -28,10 +39,10 @@ const DashboardHome = () => {
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
+              <th scope="col">No.</th>
+              <th scope="col">Name</th>
+              <th scope="col">Phone no</th>
+              <th scope="col">Role</th>
             </tr>
           </thead>
           <tbody>
@@ -39,18 +50,15 @@ const DashboardHome = () => {
               <tr key={index} className="w-100">
                 <th scope="row">{index + 1}</th>
                 <td className="row">{res.Name}</td>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
+                <td>{res.Phone_no}</td>
+                <td>{res.User_role}</td>
+                <td><button className="btn btn-danger">Delete</button></td>
               </tr>
             ))}
           </tbody>
         </table>
-        {userdata?.map((res, index) => {
-          console.log(res.Name);
-        })}
       </div>
     </div>
   );
 };
-export default DashboardHome;
+export default DashboardContent;
