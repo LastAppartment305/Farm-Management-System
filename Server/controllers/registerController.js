@@ -36,18 +36,18 @@ export const registerController=asyncHandler(async(req,res)=>{
 export const loginCheck=asyncHandler(async(req,res)=>{
     const {password,name}=req.body;
     //console.log(receiveData);
-    const sql='select Password from user where Name=?';
+    const sql='select Password,User_role from user where Name=?';
     const values=[name];
     connection.query(sql,values, function(err, result) {
         if (err) {
           console.error("Error retrieving data:", err);
         } else {
-          
             const storedHash=result[0].Password;
+            const role=result[0].User_role;
             bcrypt.compare(password, storedHash, (err, result) => {
                 if(err) throw err;
                 if(result){
-                  res.send(result)
+                  res.send(role)
                     console.log("password is correct");
                 }else{
                     console.log("incorrect password");

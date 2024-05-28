@@ -1,17 +1,21 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useContext } from "react";
 import "./dashboard.style.css";
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
 import { Bell, PieChart, Captions, Pickaxe } from "lucide-react";
 
 import { Outlet, useNavigate } from "react-router-dom";
-
+import { authContext } from "../../context/context";
 import image from "../../component/assets/img/ricefield.jpg";
 import SideBarButton from "../../component/side_bar_button/side_bar_button.component";
 
 const DashBoard = () => {
-  const [isActive, setIsActive] = useState(null);
+  const [isActive, setIsActive] = useState("");
+  //testing context
+  const { isAuthenticated } = useContext(authContext);
+  console.log("This is from dashboard component", isAuthenticated);
+  //console.log(isAuthenticated && isAuthenticated);
+  //-------------------------------------
   const navigate = useNavigate();
-
   const handleClick = (buttontext) => {
     setIsActive(buttontext);
     navigate(`/dashboard/${buttontext}`);
@@ -22,13 +26,15 @@ const DashBoard = () => {
         <h2 className="text-white my-5 d-flex justify-content-center">
           Dashboard
         </h2>
-
-        <SideBarButton
-          icon={PieChart}
-          buttonText={"Dashboard"}
-          isActive={isActive === "home"}
-          onclick={() => handleClick("home")}
-        />
+        if(isAuthenticated)
+        {
+          <SideBarButton
+            icon={PieChart}
+            buttonText={"Dashboard"}
+            isActive={isActive === ""}
+            onclick={() => handleClick("")}
+          />
+        }
         <SideBarButton
           icon={Captions}
           buttonText={"Permission"}

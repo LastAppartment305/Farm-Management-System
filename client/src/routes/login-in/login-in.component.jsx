@@ -1,8 +1,10 @@
 import "./login-in.style.css";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import InputBox from "../../component/InputBox/InputBox.component";
 import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
+import { useNavigate } from "react-router-dom";
+import { authContext } from "../../context/context";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -10,11 +12,12 @@ const Login = () => {
     name: "",
     password: "",
   });
-
+  const { IsAdmin, isAuthenticated } = useContext(authContext); //manipulate data from context
+  const navigate = useNavigate();
   const { response, postData, loading } = usePost(
     "http://localhost:5000/login"
   );
-
+  //console.log(response);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setdata((prevData) => ({
@@ -33,6 +36,17 @@ const Login = () => {
   const handleClick = async () => {
     await postData(data);
   };
+
+  useEffect(() => {
+    //console.log(response);
+    if (response === "admin") {
+      IsAdmin();
+      //console.log(isAuthenticated);
+      navigate("/dashboard");
+    } else if (response === "owner") {
+      navigate("/dashboard");
+    }
+  });
   return (
     <div>
       <div className="screen-wrapper m-0">

@@ -9,6 +9,7 @@ import DashBoard from './routes/dashboard/dashboard.component';
 import DashboardContent from './routes/dashboard-content/dashboard-content.component';
 import DashboardPermission from './routes/dashboard-content/dashboard-content-permission.component';
 import AssignWorker from './routes/dashboard-content/dashboard-content-assignworker.component';
+import { AuthProvider } from './context/context';
 
 import {
   createBrowserRouter,
@@ -41,7 +42,6 @@ const router = createBrowserRouter([
       element:<DashBoard/>,
       children:[
         {
-          path:"home",
           index:true,
           element:<DashboardContent/>,
         },
@@ -64,7 +64,10 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   
     <React.StrictMode>
+      <AuthProvider>
+
       <RouterProvider router={router} />
+      </AuthProvider>
     </React.StrictMode>
   
   

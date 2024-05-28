@@ -8,8 +8,8 @@ const usePost = (url) => {
     try {
       setLoading(true);
       const res = await axios.post(url, data);
-      setResponse(res);
-      console.log("response from server", res.data);
+      setResponse(res.data);
+      //console.log("response from server", res.data);
     } catch (err) {
       setResponse(null);
     } finally {
