@@ -5,6 +5,7 @@ import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
 import { useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
+import cookie from "js-cookie";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -38,15 +39,17 @@ const Login = () => {
   };
 
   useEffect(() => {
-    //console.log(response);
-    if (response === "admin") {
-      IsAdmin();
-      //console.log(isAuthenticated);
-      navigate("/dashboard");
-    } else if (response === "owner") {
-      IsOwner();
-      navigate("/dashboard/permission");
-    }
+    console.log("this is from login-in component: ", response);
+    //const token = cookie.get("authToken");
+    //console.log("this is from login-in component", token);
+    // if (response === "admin") {
+    //   IsAdmin();
+
+    //   navigate("/dashboard");
+    // } else if (response === "owner") {
+    //   IsOwner();
+    //   navigate("/dashboard/permission");
+    // }
   });
   return (
     <div>

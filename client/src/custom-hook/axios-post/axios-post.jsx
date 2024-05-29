@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+axios.defaults.withCredentials = true;
 
 const usePost = (url) => {
   const [response, setResponse] = useState(null);

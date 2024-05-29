@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
 
 export const authenticateToken=(req,res,next)=>{
-    const authHeader=req.headers['authorization'];
-    const token=authHeader && authHeader.split(' ')[1];
+    const authHeader=req.cookies.authToken;
+    //const token=authHeader && authHeader.split(' ')[1];
 
-    jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,user)=>{
+    if (authHeader == null) return res.sendStatus(401);
+    jwt.verify(authHeader,process.env.ACCESS_TOKEN_SECRET,(err,user)=>{
         if(err) return res.status(403).send(err);
         req.user=user;
         console.log(req.user);

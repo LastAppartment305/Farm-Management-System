@@ -56,6 +56,11 @@ export const loginCheck=asyncHandler(async(req,res)=>{
 
                     console.log("Message from registerController : password is correct");
                     const token=jwt.sign({username:name,role:role},process.env.ACCESS_TOKEN_SECRET);
+                    //set cookie in client machine
+                    res.cookie('authToken',token,{
+                      httpOnly:true,
+                      sameSite:'strict'
+                    })
                     res.json({token:token})
                 }else{
                     console.log("incorrect password");
