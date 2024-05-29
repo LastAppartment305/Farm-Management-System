@@ -6,10 +6,14 @@ export const AuthProvider = ({ children }) => {
   const IsAdmin = () => {
     setIsAuthenticated(true);
   };
+  const IsOwner = () => {
+    setIsAuthenticated(false);
+  };
 
   const value = {
     isAuthenticated,
     IsAdmin,
+    IsOwner,
   };
 
   return <authContext.Provider value={value}>{children}</authContext.Provider>;

@@ -1,6 +1,10 @@
 import asyncHandler from 'express-async-handler';
 import bcrypt from 'bcrypt';
 import { connection } from '../index.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 //put new user information into database
 export const registerController=asyncHandler(async(req,res)=>{
@@ -47,8 +51,12 @@ export const loginCheck=asyncHandler(async(req,res)=>{
             bcrypt.compare(password, storedHash, (err, result) => {
                 if(err) throw err;
                 if(result){
-                  res.send(role)
-                    console.log("password is correct");
+                 
+                  //res.send(role)
+
+                    console.log("Message from registerController : password is correct");
+                    const token=jwt.sign({username:name,role:role},process.env.ACCESS_TOKEN_SECRET);
+                    res.json({token:token})
                 }else{
                     console.log("incorrect password");
                 }

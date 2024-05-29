@@ -26,15 +26,15 @@ const DashBoard = () => {
         <h2 className="text-white my-5 d-flex justify-content-center">
           Dashboard
         </h2>
-        if(isAuthenticated)
-        {
+
+        {isAuthenticated && (
           <SideBarButton
             icon={PieChart}
             buttonText={"Dashboard"}
             isActive={isActive === ""}
             onclick={() => handleClick("")}
           />
-        }
+        )}
         <SideBarButton
           icon={Captions}
           buttonText={"Permission"}

@@ -12,7 +12,7 @@ const Login = () => {
     name: "",
     password: "",
   });
-  const { IsAdmin, isAuthenticated } = useContext(authContext); //manipulate data from context
+  const { IsAdmin, IsOwner, isAuthenticated } = useContext(authContext); //manipulate data from context
   const navigate = useNavigate();
   const { response, postData, loading } = usePost(
     "http://localhost:5000/login"
@@ -44,7 +44,8 @@ const Login = () => {
       //console.log(isAuthenticated);
       navigate("/dashboard");
     } else if (response === "owner") {
-      navigate("/dashboard");
+      IsOwner();
+      navigate("/dashboard/permission");
     }
   });
   return (
