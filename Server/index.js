@@ -33,6 +33,11 @@ connection.connect(function(err) {
 
 app.use('/',registerUser);
 app.use('/dashboard',dashbordDetail);
+app.use('/logout',(req,res)=>{
+  console.log("This is from index.js: logout work");
+  res.clearCookie('authToken')
+  res.send(true);
+})
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server is running at port ${PORT}`));

@@ -5,7 +5,6 @@ import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
 import { useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
-import cookie from "js-cookie";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -13,7 +12,14 @@ const Login = () => {
     name: "",
     password: "",
   });
-  const { IsAdmin, IsOwner, isAuthenticated } = useContext(authContext); //manipulate data from context
+  const {
+    IsAdmin,
+    IsOwner,
+    isAuthenticated,
+    setIsAuthenticated,
+    setRole,
+    role,
+  } = useContext(authContext); //manipulate data from context
   const navigate = useNavigate();
   const { response, postData, loading } = usePost(
     "http://localhost:5000/login"
@@ -35,22 +41,25 @@ const Login = () => {
   };
 
   const handleClick = async () => {
-    await postData(data);
+    const res = await postData(data);
+    if (res) {
+      if (res === "admin") {
+        setRole(res);
+        IsAdmin();
+      } else {
+        IsOwner();
+        setRole(res);
+      }
+    }
   };
 
   useEffect(() => {
-    console.log("this is from login-in component: ", response);
-    //const token = cookie.get("authToken");
-    //console.log("this is from login-in component", token);
-    // if (response === "admin") {
-    //   IsAdmin();
-
-    //   navigate("/dashboard");
-    // } else if (response === "owner") {
-    //   IsOwner();
-    //   navigate("/dashboard/permission");
-    // }
-  });
+    if (role === "admin") {
+      navigate("/dashboard/admin");
+    } else if (role === "owner") {
+      navigate("/dashboard/owner/assign-worker");
+    }
+  }, [role]);
   return (
     <div>
       <div className="screen-wrapper m-0">

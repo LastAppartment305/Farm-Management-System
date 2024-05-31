@@ -61,7 +61,7 @@ export const loginCheck=asyncHandler(async(req,res)=>{
                       httpOnly:true,
                       sameSite:'strict'
                     })
-                    res.json({token:token})
+                    res.send(role);
                 }else{
                     console.log("incorrect password");
                 }

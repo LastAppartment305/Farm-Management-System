@@ -2,7 +2,7 @@ import { useEffect, useState, Fragment, useContext } from "react";
 import "./dashboard.style.css";
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
 import { Bell, PieChart, Captions, Pickaxe } from "lucide-react";
-
+import { useLogout } from "../../custom-hook/axios-post/axios-post";
 import { Outlet, useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
 import image from "../../component/assets/img/ricefield.jpg";
@@ -10,16 +10,26 @@ import SideBarButton from "../../component/side_bar_button/side_bar_button.compo
 
 const DashBoard = () => {
   const [isActive, setIsActive] = useState("");
-  //testing context
-  const { isAuthenticated } = useContext(authContext);
-  console.log("This is from dashboard component", isAuthenticated);
-  //console.log(isAuthenticated && isAuthenticated);
+  const { response, loading, fetchData } = useLogout(
+    "http://localhost:5000/logout"
+  );
+  const { isAuthenticated, setRole } = useContext(authContext);
   //-------------------------------------
   const navigate = useNavigate();
   const handleClick = (buttontext) => {
     setIsActive(buttontext);
     navigate(`/dashboard/${buttontext}`);
   };
+
+  const userLogout = async () => {
+    await fetchData();
+    setRole(null);
+  };
+  useEffect(() => {
+    if (response) {
+      navigate("/login");
+    }
+  });
   return (
     <Fragment>
       <div className="side-bar">
@@ -31,22 +41,26 @@ const DashBoard = () => {
           <SideBarButton
             icon={PieChart}
             buttonText={"Dashboard"}
-            isActive={isActive === ""}
-            onclick={() => handleClick("")}
+            isActive={isActive === "admin"}
+            onclick={() => handleClick("admin")}
           />
         )}
-        <SideBarButton
-          icon={Captions}
-          buttonText={"Permission"}
-          isActive={isActive === "permission"}
-          onclick={() => handleClick("permission")}
-        />
-        <SideBarButton
-          icon={Pickaxe}
-          buttonText={"Assign Worker"}
-          isActive={isActive === "assign-worker"}
-          onclick={() => handleClick("assign-worker")}
-        />
+        {isAuthenticated && (
+          <SideBarButton
+            icon={Captions}
+            buttonText={"Permission"}
+            isActive={isActive === "admin/permission"}
+            onclick={() => handleClick("admin/permission")}
+          />
+        )}
+        {!isAuthenticated && (
+          <SideBarButton
+            icon={Pickaxe}
+            buttonText={"Assign Worker"}
+            isActive={isActive === "assign-worker"}
+            onclick={() => handleClick("assign-worker")}
+          />
+        )}
       </div>
       <div className="dashboard-content">
         <nav class="navbar navbar-expand-lg navbar-light bg-white border-primary border-bottom border-4">
@@ -70,9 +84,40 @@ const DashBoard = () => {
             <div className="right-side-of-nav me-2 d-flex align-items-center">
               <Bell />
               <div className="profile-icon-wrapper ms-4">
-                <a href="#" className="profile-icon">
+                <a
+                  type="button"
+                  className="profile-icon"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
                   <img src={image} className="profile-image" />
                 </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      Action
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      Another action
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#">
+                      Something else here
+                    </a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider" />
+                  </li>
+                  <li>
+                    <a class="dropdown-item" onClick={userLogout}>
+                      Log out
+                    </a>
+                  </li>
+                </ul>
               </div>
             </div>
 

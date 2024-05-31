@@ -31,6 +31,13 @@
 .offcanvas-start {
   width: 250px !important;
 }
+.dropdown-menu {
+  position: fixed;
+  right: 0;
+  left: auto !important;
+  margin-right: 31px !important;
+  box-shadow: 5px 5px 15px -10px;
+}
 @media (max-width: 1024px) {
   .toggle-btn {
     display: block !important;

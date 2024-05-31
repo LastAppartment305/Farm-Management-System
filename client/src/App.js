@@ -1,13 +1,80 @@
+
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+import { useState,useContext } from 'react';
+
 import './App.css';
 import SignUp from './routes/sign-up/sign-up.component';
+//import SignUp from './routes/sign-up/sign-up.component';
+import Login from './routes/login-in/login-in.component';
+import reportWebVitals from './reportWebVitals';
+import DashBoard from './routes/dashboard/dashboard.component';
+import DashboardContent from './routes/dashboard-content/dashboard-content.component';
+import DashboardPermission from './routes/dashboard-content/dashboard-content-permission.component';
+import AssignWorker from './routes/dashboard-content/dashboard-content-assignworker.component';
+import { authContext } from "./context/context";
+
+
 
 const App=()=>{
-  return(
+  const [admin,setadmin]=useState(true);
+  const {
+    IsAdmin,
+    IsOwner,
+    isAuthenticated,
+    setIsAuthenticated,
+    setRole,
+    role,
+  } = useContext(authContext);
+  const router = createBrowserRouter([
+    {
+      path:"/",
+      children:[
+        {path:"signup",
+        index:true,
+        element:<SignUp/>,
+      },
+      {
+        path:"login",
+        element:<Login/>,
+      },
+      isAuthenticated&&{ 
+        path:"dashboard",
+        element:<DashBoard/>,
+        children:[
+          {
+            path:"admin",
+            index:true,
+            element:<DashboardContent/>,
+          },
+          {
+            path:"admin/permission",
+            element:<DashboardPermission/>
+          },
+          
+        ],
+      },
+      isAuthenticated==false &&{ 
+        path:"dashboard",
+        element:<DashBoard/>,
+        children:[
+          
+          {
+            path:"owner/assign-worker",
+            index:true,
+            element:<AssignWorker/>
+          },
+        ],
+      }
+      ]
+    },
     
-    <div>
-      
-      <SignUp/>
-    </div>
+  ]);
+  return(
+      <RouterProvider router={router} />
   )
 }
 export default App;

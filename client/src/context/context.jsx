@@ -2,6 +2,7 @@ import { createContext, useState, useContext } from "react";
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [role, setRole] = useState(null);
 
   const IsAdmin = () => {
     setIsAuthenticated(true);
@@ -12,6 +13,8 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     isAuthenticated,
+    role,
+    setRole,
     IsAdmin,
     IsOwner,
   };

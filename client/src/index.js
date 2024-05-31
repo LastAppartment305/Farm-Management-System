@@ -1,72 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-//import App from './App';
-import SignUp from './routes/sign-up/sign-up.component';
-import Login from './routes/login-in/login-in.component';
-import reportWebVitals from './reportWebVitals';
-import DashBoard from './routes/dashboard/dashboard.component';
-import DashboardContent from './routes/dashboard-content/dashboard-content.component';
-import DashboardPermission from './routes/dashboard-content/dashboard-content-permission.component';
-import AssignWorker from './routes/dashboard-content/dashboard-content-assignworker.component';
+import App from './App';
 import { AuthProvider } from './context/context';
-
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+//import { authContext } from "../../context/context";
+import reportWebVitals from './reportWebVitals';
 
 
 // Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
+//import App from './App';
 
-const router = createBrowserRouter([
-  {
-    // path: "/signup",
-    // element: <SignUp/>,
-    // index:true,
-    path:"/",
-    children:[
-      {path:"signup",
-      index:true,
-      element:<SignUp/>,
-    },
-    {
-      path:"login",
-      element:<Login/>,
-    },
-    {
-      path:"dashboard",
-      element:<DashBoard/>,
-      children:[
-        {
-          index:true,
-          element:<DashboardContent/>,
-        },
-        {
-          path:"permission",
-          element:<DashboardPermission/>
-        },
-        {
-          path:"assign-worker",
-          element:<AssignWorker/>
-        }
-      ],
-    }
-    ]
-  },
-  
-]);
+
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   
     <React.StrictMode>
       <AuthProvider>
-
-      <RouterProvider router={router} />
+      <App/>
       </AuthProvider>
     </React.StrictMode>
   
