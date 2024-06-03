@@ -13,7 +13,7 @@ const DashBoard = () => {
   const { response, loading, fetchData } = useLogout(
     "http://localhost:5000/logout"
   );
-  const { isAuthenticated, setRole } = useContext(authContext);
+  const { isAuthenticated, setRole, role } = useContext(authContext);
   //-------------------------------------
   const navigate = useNavigate();
   const handleClick = (buttontext) => {
@@ -23,13 +23,15 @@ const DashBoard = () => {
 
   const userLogout = async () => {
     await fetchData();
+    localStorage.setItem("role", null);
     setRole(null);
+
+    navigate("/login");
   };
-  useEffect(() => {
-    if (response) {
-      navigate("/login");
-    }
-  });
+  // useEffect(() => {
+  //   console.log("dashboard useEffect", localStorage.getItem("role"));
+  //   console.log("logging role from context in dashboard com: ", role);
+  // });
   return (
     <Fragment>
       <div className="side-bar">
@@ -37,7 +39,7 @@ const DashBoard = () => {
           Dashboard
         </h2>
 
-        {isAuthenticated && (
+        {role === "admin" && (
           <SideBarButton
             icon={PieChart}
             buttonText={"Dashboard"}
@@ -45,7 +47,7 @@ const DashBoard = () => {
             onclick={() => handleClick("admin")}
           />
         )}
-        {isAuthenticated && (
+        {role === "admin" && (
           <SideBarButton
             icon={Captions}
             buttonText={"Permission"}
@@ -53,12 +55,12 @@ const DashBoard = () => {
             onclick={() => handleClick("admin/permission")}
           />
         )}
-        {!isAuthenticated && (
+        {role === "owner" && (
           <SideBarButton
             icon={Pickaxe}
             buttonText={"Assign Worker"}
-            isActive={isActive === "assign-worker"}
-            onclick={() => handleClick("assign-worker")}
+            isActive={isActive === "owner/assign-worker"}
+            onclick={() => handleClick("owner/assign-worker")}
           />
         )}
       </div>

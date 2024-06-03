@@ -40,7 +40,7 @@ export const registerController=asyncHandler(async(req,res)=>{
 export const loginCheck=asyncHandler(async(req,res)=>{
     const {password,name}=req.body;
     //console.log(receiveData);
-    const sql='select Password,User_role from user where Name=?';
+    const sql='select Password,User_role,UserId from user where Name=?';
     const values=[name];
     connection.query(sql,values, function(err, result) {
         if (err) {
@@ -48,6 +48,7 @@ export const loginCheck=asyncHandler(async(req,res)=>{
         } else {
             const storedHash=result[0].Password;
             const role=result[0].User_role;
+            const id=result[0].UserId;
             bcrypt.compare(password, storedHash, (err, result) => {
                 if(err) throw err;
                 if(result){
@@ -55,7 +56,7 @@ export const loginCheck=asyncHandler(async(req,res)=>{
                   //res.send(role)
 
                     console.log("Message from registerController : password is correct");
-                    const token=jwt.sign({username:name,role:role},process.env.ACCESS_TOKEN_SECRET);
+                    const token=jwt.sign({username:name,role:role,id:id},process.env.ACCESS_TOKEN_SECRET);
                     //set cookie in client machine
                     res.cookie('authToken',token,{
                       httpOnly:true,

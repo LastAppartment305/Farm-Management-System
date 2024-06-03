@@ -2,7 +2,7 @@ import { createContext, useState, useContext } from "react";
 
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState(localStorage.getItem("role"));
 
   const IsAdmin = () => {
     setIsAuthenticated(true);
@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }) => {
   const IsOwner = () => {
     setIsAuthenticated(false);
   };
-
+  console.log("context", role);
   const value = {
     isAuthenticated,
     role,

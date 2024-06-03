@@ -41,7 +41,7 @@ const App=()=>{
         path:"login",
         element:<Login/>,
       },
-      isAuthenticated&&{ 
+        ...(role==='admin'?[{ 
         path:"dashboard",
         element:<DashBoard/>,
         children:[
@@ -56,8 +56,8 @@ const App=()=>{
           },
           
         ],
-      },
-      isAuthenticated==false &&{ 
+      }]:[]),
+      ...(role==='owner' ?[{ 
         path:"dashboard",
         element:<DashBoard/>,
         children:[
@@ -68,11 +68,12 @@ const App=()=>{
             element:<AssignWorker/>
           },
         ],
-      }
+      }]:[])
       ]
     },
     
   ]);
+  console.log("App.js: ",role);
   return(
       <RouterProvider router={router} />
   )

@@ -8,18 +8,12 @@ import { authContext } from "../../context/context";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  //const [loginrole, setloginRole] = useState(null);
   const [data, setdata] = useState({
     name: "",
     password: "",
   });
-  const {
-    IsAdmin,
-    IsOwner,
-    isAuthenticated,
-    setIsAuthenticated,
-    setRole,
-    role,
-  } = useContext(authContext); //manipulate data from context
+  const { setRole, role } = useContext(authContext); //manipulate data from context
   const navigate = useNavigate();
   const { response, postData, loading } = usePost(
     "http://localhost:5000/login"
@@ -43,23 +37,22 @@ const Login = () => {
   const handleClick = async () => {
     const res = await postData(data);
     if (res) {
-      if (res === "admin") {
-        setRole(res);
-        IsAdmin();
-      } else {
-        IsOwner();
-        setRole(res);
-      }
+      localStorage.setItem("role", res);
+      setRole(res);
     }
+    //console.log("login component:response data", res);
   };
 
   useEffect(() => {
+    //console.log("login component", role);
     if (role === "admin") {
+      console.log("true");
       navigate("/dashboard/admin");
-    } else if (role === "owner") {
+    }
+    if (role === "owner") {
       navigate("/dashboard/owner/assign-worker");
     }
-  }, [role]);
+  });
   return (
     <div>
       <div className="screen-wrapper m-0">
