@@ -49,3 +49,21 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
     }
   });
   })
+
+  export const deleteUser=asyncHandler(async(req,res)=>{
+    console.log("User Id to delete",req.body)
+    const {id}=req.body;
+    const sql='delete from user where UserId = ?';
+    const values=[id];
+
+    connection.query(sql,values,(err,result)=>{
+      if(err){
+        console.error("Error deleting data" , err);
+        res.status(500).json({error:"An error occurred while deleting data"});
+
+      }else{
+        console.log("deleted successfully");
+        res.json({message:"Data deleted successfully"});
+      }
+    })
+  })

@@ -15,9 +15,7 @@ const Login = () => {
   });
   const { setRole, role } = useContext(authContext); //manipulate data from context
   const navigate = useNavigate();
-  const { response, postData, loading } = usePost(
-    "http://localhost:5000/login"
-  );
+  const { postData } = usePost("http://localhost:5000/login");
   //console.log(response);
   const handleChange = (e) => {
     const { name, value } = e.target;

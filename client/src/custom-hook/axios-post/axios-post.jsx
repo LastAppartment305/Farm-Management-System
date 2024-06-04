@@ -9,15 +9,17 @@ const usePost = (url) => {
     try {
       setLoading(true);
       const res = await axios.post(url, data);
-      setResponse(res.data);
+      setResponse(res);
+
       return res.data;
-      //console.log("response from server", res.data);
     } catch (err) {
       setResponse(null);
     } finally {
       setLoading(false);
     }
   };
+
+  console.log(response);
 
   return { postData, response, loading };
 };
