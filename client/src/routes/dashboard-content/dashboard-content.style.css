@@ -1,3 +1,25 @@
 .dashboard-content {
   background: none;
 }
+.add-worker-btn-wrapper {
+  position: fixed;
+  margin-right: 34px;
+  margin-bottom: 34px;
+  right: 0;
+  bottom: 0;
+}
+.add-worker-btn {
+  border: none;
+  background-color: #6ed0fe9c;
+  padding: 13px;
+  color: black;
+  text-decoration: none;
+  border-radius: 15px;
+  box-shadow: 3px 5px 10px -5px;
+}
+.add-worker-btn:hover {
+  color: black;
+}
+.add-worker-btn-text {
+  font-weight: 600 !important;
+}

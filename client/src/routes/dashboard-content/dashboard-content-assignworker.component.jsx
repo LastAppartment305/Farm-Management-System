@@ -3,6 +3,8 @@ import "./dashboard-content-assignworker.style.css";
 import { useState } from "react";
 import InputBox from "../../component/InputBox/InputBox.component";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
+import { Users } from "lucide-react";
+import DetailCard from "../../component/Dashboard-Card/detail-card.component";
 
 const AssignWorker = () => {
   const [data, setData] = useState({
@@ -102,6 +104,31 @@ const AssignWorker = () => {
               </div>
             </div>
           )}
+          <div className="user-detail-card">
+            <div className="row g-2">
+              <div className="col-lg-4 col-md-6">
+                <DetailCard
+                  icon={Users}
+                  //response={userlist?.length}
+                  cardTitle={"Total Users"}
+                />
+              </div>
+              <div className="col-lg-4 col-md-6">
+                <DetailCard
+                  icon={Users}
+                  //response={workerdata?.length}
+                  cardTitle={"Total Worker"}
+                />
+              </div>
+              <div className="col-lg-4 col-md-6">
+                <DetailCard
+                  icon={Users}
+                  //response={workerdata?.length}
+                  cardTitle={"Total Worker"}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
