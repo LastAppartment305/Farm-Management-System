@@ -19,7 +19,7 @@ const usePost = (url) => {
     }
   };
 
-  console.log(response);
+  //console.log(response);
 
   return { postData, response, loading };
 };
@@ -65,4 +65,32 @@ const useLogout = (url) => {
   return { response, loading, fetchData };
 };
 
-export { usePost, useGet, useLogout };
+const useDelete = (url) => {
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const deleteData = async (data) => {
+    try {
+      //console.log("axios-post component: deleteData: ", data);
+      setLoading(true);
+      console.log(data);
+      const res = await axios.delete(url, {
+        data: {
+          id: data.id,
+        },
+      });
+      setResponse(res);
+
+      return res.data;
+    } catch (err) {
+      setResponse(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  //console.log(response);
+
+  return { deleteData, response, loading };
+};
+
+export { usePost, useGet, useLogout, useDelete };

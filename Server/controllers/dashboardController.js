@@ -31,12 +31,38 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
     });
   })
 
-  export const assignWorker=asyncHandler(async(req,res)=>{
+  export const retrieveWorkerDataForOwner=asyncHandler(async(req,res)=>{
+    const tableData={
+      worker:""
+    }
+    const sqlWorker="select * from worker";
+    const queryDatabase=(sql)=>{
+      return new Promise((resolve,reject)=>{
+        connection.query(sql,(err,result)=>{
+          if(err) return reject(err);
+          resolve (result);
+        })
+      })
+    }
+    Promise.all([queryDatabase(sqlWorker)])
+    .then(([workerResult])=>{
+      //console.log(workerResult)
+      tableData.worker = workerResult;
+    res.json(tableData);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('An error occurred');
+    });
+  })
+
+  export const createWorker=asyncHandler(async(req,res)=>{
     const isoDate = new Date();
   const mySQLDateString = isoDate.toJSON().slice(0, 19).replace('T', ' ');
   const {name,gender,phone,address,age}=req.body;
 
   const sql='insert into worker(Name,Gender,Phone_no,Address,Age,Created_at) values(?,?,?,?,?,?)';
+  //const insertToWorker_Detail='insert into worker_detail(UserId,WorkerId) values(?,?)';
   const values=[name,gender,phone,address,age,mySQLDateString];
     
   connection.query(sql,values, function(err, result) {
@@ -54,6 +80,24 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
     console.log("User Id to delete",req.body)
     const {id}=req.body;
     const sql='delete from user where UserId = ?';
+    const values=[id];
+
+    connection.query(sql,values,(err,result)=>{
+      if(err){
+        console.error("Error deleting data" , err);
+        res.status(500).json({error:"An error occurred while deleting data"});
+
+      }else{
+        console.log("deleted successfully");
+        res.json({message:"Data deleted successfully"});
+      }
+    })
+  })
+
+  export const deleteWorker=asyncHandler(async(req,res)=>{
+    //console.log("Worker Id to delete",req.body)
+    const {id}=req.body; 
+    const sql='delete from worker where WorkerId = ?';
     const values=[id];
 
     connection.query(sql,values,(err,result)=>{

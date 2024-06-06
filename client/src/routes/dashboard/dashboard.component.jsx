@@ -58,7 +58,7 @@ const DashBoard = () => {
         {role === "owner" && (
           <SideBarButton
             icon={Pickaxe}
-            buttonText={"Assign Worker"}
+            buttonText={"အလုပ်နေရာချထားခြင်း"}
             isActive={isActive === "owner/assign-worker"}
             onclick={() => handleClick("owner/assign-worker")}
           />
@@ -130,24 +130,30 @@ const DashBoard = () => {
               aria-labelledby="offcanvasExampleLabel"
             >
               <h2 className=" my-5 d-flex justify-content-center">Dashboard</h2>
-              <SideBarButton
-                icon={PieChart}
-                buttonText={"Dashboard"}
-                isActive={isActive === "home"}
-                onclick={() => handleClick("home")}
-              />
-              <SideBarButton
-                icon={Captions}
-                buttonText={"Permission"}
-                isActive={isActive === "permission"}
-                onclick={() => handleClick("permission")}
-              />
-              <SideBarButton
-                icon={Pickaxe}
-                buttonText={"Assign Worker"}
-                isActive={isActive === "assign-worker"}
-                onclick={() => handleClick("assign-worker")}
-              />
+              {role === "admin" && (
+                <SideBarButton
+                  icon={PieChart}
+                  buttonText={"Dashboard"}
+                  isActive={isActive === "home"}
+                  onclick={() => handleClick("home")}
+                />
+              )}
+              {role === "admin" && (
+                <SideBarButton
+                  icon={Captions}
+                  buttonText={"Permission"}
+                  isActive={isActive === "permission"}
+                  onclick={() => handleClick("permission")}
+                />
+              )}
+              {role === "owner" && (
+                <SideBarButton
+                  icon={Pickaxe}
+                  buttonText={"အလုပ်နေရာချထားခြင်း"}
+                  isActive={isActive === "assign-worker"}
+                  onclick={() => handleClick("assign-worker")}
+                />
+              )}
             </div>
           </div>
         </nav>

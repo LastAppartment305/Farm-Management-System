@@ -10,6 +10,8 @@
   margin-bottom: 34px;
   right: 0;
   bottom: 0;
+  background-color: white;
+  border-radius: 15px;
 }
 .add-worker-btn {
   border: none;
@@ -36,6 +38,7 @@
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9;
 }
 .assign-worker-form {
   padding: 32px;
