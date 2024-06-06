@@ -14,8 +14,9 @@ import reportWebVitals from './reportWebVitals';
 import DashBoard from './routes/dashboard/dashboard.component';
 import DashboardContent from './routes/dashboard-content/dashboard-content.component';
 import DashboardPermission from './routes/dashboard-content/dashboard-content-permission.component';
-import AssignWorker from './routes/dashboard-content/dashboard-content-assignworker.component';
+
 import { authContext } from "./context/context";
+import Staff from "./routes/dashboard-content/staff/dashboard-content-staff.component";
 
 
 
@@ -63,9 +64,9 @@ const App=()=>{
         children:[
           
           {
-            path:"owner/assign-worker",
+            path:"owner/staff",
             index:true,
-            element:<AssignWorker/>
+            element:<Staff/>
           },
         ],
       }]:[])

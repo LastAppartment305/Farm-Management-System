@@ -1,7 +1,7 @@
 import { useEffect, useState, Fragment, useContext } from "react";
 import "./dashboard.style.css";
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
-import { Bell, PieChart, Captions, Pickaxe } from "lucide-react";
+import { Bell, PieChart, Captions, Pickaxe, User, Sprout } from "lucide-react";
 import { useLogout } from "../../custom-hook/axios-post/axios-post";
 import { Outlet, useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
@@ -61,6 +61,22 @@ const DashBoard = () => {
             buttonText={"အလုပ်နေရာချထားခြင်း"}
             isActive={isActive === "owner/assign-worker"}
             onclick={() => handleClick("owner/assign-worker")}
+          />
+        )}
+        {role === "owner" && (
+          <SideBarButton
+            icon={User}
+            buttonText={"အလုပ်သမား စာရင်း"}
+            isActive={isActive === "owner/staff"}
+            onclick={() => handleClick("owner/staff")}
+          />
+        )}
+        {role === "owner" && (
+          <SideBarButton
+            icon={Sprout}
+            buttonText={"လယ် အရေအတွက်"}
+            isActive={isActive === "owner/farm"}
+            onclick={() => handleClick("owner/farm")}
           />
         )}
       </div>
@@ -150,8 +166,24 @@ const DashBoard = () => {
                 <SideBarButton
                   icon={Pickaxe}
                   buttonText={"အလုပ်နေရာချထားခြင်း"}
-                  isActive={isActive === "assign-worker"}
-                  onclick={() => handleClick("assign-worker")}
+                  isActive={isActive === "owner/assign-worker"}
+                  onclick={() => handleClick("owner/assign-worker")}
+                />
+              )}
+              {role === "owner" && (
+                <SideBarButton
+                  icon={User}
+                  buttonText={"အလုပ်သမား စာရင်း"}
+                  isActive={isActive === "owner/staff"}
+                  onclick={() => handleClick("owner/staff")}
+                />
+              )}
+              {role === "owner" && (
+                <SideBarButton
+                  icon={Sprout}
+                  buttonText={"လယ် အရေအတွက်"}
+                  isActive={isActive === "owner/farm"}
+                  onclick={() => handleClick("owner/farm")}
                 />
               )}
             </div>

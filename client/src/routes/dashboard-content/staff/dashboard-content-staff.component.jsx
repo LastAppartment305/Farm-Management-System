@@ -1,17 +1,17 @@
 import { UserRoundPlus, X } from "lucide-react";
-import "./dashboard-content-assignworker.style.css";
+import "./dashboard-content-staff.style.css";
 import { useEffect, useState } from "react";
-import InputBox from "../../component/InputBox/InputBox.component";
+import InputBox from "../../../component/InputBox/InputBox.component";
 import {
   usePost,
   useGet,
   useDelete,
-} from "../../custom-hook/axios-post/axios-post";
+} from "../../../custom-hook/axios-post/axios-post";
 import { Users } from "lucide-react";
 import axios from "axios";
-import DetailCard from "../../component/Dashboard-Card/detail-card.component";
+import DetailCard from "../../../component/Dashboard-Card/detail-card.component";
 
-const AssignWorker = () => {
+const Staff = () => {
   const [data, setData] = useState({
     name: "",
     gender: "male",
@@ -20,13 +20,9 @@ const AssignWorker = () => {
     age: "",
   });
 
-  const { postData } = usePost("http://localhost:5000/dashboard/assign-worker");
-  const { deleteData } = useDelete(
-    "http://localhost:5000/dashboard/assign-worker"
-  );
-  const { response, loading } = useGet(
-    "http://localhost:5000/dashboard/assign-worker"
-  );
+  const { postData } = usePost("http://localhost:5000/dashboard/staff");
+  const { deleteData } = useDelete("http://localhost:5000/dashboard/staff");
+  const { response, loading } = useGet("http://localhost:5000/dashboard/staff");
   const [workerList, setworkerList] = useState([]);
   const [addWorker, setAddWorker] = useState(false);
   const handleClick = () => {
@@ -48,7 +44,7 @@ const AssignWorker = () => {
     const x = await deleteData({ id: e });
     if (x) {
       const resAfterDelete = await axios.get(
-        "http://localhost:5000/dashboard/assign-worker"
+        "http://localhost:5000/dashboard/staff"
       );
       if (resAfterDelete) {
         setworkerList(resAfterDelete.data.worker);
@@ -209,4 +205,4 @@ const AssignWorker = () => {
     </div>
   );
 };
-export default AssignWorker;
+export default Staff;

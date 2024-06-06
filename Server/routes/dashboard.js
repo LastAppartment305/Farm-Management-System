@@ -5,7 +5,7 @@ import { authenticateToken,authRole } from '../auth/authorization.js';
 const router=express.Router();
 router.get('/',authenticateToken,authRole('admin'),retrieveDataForDashboard);
 router.post('/',authenticateToken,authRole('admin'),deleteUser);
-router.post('/assign-worker',authenticateToken,createWorker);
-router.get('/assign-worker',authenticateToken,retrieveWorkerDataForOwner)
-router.delete('/assign-worker',authenticateToken,deleteWorker);
+router.post('/staff',authenticateToken,createWorker);
+router.get('/staff',authenticateToken,retrieveWorkerDataForOwner)
+router.delete('/staff',authenticateToken,deleteWorker);
 export default router;
