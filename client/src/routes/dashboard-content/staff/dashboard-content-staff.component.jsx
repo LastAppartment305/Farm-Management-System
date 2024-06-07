@@ -25,8 +25,17 @@ const Staff = () => {
   const { response, loading } = useGet("http://localhost:5000/dashboard/staff");
   const [workerList, setworkerList] = useState([]);
   const [addWorker, setAddWorker] = useState(false);
+  const [isEditWorker, setIsEditWorker] = useState(false);
   const handleClick = () => {
     setAddWorker(!addWorker);
+    setIsEditWorker(false);
+    setData({
+      name: "",
+      gender: "male",
+      phone: "",
+      address: "",
+      age: "",
+    });
   };
   const cancelAdd = () => {
     setAddWorker(!addWorker);
@@ -53,6 +62,25 @@ const Staff = () => {
   };
   const handleAdd = () => {
     postData(data);
+  };
+  const handleEdit = (e) => {
+    setAddWorker(!addWorker);
+    setIsEditWorker(true);
+    const {
+      Name: name,
+      Gender: gender,
+      Phone_no: phone,
+      Address: address,
+      Age: age,
+    } = e;
+    setData({
+      name: name,
+      gender: gender,
+      phone: phone,
+      address: address,
+      age: age,
+    });
+    //console.log("staff component: ", data);
   };
   useEffect(() => {
     if (response) {
@@ -85,6 +113,7 @@ const Staff = () => {
                     <InputBox
                       typeProps={"text"}
                       name={"name"}
+                      value={data.name}
                       holder={"Enter name"}
                       InputValue={handleChange}
                     />
@@ -93,6 +122,7 @@ const Staff = () => {
                     <select
                       class="form-select"
                       aria-label="Default select example"
+                      value={data.gender}
                       name="gender"
                       onChange={handleChange}
                     >
@@ -106,6 +136,7 @@ const Staff = () => {
                     <InputBox
                       typeProps={"text"}
                       name={"phone"}
+                      value={data.phone}
                       holder={"Phone-no"}
                       InputValue={handleChange}
                     />
@@ -114,6 +145,7 @@ const Staff = () => {
                     <InputBox
                       typeProps={"text"}
                       name={"address"}
+                      value={data.address}
                       holder={"Enter address"}
                       InputValue={handleChange}
                     />
@@ -122,16 +154,26 @@ const Staff = () => {
                     <InputBox
                       typeProps={"text"}
                       name={"age"}
+                      value={data.age}
                       holder={"Enter age"}
                       InputValue={handleChange}
                     />
                   </div>
                 </div>
-                <div className="d-flex mt-3 justify-content-end">
-                  <button className="btn btn-primary" onClick={handleAdd}>
-                    Add
-                  </button>
-                </div>
+                {isEditWorker && (
+                  <div className="d-flex mt-3 justify-content-end">
+                    <button className="btn btn-primary" onClick={handleEdit}>
+                      ပြင်ဆင်ရန်
+                    </button>
+                  </div>
+                )}
+                {!isEditWorker && (
+                  <div className="d-flex mt-3 justify-content-end">
+                    <button className="btn btn-primary" onClick={handleAdd}>
+                      စာရင်းသွင်းရန်
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -192,7 +234,13 @@ const Staff = () => {
                         className="btn btn-danger"
                         onClick={() => handleDelete(res.WorkerId)}
                       >
-                        ဖျက်မည်
+                        ဖျက်ရန်
+                      </button>
+                      <button
+                        className="btn btn-primary ms-2"
+                        onClick={() => handleEdit(res)}
+                      >
+                        ပြင်ရန်
                       </button>
                     </td>
                   </tr>
