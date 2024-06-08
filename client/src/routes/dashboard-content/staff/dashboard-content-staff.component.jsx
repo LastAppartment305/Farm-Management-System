@@ -21,10 +21,14 @@ const Staff = () => {
   });
 
   const { postData } = usePost("http://localhost:5000/dashboard/staff");
+  const { postData: editWorker } = usePost(
+    "http://localhost:5000/dashboard/staff/editworker"
+  );
   const { deleteData } = useDelete("http://localhost:5000/dashboard/staff");
   const { response, loading } = useGet("http://localhost:5000/dashboard/staff");
   const [workerList, setworkerList] = useState([]);
   const [addWorker, setAddWorker] = useState(false);
+  const [editWorkerId, seteditWorkerId] = useState("");
   const [isEditWorker, setIsEditWorker] = useState(false);
   const handleClick = () => {
     setAddWorker(!addWorker);
@@ -66,6 +70,7 @@ const Staff = () => {
   const handleEdit = (e) => {
     setAddWorker(!addWorker);
     setIsEditWorker(true);
+    seteditWorkerId(e.WorkerId);
     const {
       Name: name,
       Gender: gender,
@@ -81,6 +86,10 @@ const Staff = () => {
       age: age,
     });
     //console.log("staff component: ", data);
+  };
+  const postEditData = async () => {
+    console.log({ editWorkerId, data });
+    const result = await editWorker({ id: editWorkerId, data });
   };
   useEffect(() => {
     if (response) {
@@ -162,7 +171,7 @@ const Staff = () => {
                 </div>
                 {isEditWorker && (
                   <div className="d-flex mt-3 justify-content-end">
-                    <button className="btn btn-primary" onClick={handleEdit}>
+                    <button className="btn btn-primary" onClick={postEditData}>
                       ပြင်ဆင်ရန်
                     </button>
                   </div>

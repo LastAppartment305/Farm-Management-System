@@ -1,5 +1,5 @@
 import express from 'express';
-import { retrieveDataForDashboard,createWorker,deleteUser,retrieveWorkerDataForOwner, deleteWorker } from '../controllers/dashboardController.js';
+import { retrieveDataForDashboard,createWorker,deleteUser,retrieveWorkerDataForOwner, deleteWorker,editWorker } from '../controllers/dashboardController.js';
 import { authenticateToken,authRole } from '../auth/authorization.js';
 
 const router=express.Router();
@@ -8,4 +8,5 @@ router.post('/',authenticateToken,authRole('admin'),deleteUser);
 router.post('/staff',authenticateToken,createWorker);
 router.get('/staff',authenticateToken,retrieveWorkerDataForOwner)
 router.delete('/staff',authenticateToken,deleteWorker);
+router.post('/staff/editworker',authenticateToken,editWorker);
 export default router;

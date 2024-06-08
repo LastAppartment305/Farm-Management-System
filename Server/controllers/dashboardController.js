@@ -135,3 +135,8 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
       }
     })
   })
+
+  //---------------------------------------------------------------
+  export const editWorker=asyncHandler(async(res,req)=>{
+    console.log(req.body);
+  })
