@@ -17,6 +17,7 @@ import DashboardPermission from './routes/dashboard-content/dashboard-content-pe
 
 import { authContext } from "./context/context";
 import Staff from "./routes/dashboard-content/staff/dashboard-content-staff.component";
+import TakePhoto from "./routes/take-photo/take_photo.component";
 
 
 
@@ -69,7 +70,11 @@ const App=()=>{
             element:<Staff/>
           },
         ],
-      }]:[])
+      }]:[]),
+      {
+        path:'worker',
+        element:<TakePhoto/>
+      }
       ]
     },
     

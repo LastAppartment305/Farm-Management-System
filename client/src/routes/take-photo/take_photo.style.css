@@ -1,0 +1,57 @@
+.btn-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.open-btn {
+  height: 90px;
+  width: 90px;
+  box-shadow: 5px 5px 8px -5px;
+  border-radius: 50px;
+  border: 1px solid;
+  background: none;
+}
+.icon {
+  width: 59px;
+  height: 59px;
+  stroke-width: 0.5;
+  margin: 0px;
+}
+.capture-btn {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  bottom: 0;
+}
+video {
+  height: auto;
+  width: 100%;
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+.video {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.cancel-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+.video-wrapper {
+  position: relative;
+}
+.capture-btn-inside-stream {
+  height: 90px;
+  width: 90px;
+  box-shadow: 5px 5px 8px -5px;
+  border-radius: 50px;
+  border: 1px solid;
+  background: white;
+}
