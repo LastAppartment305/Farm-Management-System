@@ -18,6 +18,8 @@ import DashboardPermission from './routes/dashboard-content/dashboard-content-pe
 import { authContext } from "./context/context";
 import Staff from "./routes/dashboard-content/staff/dashboard-content-staff.component";
 import TakePhoto from "./routes/take-photo/take_photo.component";
+import AssignWorker from "./routes/dashboard-content/assign-worker/dashboard-content-assignworker.component";
+import Farm from "./routes/dashboard-content/farm/dashboard-content-farm.component";
 
 
 
@@ -63,11 +65,18 @@ const App=()=>{
         path:"dashboard",
         element:<DashBoard/>,
         children:[
-          
+          {
+            path:"owner/assign-worker",
+            index:true,
+            element:<AssignWorker/>
+          },
           {
             path:"owner/staff",
-            index:true,
             element:<Staff/>
+          },
+          {
+            path:"owner/farm",
+            element:<Farm/>
           },
         ],
       }]:[]),

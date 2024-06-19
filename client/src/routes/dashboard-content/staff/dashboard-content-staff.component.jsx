@@ -25,9 +25,11 @@ const Staff = () => {
     "http://localhost:5000/dashboard/staff/editworker"
   );
   const { deleteData } = useDelete("http://localhost:5000/dashboard/staff");
+  const [actionForEditAndDelete,setActionForEditAndDelete]=useState(false);
   const { response, loading } = useGet("http://localhost:5000/dashboard/staff");
   const [workerList, setworkerList] = useState([]);
   const [addWorker, setAddWorker] = useState(false);
+  const [WorkerIdToDelete,setWorkerIdToDelete]=useState("");
   const [editWorkerId, seteditWorkerId] = useState("");
   const [isEditWorker, setIsEditWorker] = useState(false);
   const handleClick = () => {
@@ -53,19 +55,29 @@ const Staff = () => {
     }));
   };
   //Delete worker at onClick Delete
-  const handleDelete = async (e) => {
-    const x = await deleteData({ id: e });
-    if (x) {
-      const resAfterDelete = await axios.get(
+  const handleDelete =(e) => {
+    setActionForEditAndDelete(true)
+    setWorkerIdToDelete(e)
+  };
+  //add new user to database
+  const handleAdd = async() => {
+    const x=await postData(data);
+    if(x){
+      //console.log("adding worked: staff component")
+      const resAfterInsert = await axios.get(
         "http://localhost:5000/dashboard/staff"
       );
-      if (resAfterDelete) {
-        setworkerList(resAfterDelete.data.worker);
+      if (resAfterInsert) {
+        setworkerList(resAfterInsert.data.worker);
       }
+      setData({
+        name: "",
+    gender: "male",
+    phone: "",
+    address: "",
+    age: "",
+      })
     }
-  };
-  const handleAdd = () => {
-    postData(data);
   };
   const handleEdit = (e) => {
     setAddWorker(!addWorker);
@@ -87,8 +99,25 @@ const Staff = () => {
     });
     //console.log("staff component: ", data);
   };
+  //confirm to delete 
+  const cancelDeleteConfirmation=()=>{
+    setActionForEditAndDelete(false)
+  }
+  const handleDeleteWorker=async()=>{
+    //console.log("staff component ",WorkerIdToDelete)
+    const x = await deleteData({ id: WorkerIdToDelete });
+    if (x) {
+      setActionForEditAndDelete(false)
+      const resAfterDelete = await axios.get(
+        "http://localhost:5000/dashboard/staff"
+      );
+      if (resAfterDelete) {
+        setworkerList(resAfterDelete.data.worker);
+      }
+    }
+  }
   const postEditData = async () => {
-    console.log({ editWorkerId, data });
+    //console.log({ editWorkerId, data });
     const result = await editWorker({ id: editWorkerId, data });
   };
   useEffect(() => {
@@ -111,6 +140,14 @@ const Staff = () => {
               <div className="add-worker-btn-text">အသစ်ထည့်မည်</div>
             </a>
           </div>
+          {actionForEditAndDelete&&(
+        <div className="delete-confirmation-wrapper">
+          <div className="delete-confirmation-layout">
+          <button type="button" class="btn btn-light w-100 me-3" onClick={cancelDeleteConfirmation}>မဖျက်တော့ပါ</button>
+          <button type="button" class="btn btn-danger w-100" onClick={handleDeleteWorker}>ဖျက်မည်</button>
+          </div>
+        </div>
+          )}
           {addWorker && (
             <div className="adduser-form-wrapper">
               <div className="assign-worker-form position-relative">

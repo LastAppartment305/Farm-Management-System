@@ -1,0 +1,50 @@
+.add-worker-btn-wrapper {
+    position: fixed;
+    margin-right: 34px;
+    margin-bottom: 34px;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    border-radius: 15px;
+  }
+  .assign-worker-form {
+    padding: 32px;
+    width: 600px;
+    justify-content: center;
+    z-index: 99999999;
+    background-color: white;
+    flex-direction: column;
+  }
+  .adduser-form-wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+  }
+  .delete-confirmation-wrapper{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9;
+  }
+  .delete-confirmation-layout{
+    padding: 32px;
+  width: 310px;
+  display: flex;
+  justify-content: center;
+  z-index: 99999999;
+  background-color: white;
+  flex-direction: row;
+  }

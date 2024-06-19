@@ -48,7 +48,7 @@ const Login = () => {
       navigate("/dashboard/admin");
     }
     if (role === "owner") {
-      navigate("/dashboard/owner/staff");
+      navigate("/dashboard/owner/assign-worker");
     }
   });
   return (

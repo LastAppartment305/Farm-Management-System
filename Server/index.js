@@ -6,6 +6,7 @@ import test from './routes/test.js';
 import registerUser from './routes/users.js';
 import dashbordDetail from './routes/dashboard.js';
 import cookieParser from 'cookie-parser';
+import farmConcern from './routes/farm.js';
 
 
 const app = express();
@@ -17,7 +18,7 @@ app.use(cookieParser())
 
 
 export const connection = mysql2.createConnection({
-  host: 'localhost',
+  host: '127.0.0.1',
   user: 'root',
   password: 'root',
   database: 'farm_management'
@@ -33,6 +34,7 @@ connection.connect(function(err) {
 
 app.use('/',registerUser);
 app.use('/dashboard',dashbordDetail);
+app.use('/farm',farmConcern);
 app.use('/logout',(req,res)=>{
   console.log("This is from index.js: logout work");
   res.clearCookie('authToken')

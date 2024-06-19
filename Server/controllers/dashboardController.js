@@ -1,5 +1,9 @@
 import { connection } from '../index.js';
 import asyncHandler from 'express-async-handler';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 //retrieve data for dashboard
 export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
@@ -92,6 +96,7 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
     const queryResult=await queryDatabase(insertToWorker_Detail,vlaueForWorker_Detail)
     if(queryResult){
       console.log(" success.")
+      res.json({message:"Data inserted successfully"});
     }
   })
   .catch((err) => {
@@ -142,5 +147,43 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
   })
   //------------------------------------------------------------
   export const receiveUploadPhoto=asyncHandler(async(req,res)=>{
-    console.log(req.body);
-  })
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname=path.dirname(__filename);
+    const {url}=req.body;
+
+    //console.log(url);
+
+
+    const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+    //generate file name
+    const generateUniqueFilename = (extension) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      return `image-${uniqueSuffix}.${extension}`;
+    };
+
+
+    const matches = url.match(/^data:image\/([A-Za-z-+/]+);base64,(.+)$/);
+  if (!matches || matches.length !== 3) {
+    return res.status(400).json({ message: 'Invalid base64 string' });
+  }
+
+  const buffer = Buffer.from(matches[2], 'base64');
+
+  console.log(`Buffer size: ${buffer.length}`);
+  const extension = matches[1];
+  const filename = generateUniqueFilename(extension);
+
+  const filePath = path.join(uploadDir, filename);
+
+  fs.writeFile(filePath, buffer, (err) => {
+    if (err) {
+      return res.status(500).json({ message: 'File upload failed', error: err.message });
+    }
+    res.status(200).json({ message: 'Upload successful', file: `uploads/${filename}` });
+  });
+});
+
+  

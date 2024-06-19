@@ -9,7 +9,7 @@ import image from "../../component/assets/img/ricefield.jpg";
 import SideBarButton from "../../component/side_bar_button/side_bar_button.component";
 
 const DashBoard = () => {
-  const [isActive, setIsActive] = useState("");
+  const [isActive, setIsActive] = useState("owner/assign-worker");
   const { response, loading, fetchData } = useLogout(
     "http://localhost:5000/logout"
   );
