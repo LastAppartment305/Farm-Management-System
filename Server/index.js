@@ -7,6 +7,7 @@ import registerUser from './routes/users.js';
 import dashbordDetail from './routes/dashboard.js';
 import cookieParser from 'cookie-parser';
 import farmConcern from './routes/farm.js';
+import worker from './routes/worker.js';
 
 
 const app = express();
@@ -35,6 +36,7 @@ connection.connect(function(err) {
 app.use('/',registerUser);
 app.use('/dashboard',dashbordDetail);
 app.use('/farm',farmConcern);
+app.use('/worker',worker);
 app.use('/logout',(req,res)=>{
   console.log("This is from index.js: logout work");
   res.clearCookie('authToken')

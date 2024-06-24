@@ -58,3 +58,21 @@
 .dropdown-wrapper {
   width: 600px;
 }
+.inputbox{
+  width: -webkit-fill-available;
+  border: 1px solid #ced4da;
+  border-radius: 5rem;
+  height: 64px;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+.react-tel-input .form-control{
+  width: 100% !important;
+  height: 64px !important;
+  border-radius:5rem !important;
+}
+.react-tel-input .flag-dropdown,.react-tel-input .selected-flag{
+  border-radius: 5rem 0 0 5rem !important;
+}
+
+

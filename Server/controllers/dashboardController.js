@@ -109,18 +109,59 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
     console.log("User Id to delete",req.body)
     const {id}=req.body;
     const sql='delete from user where UserId = ?';
+    const delete_data_from_workerDetail='delete from worker_detail where UserId=?';
+    const select_data_from_worker='select WorkerId from worker where WorkerId in(select WorkerId from worker_detail where UserId=?)'
+
+    //function to generate delete query that use multiple WorkerId to delete at the same time
+    const delete_data_from_worker=(ids)=>{
+      const placeholders=ids.map(()=>'?').join(', ');
+      return `delete from worker where WorkerId in (${placeholders})`
+    }
     const values=[id];
 
-    connection.query(sql,values,(err,result)=>{
-      if(err){
-        console.error("Error deleting data" , err);
-        res.status(500).json({error:"An error occurred while deleting data"});
+    const queryDatabase=(sql,value)=>{
+      return new Promise((resolve,reject)=>{
+        connection.query(sql,value,(error,result)=>{
+          if(error) return reject(error);
+          resolve(result);
+        })
+      })
+    }
 
-      }else{
-        console.log("deleted successfully");
-        res.json({message:"Data deleted successfully"});
-      }
+    //retrieve WorkerId from worker_detail table according UserId
+    const resolvePromise=Promise.resolve(queryDatabase(select_data_from_worker,values))
+    resolvePromise.then(async(ids)=>{
+      const workerIds=ids.map(data=>data.WorkerId); //store WorkerId in a variable before deleting data from worker_detail
+
+      Promise.resolve(queryDatabase(delete_data_from_workerDetail,values))//delete data from worker_detail table first
+      .then(async()=>{
+        const deleteQuery=delete_data_from_worker(workerIds);//call function
+        Promise.all([queryDatabase(deleteQuery,workerIds),queryDatabase(sql,values)])//after deleting worker_detail then delete both user and worker
+        .then(([workerResult,userResult])=>{
+          if(workerResult&&userResult){
+            console.log("deleted user successfully.");
+          }
+        })
+        .catch((err)=>{
+          console.error(err);
+          res.status(500).send('An error occurred')
+        })
+      })
+      .catch((err)=>{
+        console.error(err);
+        res.status(500).send('An error occurred')
+      })
+      // const queryResult=await queryDatabase(sql,values);
+      // if(queryResult){
+      //   console.log("delete user successfully");
+      //   res.json("user deleted successfully.")
+      // }
     })
+    .catch((err)=>{
+      console.error(err);
+    res.status(500).send('An error occurred');
+    })
+
   })
 //-----------------------------------------------------------------
   export const deleteWorker=asyncHandler(async(req,res)=>{

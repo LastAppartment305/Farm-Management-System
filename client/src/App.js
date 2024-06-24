@@ -20,6 +20,7 @@ import Staff from "./routes/dashboard-content/staff/dashboard-content-staff.comp
 import TakePhoto from "./routes/take-photo/take_photo.component";
 import AssignWorker from "./routes/dashboard-content/assign-worker/dashboard-content-assignworker.component";
 import Farm from "./routes/dashboard-content/farm/dashboard-content-farm.component";
+import WorkerLogin from "./routes/worker/worker-login/worker-login.component";
 
 
 
@@ -37,6 +38,10 @@ const App=()=>{
     {
       path:"/",
       children:[
+        {
+          path:"worker-login",
+          element:<WorkerLogin/>,
+        },
         {path:"signup",
         index:true,
         element:<SignUp/>,

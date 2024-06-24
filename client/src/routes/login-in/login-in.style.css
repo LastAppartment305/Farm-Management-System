@@ -18,6 +18,11 @@
   justify-content: center;
   font-size: 2rem;
 }
+.sign-in-as-worker,.create-new-account{
+  display: flex;
+  justify-content: center;
+  margin-top:20px;
+}
 @media (max-width: 1024px) {
   .form-wrapper {
     background-color: #fff9 !important;

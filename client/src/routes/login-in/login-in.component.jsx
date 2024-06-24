@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import InputBox from "../../component/InputBox/InputBox.component";
 import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { authContext } from "../../context/context";
 
 const Login = () => {
@@ -110,6 +110,12 @@ const Login = () => {
             >
               ဝင်ရောက်ရန်
             </button>
+          </div>
+          <div className="sign-in-as-worker">
+            <Link to="/worker-login">အလုပ်သမားအဖြစ် ဝင်ရောက်ရန်</Link>
+          </div>
+          <div className="create-new-account">
+            <Link to="/signup">အကောင့်သစ်ပြုလုပ်ရန်</Link>
           </div>
         </div>
       </div>

@@ -1,0 +1,45 @@
+
+.screen_wrapper{
+    background-color: #212121;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.form_content{
+    height:fit-content;
+    /* backdrop-filter: blur(14px);
+    background-color: #fff9; */
+    padding: 50px;
+    width: 600px;
+    border-radius: 9px;
+}
+.submit_btn{
+    background-color:#8774e1 ;
+    border-color: #8774e1;
+    height:64px;
+    border-radius: 5rem;
+    color:white;
+}
+.submit_btn:hover{
+    background-color: #7963dd;
+    border-color: #7963dd;
+    color:white;
+}
+.form_title{
+    color:#aaaaaa;
+    display: flex;
+    justify-content: center;
+    font-size: 17px;
+    margin-bottom: 55px;
+}
+@media only screen and (max-width:700px){
+    .form_content{
+        height:fit-content;
+        padding:0px;
+        width: 100%;
+        border-radius:9px;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+}

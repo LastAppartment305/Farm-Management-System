@@ -5,6 +5,8 @@ import axios from "axios";
 import "./sign-up.style.css";
 import { CircleX, EyeOff, Eye } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const SignUp = () => {
   const [data, setdata] = useState({
@@ -93,13 +95,14 @@ const SignUp = () => {
               </div>
               <div className="row mt-3">
                 <div className="position-relative">
-                  <InputBox
-                    typeProps={"text"}
-                    name={"phone"}
-                    holder={"ဖုန်းနံပါတ်"}
-                    InputValue={handleChange}
-                    value={data.phone}
-                  />
+                <PhoneInput
+                      country={"mm"}
+                      value={data.phone}
+                      onChange={(e)=>setdata((prev)=>({
+                        ...prev,
+                        phone:e,
+                      }))}
+                    />
                   <button
                     className="position-absolute clear-btn"
                     onClick={ClearInputBoxForPhone}
