@@ -42,7 +42,7 @@ const DashBoard = () => {
         {role === "admin" && (
           <SideBarButton
             icon={PieChart}
-            buttonText={"Dashboard"}
+            buttonText={"အချက်အလက်များ"}
             isActive={isActive === "admin"}
             onclick={() => handleClick("admin")}
           />
@@ -132,7 +132,7 @@ const DashBoard = () => {
                   </li>
                   <li>
                     <a class="dropdown-item" onClick={userLogout}>
-                      Log out
+                      ထွက်မည်
                     </a>
                   </li>
                 </ul>
@@ -140,7 +140,7 @@ const DashBoard = () => {
             </div>
 
             <div
-              class="offcanvas offcanvas-start"
+              class="offcanvas offcanvas-start d-lg-none d-block"
               tabindex="-1"
               id="offcanvasExample"
               aria-labelledby="offcanvasExampleLabel"
@@ -149,7 +149,7 @@ const DashBoard = () => {
               {role === "admin" && (
                 <SideBarButton
                   icon={PieChart}
-                  buttonText={"Dashboard"}
+                  buttonText={"အချက်အလက်များ"}
                   isActive={isActive === "home"}
                   onclick={() => handleClick("home")}
                 />

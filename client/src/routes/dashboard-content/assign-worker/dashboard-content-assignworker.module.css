@@ -1,0 +1,40 @@
+.farm_content{
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px -4px;
+    margin-bottom:20px;
+}
+.farm_name,.crop_type{
+    display: flex;
+    align-items: center;
+}
+.success_icon{
+    height: 16px;
+    width: 16px;
+    object-fit: cover;
+}
+.assign_worker_btn{
+    box-shadow:5px 5px 5px -5px;
+}
+.assign_worker_layout{
+    position:fixed;
+    height:100vh;
+    width: 400px;
+    z-index: 999999;
+    right: 0px;
+    top:0px;
+   background-color: white;
+   border:1px solid black;
+}
+.cancel_assign_worker{
+    position:absolute;
+    right:10px;
+    top:10px;
+}
+.assign_worker_offcanvas{
+    width: 250px !important;
+}
+.side_bar_body{
+    background-color: #dcdbdbcc;
+}

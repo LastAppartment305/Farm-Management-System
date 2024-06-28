@@ -175,7 +175,7 @@ const Staff = () => {
                       typeProps={"text"}
                       name={"name"}
                       value={data.name}
-                      holder={"Enter name"}
+                      holder={"အမည်ထည့်ရန်"}
                       InputValue={handleChange}
                     />
                   </div>
@@ -219,7 +219,7 @@ const Staff = () => {
                       typeProps={"text"}
                       name={"address"}
                       value={data.address}
-                      holder={"Enter address"}
+                      holder={"လိပ်စာထည့်ရန်"}
                       InputValue={handleChange}
                     />
                   </div>
@@ -228,7 +228,7 @@ const Staff = () => {
                       typeProps={"text"}
                       name={"age"}
                       value={data.age}
-                      holder={"Enter age"}
+                      holder={"အသက်ထည့်ရန်"}
                       InputValue={handleChange}
                     />
                   </div>

@@ -10,9 +10,11 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
     const tableData={
       user:"",
       worker:"",
+      farm:"",
     }
     const sqlUser="select * from user";
     const sqlWorker="select * from worker";
+    const sqlFarm="select * from farm";
 
     const queryDatabase=(sql)=>{
       return new Promise((resolve,reject)=>{
@@ -23,10 +25,11 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
       })
     }
 
-    Promise.all([queryDatabase(sqlUser),queryDatabase(sqlWorker)])
-    .then(([userResult,workerResult])=>{
+    Promise.all([queryDatabase(sqlUser),queryDatabase(sqlWorker),queryDatabase(sqlFarm)])
+    .then(([userResult,workerResult,farmResult])=>{
       tableData.user=userResult;
       tableData.worker = workerResult;
+      tableData.farm=farmResult;
     res.json(tableData);
     })
     .catch((err) => {
@@ -226,5 +229,34 @@ if (!fs.existsSync(uploadDir)) {
     res.status(200).json({ message: 'Upload successful', file: `uploads/${filename}` });
   });
 });
+//-----------------------------------------------------------------------
+export const assignWorkerToFarm=asyncHandler(async(req,res)=>{
+  console.log(req.body)
+  const {workerId,farmId}=req.body;
+
+  const insert_WorkerId_ToFarm='update farm set WorkerId=? where FarmId=?';
+  const retrieve_data_from_worker='select * from worker where WorkerId in(select WorkerId from farm where WorkerId=?)'
+
+  const valueFor_insert_WorkerId_ToFarm=[workerId,farmId];
+  const valueFor_retrieve_data_from_worker=[workerId];
+
+  const queryDatabase=(sql,value)=>{
+    return new Promise((resolve,reject)=>{
+      connection.query(sql,value,(error,result)=>{
+        if(error) return reject(error);
+        resolve(result);
+      })
+    })
+  }
+
+  Promise.resolve(queryDatabase(insert_WorkerId_ToFarm,valueFor_insert_WorkerId_ToFarm))
+  .then(()=>{
+    res.status(200).send({message:'assign worker successful'})
+  })
+  .catch((err)=>{
+    console.error(err);
+    res.status(500).send({message:'unexpected error occur at assign worker'})
+  })
+})
 
   

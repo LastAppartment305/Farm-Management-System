@@ -22,18 +22,20 @@ export const addNewFarm=asyncHandler(async(req,res)=>{
 })
 //-------------------------------------------------------------
 export const retrieveFarmList=asyncHandler(async(req,res)=>{
-  const getFarmList='select * from farm';
+  const getFarmList='select * from farm where UserId=?';
 
-  const queryDatabase=(sql)=>{
+  const value=[req.user.id]
+
+  const queryDatabase=(sql,value)=>{
     return new Promise((resolve,reject)=>{
-      connection.query(sql,(error,result)=>{
+      connection.query(sql,value,(error,result)=>{
         if(error) return reject(error);
         resolve(result);
       })
     })
   }
 
-  Promise.all([queryDatabase(getFarmList)])
+  Promise.all([queryDatabase(getFarmList,value)])
   .then(([result])=>{
     res.json(result);
   })

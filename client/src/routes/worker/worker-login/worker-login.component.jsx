@@ -4,8 +4,9 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useState } from "react";
 import { auth } from "../../../firebase.config";
-import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
+import { signInWithPhoneNumber, RecaptchaVerifier} from "firebase/auth";
 import { usePost } from "../../../custom-hook/axios-post/axios-post";
+import {toast,Toaster} from 'react-hot-toast';
 
 const WorkerLogin = () => {
   const [data, setData] = useState({ phone: "" });
@@ -43,6 +44,7 @@ const WorkerLogin = () => {
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
         console.log("OTP sent successfully!");
+        toast.success("OTP sended successfully!");
       })
       .catch((error) => {
         console.error("Error during sign-in:", error);
@@ -51,8 +53,10 @@ const WorkerLogin = () => {
 
   return (
     <div>
+
       <div id="recaptcha-container"></div> {/* Add this div for the RecaptchaVerifier */}
       <div className={classes.screen_wrapper}>
+    <Toaster toastOptions={{ duration: 4000 }} />
         <div className={classes.form_content}>
           <div className={classes.form_title}>
             နိုင်ငံရွေးချယ်၍ ဖုန်းနံပါတ်ဖြည့်သွင်းပါ

@@ -13,6 +13,7 @@ const DashboardContent = () => {
   //const [isDelete, setisDelete] = useState(null);
   const [registered, setRegistered] = useState(false);
   const workerdata = response?.data.worker;
+  const farmdata=response?.data.farm;
   const { postData } = usePost("http://localhost:5000/dashboard");
 
   const [data, setData] = useState({
@@ -58,7 +59,6 @@ const DashboardContent = () => {
     if (response) {
       setuserlist(response.data.user);
     }
-    console.log("dashboard-content:useEffect: ", userlist);
   }, [response]);
 
   //Post user data to Server
@@ -84,21 +84,21 @@ const DashboardContent = () => {
             <DetailCard
               icon={Users}
               response={userlist?.length}
-              cardTitle={"Total Users"}
+              cardTitle={"အလုပ်ရှင် စုစုပေါင်း"}
             />
           </div>
           <div className="col-lg-4 col-md-6">
             <DetailCard
               icon={Users}
               response={workerdata?.length}
-              cardTitle={"Total Worker"}
+              cardTitle={"အလုပ်သမား စုစုပေါင်း"}
             />
           </div>
           <div className="col-lg-4 col-md-6">
             <DetailCard
               icon={Users}
-              response={workerdata?.length}
-              cardTitle={"Total Worker"}
+              response={farmdata?.length}
+              cardTitle={"လယ် စုစုပေါင်း"}
             />
           </div>
         </div>
@@ -107,10 +107,10 @@ const DashboardContent = () => {
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">No.</th>
-              <th scope="col">Name</th>
-              <th scope="col">Phone no</th>
-              <th scope="col">Role</th>
+              <th scope="col">စဥ်</th>
+              <th scope="col">အမည်</th>
+              <th scope="col">ဖုန်းနံပါတ်</th>
+              <th scope="col">ရာထူး</th>
             </tr>
           </thead>
           <tbody>
@@ -125,7 +125,7 @@ const DashboardContent = () => {
                     className="btn btn-danger"
                     onClick={() => handleDelete(res.UserId)}
                   >
-                    Delete
+                    ဖျက်ရန်
                   </button>
                 </td>
               </tr>
@@ -140,7 +140,7 @@ const DashboardContent = () => {
           onClick={handleClick}
         >
           <UserRoundPlus className="icon" />
-          <div className="add-worker-btn-text">Add User</div>
+          <div className="add-worker-btn-text">လူအသစ်ထည့်ရန်</div>
         </a>
       </div>
       {addUser && (
@@ -154,7 +154,7 @@ const DashboardContent = () => {
                 <InputBox
                   typeProps={"text"}
                   name={"name"}
-                  holder={"Enter name"}
+                  holder={"အမည် ထည့်ရန်"}
                   InputValue={handleChange}
                 />
               </div>
@@ -162,7 +162,7 @@ const DashboardContent = () => {
                 <InputBox
                   typeProps={"text"}
                   name={"phone"}
-                  holder={"Enter Phone Number"}
+                  holder={"ဖုန်းနံပါတ် ထည့်ရန်"}
                   InputValue={handleChange}
                 />
               </div>
@@ -170,7 +170,7 @@ const DashboardContent = () => {
                 <InputBox
                   typeProps={"password"}
                   name={"password"}
-                  holder={"Enter Password"}
+                  holder={"လျှို့ဝှက်နံပါတ် ထည့်ရန်"}
                   InputValue={handleChange}
                 />
               </div>
@@ -178,7 +178,7 @@ const DashboardContent = () => {
                 <InputBox
                   typeProps={"password"}
                   name={"confirm_password"}
-                  holder={"Confirm Password"}
+                  holder={"လျှို့ဝှက်နံပါတ် ပြန်ထည့်ရန်"}
                   InputValue={handleChange}
                 />
               </div>
