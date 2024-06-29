@@ -72,7 +72,7 @@ const App=()=>{
         children:[
           {
             path:"owner/assign-worker",
-            index:true,
+            
             element:<AssignWorker/>
           },
           {

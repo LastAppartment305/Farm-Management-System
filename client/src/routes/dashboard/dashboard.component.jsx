@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment, useContext } from "react";
+import { useEffect, useState, Fragment, useContext, useRef } from "react";
 import "./dashboard.style.css";
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
 import { Bell, PieChart, Captions, Pickaxe, User, Sprout } from "lucide-react";
@@ -6,9 +6,11 @@ import { useLogout } from "../../custom-hook/axios-post/axios-post";
 import { Outlet, useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
 import image from "../../component/assets/img/ricefield.jpg";
+import { useSearchParams } from "react-router-dom";
 import SideBarButton from "../../component/side_bar_button/side_bar_button.component";
 
 const DashBoard = () => {
+  const urlRef=useRef("");
   const [isActive, setIsActive] = useState("owner/assign-worker");
   const { response, loading, fetchData } = useLogout(
     "http://localhost:5000/logout"
@@ -28,10 +30,15 @@ const DashBoard = () => {
 
     navigate("/login");
   };
-  // useEffect(() => {
-  //   console.log("dashboard useEffect", localStorage.getItem("role"));
-  //   console.log("logging role from context in dashboard com: ", role);
-  // });
+  useEffect(() => {
+    // const fullPath=window.location.pathname;
+    // const trimPath=fullPath.replace('/dashboard','')
+    // urlRef.current=urlRef.current.trimPath;
+    // setIsActive(urlRef)
+    // console.log("dashboard useEffect", localStorage.getItem("role"));
+    // console.log("logging role from context in dashboard com: ", role);
+  },[]);
+  console.log(isActive)
   return (
     <Fragment>
       <div className="side-bar">
@@ -174,8 +181,8 @@ const DashBoard = () => {
                 <SideBarButton
                   icon={User}
                   buttonText={"အလုပ်သမား စာရင်း"}
-                  isActive={isActive === "owner/staff"}
-                  onclick={() => handleClick("owner/staff")}
+                  isActive={isActive === "owner/assign-worker"}
+                  onclick={() => handleClick("owner/assign-worker")}
                 />
               )}
               {role === "owner" && (

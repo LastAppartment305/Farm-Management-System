@@ -72,7 +72,7 @@ const useDelete = (url) => {
     try {
       //console.log("axios-post component: deleteData: ", data);
       setLoading(true);
-      console.log(data);
+      //console.log(data);
       const res = await axios.delete(url, {
         data: {
           id: data.id,

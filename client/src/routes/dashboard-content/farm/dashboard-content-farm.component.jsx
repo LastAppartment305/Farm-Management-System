@@ -173,7 +173,7 @@ const Farm = () => {
             {farmlist?.map((res, index) => (
               <tr key={index} className="w-100">
                 <th scope="row">{index + 1}</th>
-                <td className="row">{res.Name}</td>
+                <td>{res.Name}</td>
                 <td>{res.Crop_type}</td>
                 <td>
                   <button

@@ -298,7 +298,7 @@ const Staff = () => {
                 {workerList?.map((res, index) => (
                   <tr key={index} className="w-100">
                     <th scope="row">{index + 1}</th>
-                    <td className="row">{res.Name}</td>
+                    <td>{res.Name}</td>
                     <td>{res.Phone_no}</td>
                     <td>{res.Gender === "male" ? "ကျား" : "မ"}</td>
                     <td>{res.Age}</td>

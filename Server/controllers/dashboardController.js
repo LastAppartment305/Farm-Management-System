@@ -231,14 +231,12 @@ if (!fs.existsSync(uploadDir)) {
 });
 //-----------------------------------------------------------------------
 export const assignWorkerToFarm=asyncHandler(async(req,res)=>{
-  console.log(req.body)
+  //console.log(req.body)
   const {workerId,farmId}=req.body;
 
   const insert_WorkerId_ToFarm='update farm set WorkerId=? where FarmId=?';
-  const retrieve_data_from_worker='select * from worker where WorkerId in(select WorkerId from farm where WorkerId=?)'
 
   const valueFor_insert_WorkerId_ToFarm=[workerId,farmId];
-  const valueFor_retrieve_data_from_worker=[workerId];
 
   const queryDatabase=(sql,value)=>{
     return new Promise((resolve,reject)=>{
@@ -251,11 +249,37 @@ export const assignWorkerToFarm=asyncHandler(async(req,res)=>{
 
   Promise.resolve(queryDatabase(insert_WorkerId_ToFarm,valueFor_insert_WorkerId_ToFarm))
   .then(()=>{
-    res.status(200).send({message:'assign worker successful'})
+    res.send({message:'assign worker successful'})
   })
   .catch((err)=>{
     console.error(err);
     res.status(500).send({message:'unexpected error occur at assign worker'})
+  })
+})
+//---------------------------------------------------------------------
+export const deleteAssignWorkerFromFarm=asyncHandler(async(req,res)=>{
+  //console.log(req.body)
+  const{id}=req.body;
+
+  const delete_assign_worker='update farm set WorkerId=null where FarmId=?';
+  const value_to_delete_assign_worker=[id]
+
+  const queryDatabase=(sql,value)=>{
+    return new Promise((resolve,reject)=>{
+      connection.query(sql,value,(error,result)=>{
+        if(error) return reject(error);
+        resolve(result);
+      })
+    })
+  }
+
+  Promise.resolve(queryDatabase(delete_assign_worker,value_to_delete_assign_worker))
+  .then(()=>{
+    res.status(200).send({message:'successfully delete assign worker'})
+  })
+  .catch((err)=>{
+    console.log(err)
+    res.status(500).send({message:'unexpected error occur at deleting assign worker'})
   })
 })
 
