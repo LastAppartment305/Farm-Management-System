@@ -12,6 +12,7 @@ import axios from "axios";
 import DetailCard from "../../../component/Dashboard-Card/detail-card.component";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import DeleteConfirmBox from "../../../component/delete-confirmbox/delete-confirmbox.component";
 
 const Staff = () => {
   const [data, setData] = useState({
@@ -144,24 +145,7 @@ const Staff = () => {
             </a>
           </div>
           {actionForEditAndDelete && (
-            <div className="delete-confirmation-wrapper">
-              <div className="delete-confirmation-layout">
-                <button
-                  type="button"
-                  class="btn btn-light w-100 me-3"
-                  onClick={cancelDeleteConfirmation}
-                >
-                  မဖျက်တော့ပါ
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-danger w-100"
-                  onClick={handleDeleteWorker}
-                >
-                  ဖျက်မည်
-                </button>
-              </div>
-            </div>
+            <DeleteConfirmBox cancelDelete={cancelDeleteConfirmation} handleDelete={handleDeleteWorker}/>
           )}
           {addWorker && (
             <div className="adduser-form-wrapper">

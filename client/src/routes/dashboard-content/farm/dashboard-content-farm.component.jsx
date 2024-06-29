@@ -9,6 +9,7 @@ import {
   useDelete
 } from "../../../custom-hook/axios-post/axios-post.jsx";
 import { act } from "react";
+import DeleteConfirmBox from "../../../component/delete-confirmbox/delete-confirmbox.component.jsx";
 
 const Farm = () => {
   const [data, setData] = useState({
@@ -103,12 +104,7 @@ const Farm = () => {
       </div>
       
       {actionForEditAndDelete&&(
-        <div className="delete-confirmation-wrapper">
-          <div className="delete-confirmation-layout">
-          <button type="button" class="btn btn-light w-100 me-3" onClick={cancelDeleteConfirmation}>မဖျက်တော့ပါ</button>
-          <button type="button" class="btn btn-danger w-100" onClick={handleDeleteFarm}>ဖျက်မည်</button>
-          </div>
-        </div>
+        <DeleteConfirmBox cancelDelete={cancelDeleteConfirmation} handleDelete={handleDeleteFarm}/>
       )}
       {addFarm && (
         <div className="adduser-form-wrapper">

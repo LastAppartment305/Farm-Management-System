@@ -49,6 +49,7 @@ export const loginCheck=asyncHandler(async(req,res)=>{
             const storedHash=result[0].Password;
             const role=result[0].User_role;
             const id=result[0].UserId;
+
             bcrypt.compare(password, storedHash, (err, result) => {
                 if(err) throw err;
                 if(result){
@@ -71,15 +72,3 @@ export const loginCheck=asyncHandler(async(req,res)=>{
         }
       });
 })
-
-// //retrieve data for dashboard
-// export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
-//   const sql="select * from user";
-//   connection.query(sql,(err,result)=>{
-//     if(err) throw err;
-//     if(result){
-//       console.log(result.length);
-//       return res.json(result.length);
-//     }
-//   })
-// })

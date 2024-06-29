@@ -10,8 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import SideBarButton from "../../component/side_bar_button/side_bar_button.component";
 
 const DashBoard = () => {
-  const urlRef=useRef("");
-  const [isActive, setIsActive] = useState("owner/assign-worker");
+  const [isActive, setIsActive] = useState("");
   const { response, loading, fetchData } = useLogout(
     "http://localhost:5000/logout"
   );
@@ -25,20 +24,20 @@ const DashBoard = () => {
 
   const userLogout = async () => {
     await fetchData();
-    localStorage.setItem("role", null);
+    localStorage.removeItem("role");
+    localStorage.removeItem("username");
     setRole(null);
 
     navigate("/login");
   };
   useEffect(() => {
-    // const fullPath=window.location.pathname;
-    // const trimPath=fullPath.replace('/dashboard','')
-    // urlRef.current=urlRef.current.trimPath;
-    // setIsActive(urlRef)
+    const fullPath=window.location.pathname;
+    const trimPath=fullPath.replace('/dashboard/','')
+      setIsActive(trimPath)
     // console.log("dashboard useEffect", localStorage.getItem("role"));
     // console.log("logging role from context in dashboard com: ", role);
   },[]);
-  console.log(isActive)
+  //console.log(isActive)
   return (
     <Fragment>
       <div className="side-bar">
@@ -121,7 +120,7 @@ const DashBoard = () => {
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                   <li>
                     <a class="dropdown-item" href="#">
-                      Action
+                      {localStorage.getItem("username")}
                     </a>
                   </li>
                   <li>

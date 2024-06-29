@@ -36,6 +36,7 @@ const Login = () => {
     const res = await postData(data);
     if (res) {
       localStorage.setItem("role", res);
+      localStorage.setItem("username",data.name)
       setRole(res);
     }
     //console.log("login component:response data", res);
