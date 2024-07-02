@@ -33,6 +33,10 @@
     font-size: 17px;
     margin-bottom: 55px;
 }
+.otp-container input{
+    width: 50px !important;
+    height: 50px !important;
+}
 @media only screen and (max-width:700px){
     .form_content{
         height:fit-content;

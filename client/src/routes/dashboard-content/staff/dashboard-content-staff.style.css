@@ -74,5 +74,8 @@
 .react-tel-input .flag-dropdown,.react-tel-input .selected-flag{
   border-radius: 5rem 0 0 5rem !important;
 }
+.accordion-content{
+  background-color: #dcdbdbcc;
+}
 
 

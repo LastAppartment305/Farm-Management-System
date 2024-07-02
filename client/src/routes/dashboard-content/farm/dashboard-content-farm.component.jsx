@@ -1,6 +1,7 @@
 import { UserRoundPlus, X } from "lucide-react";
 import "./dashboard-content-farm.style.css";
 import InputBox from "../../../component/InputBox/InputBox.component";
+import Accordion from "react-bootstrap/Accordion";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import {
@@ -34,6 +35,11 @@ const Farm = () => {
   const handleClick = () => {
     setAddFarm(!addFarm);
     setIsEditWorker(false);
+    setData({
+      crop_type: "",
+    location: "",
+    field_name: "",
+    })
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -65,8 +71,11 @@ const Farm = () => {
     setFarmIdToDelete(id);
     console.log("edit worked: dashboard farm")
   };
-  const handleEdit = () => {
-    setActionForEditAndDelete(true);
+  const handleEdit = (e) => {
+    setIsEditWorker(true);
+    setAddFarm(!addFarm)
+    const {Name:name,Crop_type:crop_type,Location:location}=e;
+    setData({field_name:name,crop_type:crop_type,location:location})
     console.log("edit worked: dashboard farm")
   };
   const cancelDeleteConfirmation=()=>{
@@ -156,39 +165,56 @@ const Farm = () => {
           </div>
         </div>
       )}
-      <div className="user-detail-table">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">စဉ်</th>
-              <th scope="col">လယ်အမည်</th>
-              <th scope="col">သီးနှံအမျိုးအစား</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="">
+            <Accordion>
             {farmlist?.map((res, index) => (
-              <tr key={index} className="w-100">
-                <th scope="row">{index + 1}</th>
-                <td>{res.Name}</td>
-                <td>{res.Crop_type}</td>
-                <td>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDelete(res.FarmId)}
-                  >
-                    ဖျက်ရန်
-                  </button>
-                  <button
-                    className="btn btn-primary ms-2"
-                    onClick={() => handleEdit(res)}
-                  >
-                    ပြင်ရန်
-                  </button>
-                </td>
-              </tr>
+              <Accordion.Item eventKey={`${index}`}>
+              <Accordion.Header>
+                <div className="d-flex">
+                  <div className="me-5">{index + 1}</div>
+                  <div className="">{res.Name}</div>
+                </div>
+              </Accordion.Header>
+              <Accordion.Body className="accordion-content">
+                <div
+                  className="fw-bold d-flex w-100 justify-content-between mb-2"
+                >
+                  <div>လယ်ကွက် အချက်အလက်</div>
+                  <div>
+                    <button
+                      className="btn btn-danger me-3"
+                      onClick={() => handleDelete(res.FarmId)}
+                    >
+                      ဖျက်ရန်
+                    </button>
+                    <button
+                      className={`btn btn-primary`}
+                      onClick={() => handleEdit(res)}
+                    >
+                      ပြင်ရန်
+                    </button>
+                  </div>
+                </div>
+                <table className="table table-striped w-100">
+                  <tbody>
+                    <tr>
+                      <td>လယ်ကွက် အမည်</td>
+                      <td>{res.Name}</td>
+                    </tr>
+                    <tr>
+                      <td>သီးနှံအမျိုးအစား</td>
+                      <td>{res.Crop_type}</td>
+                    </tr>
+                    <tr>
+                      <td>လယ်ကွက် တည်နေရာ</td>
+                      <td>{res.Location}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </Accordion.Body>
+            </Accordion.Item>
             ))}
-          </tbody>
-        </table>
+            </Accordion>
       </div>
     </div>
   );

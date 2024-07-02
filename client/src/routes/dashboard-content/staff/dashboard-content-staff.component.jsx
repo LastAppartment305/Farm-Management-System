@@ -1,6 +1,7 @@
 import { UserRoundPlus, X } from "lucide-react";
 import "./dashboard-content-staff.style.css";
 import { useEffect, useState } from "react";
+import Accordion from "react-bootstrap/Accordion";
 import InputBox from "../../../component/InputBox/InputBox.component";
 import {
   usePost,
@@ -13,6 +14,7 @@ import DetailCard from "../../../component/Dashboard-Card/detail-card.component"
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import DeleteConfirmBox from "../../../component/delete-confirmbox/delete-confirmbox.component";
+import AccordionItem from "react-bootstrap/esm/AccordionItem";
 
 const Staff = () => {
   const [data, setData] = useState({
@@ -29,7 +31,6 @@ const Staff = () => {
   );
   const { deleteData } = useDelete("http://localhost:5000/dashboard/staff");
   const [actionForEditAndDelete, setActionForEditAndDelete] = useState(false);
-  const { response, loading } = useGet("http://localhost:5000/dashboard/staff");
   const [workerList, setworkerList] = useState([]);
   const [addWorker, setAddWorker] = useState(false);
   const [WorkerIdToDelete, setWorkerIdToDelete] = useState("");
@@ -56,7 +57,7 @@ const Staff = () => {
       ...prev,
       [name]: value,
     }));
-    console.log("staff component ",data)
+    console.log("staff component ", data);
   };
   //Delete worker at onClick Delete
   const handleDelete = (e) => {
@@ -67,7 +68,6 @@ const Staff = () => {
   const handleAdd = async () => {
     const x = await postData(data);
     if (x) {
-      //console.log("adding worked: staff component")
       const resAfterInsert = await axios.get(
         "http://localhost:5000/dashboard/staff"
       );
@@ -101,7 +101,6 @@ const Staff = () => {
       address: address,
       age: age,
     });
-    //console.log("staff component: ", data);
   };
   //confirm to delete
   const cancelDeleteConfirmation = () => {
@@ -121,15 +120,22 @@ const Staff = () => {
     }
   };
   const postEditData = async () => {
-    //console.log({ editWorkerId, data });
     const result = await editWorker({ id: editWorkerId, data });
+    if (result) {
+      setAddWorker(!addWorker);
+      setIsEditWorker(false);
+    }
   };
   useEffect(() => {
-    if (response) {
-      setworkerList(response.data.worker);
-    }
-  }, [response]);
-  //console.log("assign worker component: ", workerList);
+    const workerdata = async () => {
+      const takedata = await axios.get("http://localhost:5000/dashboard/staff");
+      if (takedata) {
+        setworkerList(takedata.data.worker);
+      }
+    };
+    workerdata();
+    // console.log("staff component: ", workerList);
+  }, [JSON.stringify(workerList), isEditWorker]);
   return (
     <div>
       <div className="navigation-bar ">
@@ -145,7 +151,10 @@ const Staff = () => {
             </a>
           </div>
           {actionForEditAndDelete && (
-            <DeleteConfirmBox cancelDelete={cancelDeleteConfirmation} handleDelete={handleDeleteWorker}/>
+            <DeleteConfirmBox
+              cancelDelete={cancelDeleteConfirmation}
+              handleDelete={handleDeleteWorker}
+            />
           )}
           {addWorker && (
             <div className="adduser-form-wrapper">
@@ -177,24 +186,18 @@ const Staff = () => {
                       <option value="female">မ</option>
                     </select>
                   </div>
-                  {/* <div className="mt-3 w-100">
-                    <InputBox
-                      typeProps={"text"}
-                      name={"phone"}
-                      value={data.phone}
-                      holder={"Phone-no"}
-                      InputValue={handleChange}
-                    />
-                  </div> */}
 
                   <div className="mt-3 w-100">
                     <PhoneInput
+                      
                       country={"mm"}
                       value={data.phone}
-                      onChange={(e)=>setData((prev)=>({
-                        ...prev,
-                        phone:e,
-                      }))}
+                      onChange={(e) =>
+                        setData((prev) => ({
+                          ...prev,
+                          phone: e,
+                        }))
+                      }
                     />
                   </div>
 
@@ -267,43 +270,64 @@ const Staff = () => {
               </div>
             </div>
           </div>
-          <div className="user-detail-table">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">စဉ်</th>
-                  <th scope="col">နာမည်</th>
-                  <th scope="col">ဖုန်းနံပါတ်</th>
-                  <th scope="col">ကျား/မ</th>
-                  <th scope="col">အသက်</th>
-                </tr>
-              </thead>
-              <tbody>
-                {workerList?.map((res, index) => (
-                  <tr key={index} className="w-100">
-                    <th scope="row">{index + 1}</th>
-                    <td>{res.Name}</td>
-                    <td>{res.Phone_no}</td>
-                    <td>{res.Gender === "male" ? "ကျား" : "မ"}</td>
-                    <td>{res.Age}</td>
-                    <td>
-                      <button
-                        className="btn btn-danger"
-                        onClick={() => handleDelete(res.WorkerId)}
-                      >
-                        ဖျက်ရန်
-                      </button>
-                      <button
-                        className="btn btn-primary ms-2"
-                        onClick={() => handleEdit(res)}
-                      >
-                        ပြင်ရန်
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="user-detail">
+            <Accordion>
+              {workerList?.map((res, index) => (
+                <Accordion.Item eventKey={`${index}`}>
+                  <Accordion.Header>
+                    <div className="d-flex">
+                      <div className="me-5">{index + 1}</div>
+                      <div className="">{res.Name}</div>
+                    </div>
+                  </Accordion.Header>
+                  <Accordion.Body className="accordion-content">
+                    <div
+                      className="fw-bold d-flex w-100 justify-content-between mb-2"
+                    >
+                      <div>အလုပ်သမား အချက်အလက်</div>
+                      <div>
+                        <button
+                          className="btn btn-danger me-3"
+                          onClick={() => handleDelete(res.WorkerId)}
+                        >
+                          ဖျက်ရန်
+                        </button>
+                        <button
+                          className={`btn btn-primary`}
+                          onClick={() => handleEdit(res)}
+                        >
+                          ပြင်ရန်
+                        </button>
+                      </div>
+                    </div>
+                    <table className="table table-striped w-100">
+                      <tbody>
+                        <tr>
+                          <td>အမည်</td>
+                          <td>{res.Name}</td>
+                        </tr>
+                        <tr>
+                          <td>ဖုန်းနံပါတ်</td>
+                          <td>{res.Phone_no}</td>
+                        </tr>
+                        <tr>
+                          <td>ကျား/မ</td>
+                          <td>{res.Gender === "male" ? "ကျား" : "မ"}</td>
+                        </tr>
+                        <tr>
+                          <td>လိပ်စာ</td>
+                          <td>{res.Address}</td>
+                        </tr>
+                        <tr>
+                          <td>အသက်</td>
+                          <td>{res.Age}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </Accordion.Body>
+                </Accordion.Item>
+              ))}
+            </Accordion>
           </div>
         </div>
       </div>

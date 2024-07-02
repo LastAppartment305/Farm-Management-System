@@ -7,12 +7,15 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.6.8",
+    "bootstrap": "^5.0.1",
     "firebase": "^10.12.2",
     "font-awesome": "^4.7.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.378.0",
     "number-to-words": "^1.2.4",
+    "otp-input-react": "^0.3.0",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.10.4",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
     "react-otp-input": "^3.1.1",
@@ -20,8 +23,7 @@
     "react-router-dom": "^6.23.0",
     "react-scripts": "5.0.1",
     "socket.io-client": "^4.7.5",
-    "web-vitals": "^2.1.4",
-    "bootstrap": "^5.0.1"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

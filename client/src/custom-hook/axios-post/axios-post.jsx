@@ -24,7 +24,7 @@ const usePost = (url) => {
   return { postData, response, loading };
 };
 
-const useGet = (url) => {
+const useGet = (url, state = false) => {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +33,9 @@ const useGet = (url) => {
       try {
         setLoading(true);
         const res = await axios.get(url);
+        if(res){
+          console.log(res)
+        }
         setResponse(res);
       } catch (err) {
         setResponse(null);
@@ -42,7 +45,7 @@ const useGet = (url) => {
     };
 
     fetchData();
-  }, [url]);
+  }, [url, state]);
   return { response, loading };
 };
 

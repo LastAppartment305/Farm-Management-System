@@ -7,7 +7,7 @@ import {
 import success from "../../../assets/icon/success.png";
 import { useState, useEffect, useRef } from "react";
 import numtowords from "number-to-words";
-import { X } from "lucide-react";
+import axios from "axios";
 
 const AssignWorker = () => {
   const [farmlist, setFarmList] = useState([]);
@@ -16,7 +16,7 @@ const AssignWorker = () => {
   const assignWorkerRef = useRef([]);
   const [selectedFarmId, setSelectedFarmId] = useState(null);
 
-  const { response } = useGet("http://localhost:5000/farm/getfarmlist");
+  const { response } = useGet("http://localhost:5000/farm/getfarmlist",assignWorker);
   const { response: res } = useGet("http://localhost:5000/dashboard/staff");
   const { postData } = usePost(
     "http://localhost:5000/dashboard/staff/assign-worker"
@@ -37,22 +37,23 @@ const AssignWorker = () => {
         assignWorkerRef.current.splice([i], 1);
       }
     };
-  }, [response, res]);
+  }, [response, res, assignWorker]);
   const assignWorkerbtn = (data) => {
     setSelectedFarmId(data);
   };
-  const deleteAssignWorker = async (FarmId) => {
-    //setAssignWorker(!assignWorker)
-    const deleteResult = await deleteData({ id: FarmId });
+  const deleteAssignWorker = async (FarmId,WorkerId) => {
+    const deleteResult=await axios.delete('http://localhost:5000/dashboard/staff/assign-worker',{data:{id:{farmid:FarmId,workerid:WorkerId}}})
+    setAssignWorker(!assignWorker)
+    //const deleteResult = await deleteData({id:FarmId});
   };
   const assignWorkerToFarm = async (workerData, farmData) => {
     const result = await postData({ workerId: workerData, farmId: farmData });
+    setAssignWorker((prev) => !prev);
     return () => {
       for (let i = assignWorkerRef.current.length - 1; i >= 0; i--) {
         assignWorkerRef.current.splice([i], 1);
       }
     };
-    //setAssignWorker(!AssignWorker);
   };
   //console.log("dashboard-assignworker com", assignWorkerRef.current.length);
   return (
@@ -89,14 +90,14 @@ const AssignWorker = () => {
               aria-labelledby="headingOne"
               data-bs-parent="#accordionExample"
             >
-              <div class={`accordion-body ${classes.side_bar_body}`}>
+              <div class={`accordion-body ${classes.accordion_body}`}>
                 <div className="fw-bold d-flex w-100 justify-content-between">
                   <div>အလုပ်သမား အချက်အလက်</div>
                   <div>
                     {res.WorkerId && (
                       <button
                         className="btn btn-danger"
-                        onClick={() => deleteAssignWorker(res.FarmId)}
+                        onClick={() => deleteAssignWorker(res.FarmId,res.WorkerId)}
                       >
                         ထုတ်မည်
                       </button>
@@ -130,7 +131,10 @@ const AssignWorker = () => {
                             <td>ဖုန်းနံပါတ်</td>
                             <td>{filteredData.Phone_no}</td>
                           </tr>
+                          <div className="d-none">
+
                           {assignWorkerRef.current.push(filteredData.WorkerId)}
+                          </div>
                         </>
                       ))}
                   </tbody>

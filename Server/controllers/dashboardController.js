@@ -170,24 +170,94 @@ export const retrieveDataForDashboard=asyncHandler(async(req,res)=>{
   export const deleteWorker=asyncHandler(async(req,res)=>{
     //console.log("Worker Id to delete",req.body)
     const {id}=req.body; 
+   
+    const retrieve_data_worker_detail='select * from worker_detail where WorkerId=?'
+    const setNullToWorkerId='update farm set WorkerId=null where FarmId=?'
     const sql='delete from worker where WorkerId = ?';
     const values=[id];
 
-    connection.query(sql,values,(err,result)=>{
-      if(err){
-        console.error("Error deleting data" , err);
-        res.status(500).json({error:"An error occurred while deleting data"});
+    const queryDatabase=(sql,value)=>{
+      return new Promise((resolve,reject)=>{
+        connection.query(sql,value,(error,result)=>{
+          if(error) return reject(error);
+          resolve(result);
+        })
+      })
+    }
 
+    Promise.resolve(queryDatabase(retrieve_data_worker_detail,values))
+    .then((result)=>{
+      if(result[0].FarmId){
+        const farm_id=result[0].FarmId;
+        Promise.resolve(queryDatabase(setNullToWorkerId,farm_id))
+        .then(()=>{
+          Promise.resolve(queryDatabase(sql,values))
+          .then(()=>{
+            res.status(200).send({message:'worker deleted successfully'})
+          })
+          .catch((err)=>{
+            console.error(err);
+          res.status(500).send({message:'error occur at deleting data'})
+          })
+        })
+        .catch((err)=>{
+          console.error(err);
+          res.status(500).send({message:'error occur at changing data'})
+        })
+        //console.log("farm id exist")
       }else{
-        console.log("deleted successfully");
-        res.json({message:"Data deleted successfully"});
+        Promise.resolve(queryDatabase(sql,values))
+          .then(()=>{
+
+          })
+          .catch((err)=>{
+            console.error(err);
+          res.status(500).send({message:'error occur at deleting data'})
+          })
       }
     })
+    .catch((err)=>{
+      console.error(err)
+      res.status(500).send({message:'error occur at retrieving data'})
+    })
+    // connection.query(sql,values,(err,result)=>{
+    //   if(err){
+    //     console.error("Error deleting data" , err);
+    //     res.status(500).json({error:"An error occurred while deleting data"});
+
+    //   }else{
+    //     console.log("deleted successfully");
+    //     res.json({message:"Data deleted successfully"});
+    //   }
+    // })
   })
 
   //---------------------------------------------------------------
-  export const editWorker=asyncHandler(async(res,req)=>{
-    console.log(req.body);
+  export const editWorker=asyncHandler(async(req,res)=>{
+    //console.log(req.body);
+    const {id}=req.body;
+    const {name,gender,phone,address,age}=req.body.data;
+
+    const edit_worker_query='update worker set Name=?,Gender=?,Phone_no=?,Address=?,Age=? where WorkerId=?'
+    const value_for_worker_edit=[name,gender,phone,address,age,id]
+
+    const queryDatabase=(sql,value)=>{
+      return new Promise((resolve,reject)=>{
+        connection.query(sql,value,(error,result)=>{
+          if(error) return reject(error);
+          resolve(result);
+        })
+      })
+    }
+
+    Promise.resolve(queryDatabase(edit_worker_query,value_for_worker_edit))
+    .then(()=>{
+      res.status(200).send({message:'update worker data successful'});
+    })
+    .catch((err)=>{
+      console.error(err)
+      res.status(500).send({message:'unexpected error occur while updating worker data'})
+    })
   })
   //------------------------------------------------------------
   export const receiveUploadPhoto=asyncHandler(async(req,res)=>{
@@ -235,9 +305,10 @@ export const assignWorkerToFarm=asyncHandler(async(req,res)=>{
   const {workerId,farmId}=req.body;
 
   const insert_WorkerId_ToFarm='update farm set WorkerId=? where FarmId=?';
+  const insert_farmId_Toworker_detail='update worker_detail set FarmId=? where WorkerId=?';
 
   const valueFor_insert_WorkerId_ToFarm=[workerId,farmId];
-
+  const valueFor_insert_FarmId_Toworker_detail=[farmId,workerId]
   const queryDatabase=(sql,value)=>{
     return new Promise((resolve,reject)=>{
       connection.query(sql,value,(error,result)=>{
@@ -249,7 +320,15 @@ export const assignWorkerToFarm=asyncHandler(async(req,res)=>{
 
   Promise.resolve(queryDatabase(insert_WorkerId_ToFarm,valueFor_insert_WorkerId_ToFarm))
   .then(()=>{
-    res.send({message:'assign worker successful'})
+    Promise.resolve(queryDatabase(insert_farmId_Toworker_detail,valueFor_insert_FarmId_Toworker_detail))
+    .then(()=>{
+
+      res.send({message:'assign worker successful'})
+    })
+    .catch((err)=>{
+      console.error(err)
+      res.status(500).send({message:'error occur at inserting to worker_detail'})
+    })
   })
   .catch((err)=>{
     console.error(err);
@@ -258,11 +337,13 @@ export const assignWorkerToFarm=asyncHandler(async(req,res)=>{
 })
 //---------------------------------------------------------------------
 export const deleteAssignWorkerFromFarm=asyncHandler(async(req,res)=>{
-  //console.log(req.body)
-  const{id}=req.body;
+  console.log(req.body.id.farmid)
+  const{farmid,workerid}=req.body.id;
 
   const delete_assign_worker='update farm set WorkerId=null where FarmId=?';
-  const value_to_delete_assign_worker=[id]
+  const delete_farmId_from_worker_detail='update worker_detail set FarmId=null where WorkerId=?'
+  const value_to_delete_assign_worker=[farmid]
+  const value_for_worker_detail=[workerid]
 
   const queryDatabase=(sql,value)=>{
     return new Promise((resolve,reject)=>{
@@ -273,13 +354,21 @@ export const deleteAssignWorkerFromFarm=asyncHandler(async(req,res)=>{
     })
   }
 
-  Promise.resolve(queryDatabase(delete_assign_worker,value_to_delete_assign_worker))
+  Promise.resolve(queryDatabase(delete_farmId_from_worker_detail,value_for_worker_detail))
   .then(()=>{
-    res.status(200).send({message:'successfully delete assign worker'})
+    Promise.resolve(queryDatabase(delete_assign_worker,value_to_delete_assign_worker))
+    .then(()=>{
+
+      res.status(200).send({message:'successfully delete assign worker'})
+    })
+    .catch((err)=>{
+      console.error(err)
+      res.status(500).send({message:'error occur at deleting worker id'})
+    })
   })
   .catch((err)=>{
     console.log(err)
-    res.status(500).send({message:'unexpected error occur at deleting assign worker'})
+    res.status(500).send({message:'unexpected error occur at deleting farm id from worker detail'})
   })
 })
 
