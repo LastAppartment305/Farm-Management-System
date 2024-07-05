@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from "react";
 import InputBox from "../../component/InputBox/InputBox.component";
 import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { authContext } from "../../context/context";
 
 const Login = () => {
@@ -36,7 +36,7 @@ const Login = () => {
     const res = await postData(data);
     if (res) {
       localStorage.setItem("role", res);
-      localStorage.setItem("username",data.name)
+      localStorage.setItem("username", data.name);
       setRole(res);
     }
     //console.log("login component:response data", res);

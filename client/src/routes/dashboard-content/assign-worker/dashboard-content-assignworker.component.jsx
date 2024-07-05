@@ -8,15 +8,23 @@ import success from "../../../assets/icon/success.png";
 import { useState, useEffect, useRef } from "react";
 import numtowords from "number-to-words";
 import axios from "axios";
+// import { Offcanvas } from "bootstrap";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import * as bootstrap from 'bootstrap';
+// window.bootstrap = bootstrap;
 
 const AssignWorker = () => {
   const [farmlist, setFarmList] = useState([]);
   const [workerlist, setworkerlist] = useState([]);
   const [assignWorker, setAssignWorker] = useState(false);
   const assignWorkerRef = useRef([]);
+  const [openRightNavBar, setopenRightNavBar] = useState(false);
   const [selectedFarmId, setSelectedFarmId] = useState(null);
 
-  const { response } = useGet("http://localhost:5000/farm/getfarmlist",assignWorker);
+  const { response } = useGet(
+    "http://localhost:5000/farm/getfarmlist",
+    assignWorker
+  );
   const { response: res } = useGet("http://localhost:5000/dashboard/staff");
   const { postData } = usePost(
     "http://localhost:5000/dashboard/staff/assign-worker"
@@ -41,13 +49,18 @@ const AssignWorker = () => {
   const assignWorkerbtn = (data) => {
     setSelectedFarmId(data);
   };
-  const deleteAssignWorker = async (FarmId,WorkerId) => {
-    const deleteResult=await axios.delete('http://localhost:5000/dashboard/staff/assign-worker',{data:{id:{farmid:FarmId,workerid:WorkerId}}})
-    setAssignWorker(!assignWorker)
+
+  const deleteAssignWorker = async (FarmId, WorkerId) => {
+    const deleteResult = await axios.delete(
+      "http://localhost:5000/dashboard/staff/assign-worker",
+      { data: { id: { farmid: FarmId, workerid: WorkerId } } }
+    );
+    setAssignWorker(!assignWorker);
     //const deleteResult = await deleteData({id:FarmId});
   };
   const assignWorkerToFarm = async (workerData, farmData) => {
     const result = await postData({ workerId: workerData, farmId: farmData });
+
     setAssignWorker((prev) => !prev);
     return () => {
       for (let i = assignWorkerRef.current.length - 1; i >= 0; i--) {
@@ -55,7 +68,7 @@ const AssignWorker = () => {
       }
     };
   };
-  //console.log("dashboard-assignworker com", assignWorkerRef.current.length);
+  // console.log("dashboard-assignworker com", selectedFarmId);
   return (
     <div className={`${classes.content} p-5`}>
       <div class="accordion" id="accordionExample">
@@ -97,7 +110,9 @@ const AssignWorker = () => {
                     {res.WorkerId && (
                       <button
                         className="btn btn-danger"
-                        onClick={() => deleteAssignWorker(res.FarmId,res.WorkerId)}
+                        onClick={() =>
+                          deleteAssignWorker(res.FarmId, res.WorkerId)
+                        }
                       >
                         ထုတ်မည်
                       </button>
@@ -132,8 +147,9 @@ const AssignWorker = () => {
                             <td>{filteredData.Phone_no}</td>
                           </tr>
                           <div className="d-none">
-
-                          {assignWorkerRef.current.push(filteredData.WorkerId)}
+                            {assignWorkerRef.current.push(
+                              filteredData.WorkerId
+                            )}
                           </div>
                         </>
                       ))}
@@ -147,6 +163,7 @@ const AssignWorker = () => {
               tabindex="-1"
               id="assignWorker"
               aria-labelledby="offcanvasExampleLabel"
+              aria-modal="false"
             >
               <div class="offcanvas-header">
                 <button
@@ -174,9 +191,9 @@ const AssignWorker = () => {
                           key={index}
                           className="list-group-item list-group-item-action"
                           type="button"
-                          onClick={() =>
-                            assignWorkerToFarm(r.WorkerId, selectedFarmId)
-                          }
+                          onClick={() => {
+                            assignWorkerToFarm(r.WorkerId, selectedFarmId);
+                          }}
                         >
                           {r.Name}
                         </button>

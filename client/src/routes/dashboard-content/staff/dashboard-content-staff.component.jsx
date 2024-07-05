@@ -57,7 +57,7 @@ const Staff = () => {
       ...prev,
       [name]: value,
     }));
-    console.log("staff component ", data);
+    // console.log("staff component ", data);
   };
   //Delete worker at onClick Delete
   const handleDelete = (e) => {
@@ -189,7 +189,6 @@ const Staff = () => {
 
                   <div className="mt-3 w-100">
                     <PhoneInput
-                      
                       country={"mm"}
                       value={data.phone}
                       onChange={(e) =>
@@ -281,9 +280,7 @@ const Staff = () => {
                     </div>
                   </Accordion.Header>
                   <Accordion.Body className="accordion-content">
-                    <div
-                      className="fw-bold d-flex w-100 justify-content-between mb-2"
-                    >
+                    <div className="fw-bold d-flex w-100 justify-content-between mb-2">
                       <div>အလုပ်သမား အချက်အလက်</div>
                       <div>
                         <button

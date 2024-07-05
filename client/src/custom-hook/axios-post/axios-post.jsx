@@ -33,8 +33,8 @@ const useGet = (url, state = false) => {
       try {
         setLoading(true);
         const res = await axios.get(url);
-        if(res){
-          console.log(res)
+        if (res) {
+          // console.log(res)
         }
         setResponse(res);
       } catch (err) {
