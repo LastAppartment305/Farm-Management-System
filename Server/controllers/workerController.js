@@ -33,7 +33,7 @@ export const checkAssign = asyncHandler(async (req, res) => {
         });
         console.log(result);
       } else {
-        res.json({ id: null });
+        res.json({ farmid: null });
       }
       // try {
       //   res.json({ farmid: result[0].FarmId, workerid: result[0].WorkerId });

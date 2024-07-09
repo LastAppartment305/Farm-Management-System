@@ -1,7 +1,15 @@
 import { useEffect, useState, Fragment, useContext, useRef } from "react";
 import "./dashboard.style.css";
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
-import { Bell, PieChart, Captions, Pickaxe, User, Sprout } from "lucide-react";
+import {
+  Bell,
+  PieChart,
+  Captions,
+  Pickaxe,
+  User,
+  Sprout,
+  NotepadText,
+} from "lucide-react";
 import { useLogout } from "../../custom-hook/axios-post/axios-post";
 import { Outlet, useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
@@ -31,12 +39,12 @@ const DashBoard = () => {
     navigate("/login");
   };
   useEffect(() => {
-    const fullPath=window.location.pathname;
-    const trimPath=fullPath.replace('/dashboard/','')
-      setIsActive(trimPath)
+    const fullPath = window.location.pathname;
+    const trimPath = fullPath.replace("/dashboard/", "");
+    setIsActive(trimPath);
     // console.log("dashboard useEffect", localStorage.getItem("role"));
     // console.log("logging role from context in dashboard com: ", role);
-  },[]);
+  }, []);
   //console.log(isActive)
   return (
     <Fragment>
@@ -59,6 +67,14 @@ const DashBoard = () => {
             buttonText={"Permission"}
             isActive={isActive === "admin/permission"}
             onclick={() => handleClick("admin/permission")}
+          />
+        )}
+        {role === "owner" && (
+          <SideBarButton
+            icon={NotepadText}
+            buttonText={"အစီအရင်ခံခြင်း"}
+            isActive={isActive === "owner/report"}
+            onclick={() => handleClick("owner/report")}
           />
         )}
         {role === "owner" && (

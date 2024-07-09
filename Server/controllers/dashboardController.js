@@ -194,6 +194,8 @@ export const deleteWorker = asyncHandler(async (req, res) => {
   const retrieve_data_worker_detail =
     "select * from worker_detail where WorkerId=?";
   const setNullToWorkerId = "update farm set WorkerId=null where FarmId=?";
+  const setNullExceptWorkerId =
+    "update worker_detail set FarmId=null,UserId=null where WorkerId=?";
   const sql = "delete from worker where WorkerId = ?";
   const values = [id];
 
@@ -212,11 +214,13 @@ export const deleteWorker = asyncHandler(async (req, res) => {
         const farm_id = result[0].FarmId;
         Promise.resolve(queryDatabase(setNullToWorkerId, farm_id))
           .then(() => {
-            Promise.resolve(queryDatabase(sql, values))
+            Promise.resolve(queryDatabase(setNullExceptWorkerId, values))
               .then(() => {
-                res
-                  .status(200)
-                  .send({ message: "worker deleted successfully" });
+                Promise.resolve(queryDatabase(sql, values)).then(() => {
+                  res
+                    .status(200)
+                    .send({ message: "worker deleted successfully" });
+                });
               })
               .catch((err) => {
                 console.error(err);
@@ -294,13 +298,15 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   // console.log("dashboardController", farmid, workerid);
   const insertImageIdTo_image =
     "insert into image (Report_date,Image_path) values (?,?)";
-  const checkNullAtImageId =
-    "select ImageId from worker_detail where FarmId=? and WorkerId=?";
-  const updateImageIdTo_worker_detail =
-    "update worker_detail set ImageId=? where FarmId=? and WorkerId=?";
-  const insertEntireRowTo_worker_detail =
-    "insert into worker_detail (FarmId,WorkerId,UserId,ImageId) values (?,?,?,?)";
-  const extractImageId = "select ImageId from image where Image_path=?";
+  const connectImageIdWithFarmId =
+    "insert into report (FarmId,ImageId) values (?,?)";
+  // const checkNullAtImageId =
+  //   "select ImageId from worker_detail where FarmId=? and WorkerId=?";
+  // const updateImageIdTo_worker_detail =
+  //   "update worker_detail set ImageId=? where FarmId=? and WorkerId=?";
+  // const insertEntireRowTo_worker_detail =
+  //   "insert into worker_detail (FarmId,WorkerId,UserId,ImageId) values (?,?,?,?)";
+
   // console.log(url);
 
   const isoDate = new Date();
@@ -339,9 +345,6 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const filePath = path.join(uploadDir, filename);
 
   const valuesToInsert_image = [mySQLDateString, filePath];
-  const valuesToCheckNullImageId = [farmid, workerid];
-  const valuesForInsertEntireRow = [farmid, workerid, userid];
-  const valueForExtractImageId = [filePath];
 
   fs.writeFile(filePath, buffer, (err) => {
     if (err) {
@@ -352,37 +355,37 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     Promise.resolve(queryDatabase(insertImageIdTo_image, valuesToInsert_image))
       .then(async (response) => {
         if (response) {
-          const queryResult = await queryDatabase(checkNullAtImageId, [
+          const queryResult = await queryDatabase(connectImageIdWithFarmId, [
             farmid,
-            workerid,
+            response.insertId,
           ]);
           return {
             queryResult,
-            id: response.insertId,
+            // id: response.insertId,
           };
         }
 
         console.log(`upload ${filename} at ${mySQLDateString}`);
       })
-      .then((result) => {
-        if (result) {
-          console.log("insertedId", result.queryResult[0].ImageId, result.id);
-          if (result.queryResult[0].ImageId) {
-            return queryDatabase(insertEntireRowTo_worker_detail, [
-              farmid,
-              workerid,
-              userid,
-              result.id,
-            ]);
-          } else {
-            return queryDatabase(updateImageIdTo_worker_detail, [
-              result.id,
-              farmid,
-              workerid,
-            ]);
-          }
-        }
-      })
+      // .then((result) => {
+      //   if (result) {
+      //     console.log("insertedId", result.queryResult[0].ImageId, result.id);
+      //     if (result.queryResult[0].ImageId) {
+      //       return queryDatabase(insertEntireRowTo_worker_detail, [
+      //         farmid,
+      //         workerid,
+      //         userid,
+      //         result.id,
+      //       ]);
+      //     } else {
+      //       return queryDatabase(updateImageIdTo_worker_detail, [
+      //         result.id,
+      //         farmid,
+      //         workerid,
+      //       ]);
+      //     }
+      //   }
+      // })
       .catch((err) => {
         console.log(err);
         res.status(500).send({ message: "unexpected error occur at upload" });

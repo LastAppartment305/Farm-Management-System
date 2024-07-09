@@ -44,7 +44,7 @@ const WorkerLogin = () => {
 
   const onSignup = async () => {
     const response = await postData(data);
-    if (response) {
+    if (response.farmid !== null) {
       console.log(response);
       setIds(response);
 
@@ -56,11 +56,14 @@ const WorkerLogin = () => {
           window.confirmationResult = confirmationResult;
           setShowOTP(true);
           console.log("OTP sent successfully!");
-          toast.success("OTP sended successfully!");
+          toast.success("ကုဒ်ပေးပို့မှုအောင််မြင်ပါသည်");
         })
         .catch((error) => {
           console.error("Error during sign-in:", error);
         });
+    } else {
+      toast.error("ဝင်ရောက်ခွင့်မရှိပါ");
+      // console.log("not an assign worker");
     }
   };
 
