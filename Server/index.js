@@ -7,6 +7,8 @@ import registerUser from "./routes/users.js";
 import dashbordDetail from "./routes/dashboard.js";
 import cookieParser from "cookie-parser";
 import farmConcern from "./routes/farm.js";
+import path from "path";
+import { fileURLToPath } from "url";
 import worker from "./routes/worker.js";
 import report from "./routes/report.js";
 
@@ -16,6 +18,10 @@ app.use(bodyParser.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use("/", test);
 app.use(cookieParser());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use("/path", express.static(path.join(__dirname, "/../uploads")));
+console.log(__dirname);
 
 export const connection = mysql2.createConnection({
   host: "127.0.0.1",

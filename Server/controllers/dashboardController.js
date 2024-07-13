@@ -4,6 +4,10 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import axios from "axios";
+
+dotenv.config();
 
 //retrieve data for dashboard
 export const retrieveDataForDashboard = asyncHandler(async (req, res) => {
@@ -175,11 +179,6 @@ export const deleteUser = asyncHandler(async (req, res) => {
           console.error(err);
           res.status(500).send("An error occurred");
         });
-      // const queryResult=await queryDatabase(sql,values);
-      // if(queryResult){
-      //   console.log("delete user successfully");
-      //   res.json("user deleted successfully.")
-      // }
     })
     .catch((err) => {
       console.error(err);
@@ -247,16 +246,6 @@ export const deleteWorker = asyncHandler(async (req, res) => {
       console.error(err);
       res.status(500).send({ message: "error occur at retrieving data" });
     });
-  // connection.query(sql,values,(err,result)=>{
-  //   if(err){
-  //     console.error("Error deleting data" , err);
-  //     res.status(500).json({error:"An error occurred while deleting data"});
-
-  //   }else{
-  //     console.log("deleted successfully");
-  //     res.json({message:"Data deleted successfully"});
-  //   }
-  // })
 });
 
 //---------------------------------------------------------------
@@ -300,14 +289,6 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     "insert into image (Report_date,Image_path) values (?,?)";
   const connectImageIdWithFarmId =
     "insert into report (FarmId,ImageId) values (?,?)";
-  // const checkNullAtImageId =
-  //   "select ImageId from worker_detail where FarmId=? and WorkerId=?";
-  // const updateImageIdTo_worker_detail =
-  //   "update worker_detail set ImageId=? where FarmId=? and WorkerId=?";
-  // const insertEntireRowTo_worker_detail =
-  //   "insert into worker_detail (FarmId,WorkerId,UserId,ImageId) values (?,?,?,?)";
-
-  // console.log(url);
 
   const isoDate = new Date();
   const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
@@ -345,55 +326,120 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const filePath = path.join(uploadDir, filename);
 
   const valuesToInsert_image = [mySQLDateString, filePath];
+  //
+  //
+  //
+  //Codes below store image in b2-cloud-storage (backblaze Api)
+  //
+  //
+  //
+  const encodedCredentials = Buffer.from(
+    `${process.env.BACKBLAZE_KEY_ID}:${process.env.BACKBLAZE_APPLICATION_KEY}`
+  ).toString("base64");
+  console.log(encodedCredentials);
 
-  fs.writeFile(filePath, buffer, (err) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ message: "File upload failed", error: err.message });
-    }
-    Promise.resolve(queryDatabase(insertImageIdTo_image, valuesToInsert_image))
-      .then(async (response) => {
-        if (response) {
-          const queryResult = await queryDatabase(connectImageIdWithFarmId, [
-            farmid,
-            response.insertId,
-          ]);
-          return {
-            queryResult,
-            // id: response.insertId,
-          };
+  const getAuthorizationToken = async () => {
+    try {
+      const response = await axios.get(
+        "https://api.backblazeb2.com/b2api/v3/b2_authorize_account",
+        {
+          headers: {
+            Authorization: `Basic ${encodedCredentials}`,
+          },
         }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error getting authorization token:", error);
+    }
+  };
 
-        console.log(`upload ${filename} at ${mySQLDateString}`);
-      })
-      // .then((result) => {
-      //   if (result) {
-      //     console.log("insertedId", result.queryResult[0].ImageId, result.id);
-      //     if (result.queryResult[0].ImageId) {
-      //       return queryDatabase(insertEntireRowTo_worker_detail, [
-      //         farmid,
-      //         workerid,
-      //         userid,
-      //         result.id,
-      //       ]);
-      //     } else {
-      //       return queryDatabase(updateImageIdTo_worker_detail, [
-      //         result.id,
-      //         farmid,
-      //         workerid,
-      //       ]);
-      //     }
-      //   }
-      // })
-      .catch((err) => {
-        console.log(err);
-        res.status(500).send({ message: "unexpected error occur at upload" });
+  const getUploadUrl = async (apiurl, authorizationToken) => {
+    try {
+      const response = await axios.get(`${apiurl}/b2api/v3/b2_get_upload_url`, {
+        params: { bucketId: `64dd475ee7bf9ee1920d0118` },
+        headers: {
+          Authorization: authorizationToken,
+        },
       });
-    res
-      .status(200)
-      .json({ message: "Upload successful", file: `uploads/${filename}` });
-  });
+      return response.data;
+    } catch (error) {
+      console.error("Error getting upload URL:", error.response.data);
+      throw error;
+    }
+  };
+
+  const uploadImage = async (
+    uploadurl,
+    imagebinary,
+    authorizationToken,
+    filename
+  ) => {
+    try {
+      const response = await axios.post(uploadurl, imagebinary, {
+        headers: {
+          Authorization: authorizationToken,
+          "X-Bz-File-Name": encodeURIComponent(filename),
+          "Content-Type": "b2/x-auto",
+          "X-Bz-Content-Sha1": "do_not_verify",
+          "Content-Length": imagebinary.length,
+        },
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  };
+
+  try {
+    const authToken = await getAuthorizationToken();
+    // console.log(authToken);
+    const uploadUrl = await getUploadUrl(
+      authToken.apiInfo.storageApi.apiUrl,
+      authToken.authorizationToken
+    );
+    await uploadImage(
+      uploadUrl.uploadUrl,
+      buffer,
+      uploadUrl.authorizationToken,
+      filename
+    );
+  } catch (error) {
+    console.error("Error uploading file:", error);
+    throw error;
+  }
+
+  // console.log(uploadUrl);
+
+  // fs.writeFile(filePath, buffer, (err) => {
+  //   if (err) {
+  //     return res
+  //       .status(500)
+  //       .json({ message: "File upload failed", error: err.message });
+  //   }
+  //   Promise.resolve(queryDatabase(insertImageIdTo_image, valuesToInsert_image))
+  //     .then(async (response) => {
+  //       if (response) {
+  //         const queryResult = await queryDatabase(connectImageIdWithFarmId, [
+  //           farmid,
+  //           response.insertId,
+  //         ]);
+  //         return {
+  //           queryResult,
+  //           // id: response.insertId,
+  //         };
+  //       }
+
+  //       console.log(`upload ${filename} at ${mySQLDateString}`);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //       res.status(500).send({ message: "unexpected error occur at upload" });
+  //     });
+  //   res
+  //     .status(200)
+  //     .json({ message: "Upload successful", file: `uploads/${filename}` });
+  // });
 });
 //-----------------------------------------------------------------------
 export const assignWorkerToFarm = asyncHandler(async (req, res) => {

@@ -1,6 +1,3 @@
-
-
-
 import { Camera, X } from "lucide-react";
 import "./take_photo.style.css";
 import { useRef, useEffect, useState } from "react";
@@ -11,7 +8,9 @@ const TakePhoto = () => {
   const videoref = useRef(null);
   const canvasref = useRef(null);
   const [openCamera, setOpenCamera] = useState(false);
-  const { postData } = usePost("http://localhost:5000/dashboard/uploadbase64image");
+  const { postData } = usePost(
+    "http://localhost:5000/dashboard/uploadbase64image"
+  );
   const [stream, setStream] = useState(null);
 
   const switchCamera = () => {
@@ -30,15 +29,20 @@ const TakePhoto = () => {
     resizedCanvas.height = (canvas.height * resizedCanvas.width) / canvas.width;
     const resizedContext = resizedCanvas.getContext("2d");
     resizedContext.scale(-1, 1);
-    resizedContext.drawImage(video, 0, 0, -resizedCanvas.width, resizedCanvas.height);
+    resizedContext.drawImage(
+      video,
+      0,
+      0,
+      -resizedCanvas.width,
+      resizedCanvas.height
+    );
     // const imageUrl = resizedCanvas.toDataURL();
     const imageUrl = resizedCanvas.toDataURL("image/jpeg", 0.7); // 0.7 indicates 70% quality
-
 
     // Store image in session storage
     sessionStorage.setItem("capturedImage", imageUrl);
     setOpenCamera(false);
-    const response = await postData({ url: imageUrl });
+    // const response = await postData({ url: imageUrl });
   };
 
   const getVideo = () => {
@@ -119,7 +123,10 @@ const TakePhoto = () => {
             <button className="upload-btn" onClick={handleUpload}>
               Upload
             </button>
-            <button className="retake-btn" onClick={() => sessionStorage.removeItem("capturedImage")}>
+            <button
+              className="retake-btn"
+              onClick={() => sessionStorage.removeItem("capturedImage")}
+            >
               Retake
             </button>
           </>

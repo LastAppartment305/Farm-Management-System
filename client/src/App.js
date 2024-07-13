@@ -17,7 +17,7 @@ import TakePhoto from "./routes/take-photo/take_photo.component";
 import AssignWorker from "./routes/dashboard-content/assign-worker/dashboard-content-assignworker.component";
 import Farm from "./routes/dashboard-content/farm/dashboard-content-farm.component";
 import WorkerLogin from "./routes/worker/worker-login/worker-login.component";
-import ReportContent from "./routes/dashboard-content/report-photo/dashboard-content-report.component";
+import ReportContent from "./routes/dashboard-content/report-content/dashboard-content-report.component";
 
 const App = () => {
   const [admin, setadmin] = useState(true);
