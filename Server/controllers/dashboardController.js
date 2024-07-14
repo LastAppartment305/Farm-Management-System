@@ -6,6 +6,7 @@ import fs from "fs";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import axios from "axios";
+import { json } from "express";
 
 dotenv.config();
 
@@ -284,12 +285,18 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const __dirname = path.dirname(__filename);
   const { url } = req.body;
   const { farmid, workerid, userid } = req.worker;
+  const accountAuthTokenFileName = "./b2-accountAuth.json";
+  const defaultExpirationTime = 24 * 60 * 60 * 1000;
   // console.log("dashboardController", farmid, workerid);
   const insertImageIdTo_image =
     "insert into image (Report_date,Image_path) values (?,?)";
   const connectImageIdWithFarmId =
     "insert into report (FarmId,ImageId) values (?,?)";
 
+  let b2AccountAuthToken = {
+    token: null,
+    expirationTime: null,
+  };
   const isoDate = new Date();
   const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
 
@@ -336,9 +343,33 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const encodedCredentials = Buffer.from(
     `${process.env.BACKBLAZE_KEY_ID}:${process.env.BACKBLAZE_APPLICATION_KEY}`
   ).toString("base64");
-  console.log(encodedCredentials);
+  // console.log(encodedCredentials);
 
-  const getAuthorizationToken = async () => {
+  //load token from file
+  const loadTokenFromFile = () => {
+    // console.log("loadTokenFromfile");
+    if (fs.existsSync(accountAuthTokenFileName)) {
+      const data = JSON.parse(
+        fs.readFileSync(accountAuthTokenFileName, "utf-8")
+      );
+      b2AccountAuthToken = {
+        token: data.token,
+        expirationTime: new Date(data.expirationTime),
+      };
+      // console.log(b2AccountAuthToken);
+    }
+  };
+
+  //save token to file
+  function saveTokenToFile() {
+    fs.writeFileSync(
+      accountAuthTokenFileName,
+      JSON.stringify(b2AccountAuthToken)
+    );
+  }
+
+  //get new token from b2 storage
+  const fetchNewAuthToken = async () => {
     try {
       const response = await axios.get(
         "https://api.backblazeb2.com/b2api/v3/b2_authorize_account",
@@ -348,7 +379,39 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
           },
         }
       );
-      return response.data;
+      // console.log(response);
+      const date = new Date();
+      b2AccountAuthToken.token = response.data;
+      if (response.data.applicationKeyExpirationTimestamp === null) {
+        b2AccountAuthToken.expirationTime = new Date(
+          date.getTime() + defaultExpirationTime
+        );
+      } else {
+        b2AccountAuthToken.expirationTime = new Date(
+          data.getTime() + response.data.applicationKeyExpirationTimestamp
+        );
+      }
+      saveTokenToFile();
+      // console.log("fetch new token");
+      // console.log(b2AccountAuthToken);
+      return b2AccountAuthToken.token;
+    } catch (error) {
+      console.error("Error getting authorization token:", error);
+    }
+  };
+
+  const getAuthorizationToken = async () => {
+    try {
+      const date = new Date();
+      loadTokenFromFile();
+      if (
+        b2AccountAuthToken.token &&
+        b2AccountAuthToken.expirationTime > date
+      ) {
+        return b2AccountAuthToken.token;
+      } else {
+        return await fetchNewAuthToken();
+      }
     } catch (error) {
       console.error("Error getting authorization token:", error);
     }
@@ -375,11 +438,24 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     authorizationToken,
     filename
   ) => {
+    // try {
+    //   const fileP = path.join("AungKaungMyat", ".folder");
+    //   const emptyFile = Buffer.alloc(0);
+    //   const response = await axios.post(uploadurl, emptyFile, {
+    //     headers: {
+    //       Authorization: authorizationToken,
+    //       "X-Bz-File-Name": fileP,
+    //       "Content-Type": "b2/x-auto",
+    //       "X-Bz-Content-Sha1": "do_not_verify",
+    //       "Content-Length": emptyFile.length,
+    //     },
+    //   });
+    // }
     try {
       const response = await axios.post(uploadurl, imagebinary, {
         headers: {
           Authorization: authorizationToken,
-          "X-Bz-File-Name": encodeURIComponent(filename),
+          "X-Bz-File-Name": encodeURIComponent(`AungKaungMyat/${filename}`),
           "Content-Type": "b2/x-auto",
           "X-Bz-Content-Sha1": "do_not_verify",
           "Content-Length": imagebinary.length,
@@ -393,6 +469,8 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
 
   try {
     const authToken = await getAuthorizationToken();
+    // console.log("authToken", authToken);
+    // console.log(b2AccountAuthToken);
     // console.log(authToken);
     const uploadUrl = await getUploadUrl(
       authToken.apiInfo.storageApi.apiUrl,
