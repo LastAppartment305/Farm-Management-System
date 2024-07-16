@@ -3,12 +3,16 @@ import { useGet } from "../../../custom-hook/axios-post/axios-post";
 import Form from "react-bootstrap/Form";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import ImageDownloader from "../../../component/image-downloader/image-downloader.component";
+import ImageDownloader from "../../../component/image-downloader/image-downloader.component.jsx";
 
 const ReportContent = () => {
   const [farmList, setFarmList] = useState([]);
-  const [imageList, setImageList] = useState(null);
-  const [apiInfo, setApiInfo] = useState(null);
+  // const [imageList, setImageList] = useState(null);
+  // const [apiInfo, setApiInfo] = useState(null);
+  const [fetchedData, setFetchedData] = useState({
+    imageList: [],
+    apiInfo: null,
+  });
   const [fetchUseGetAgain, setFetchUseGetAgain] = useState(false);
   const [getImageOfSelectedFarm, setGetImageOfSelectedFarm] = useState(false);
 
@@ -18,25 +22,30 @@ const ReportContent = () => {
   const getImageListAtFirstVisit = async () => {
     var selectElement = document.querySelector("#selected");
     if (selectElement && selectElement.options.length > 0) {
-      console.log("work");
+      // console.log("work");
     }
     var selectedOption =
       selectElement.options[selectElement.selectedIndex].getAttribute("farmid");
-    console.log(selectedOption);
+    // console.log(selectedOption);
     //----------------------------get image list ------------------------------
     const imageList = await axios.post(
       "http://localhost:5000/report/getreportlist",
       { farmid: selectedOption }
     );
-    console.log(imageList);
-    setImageList(imageList.data);
+    // console.log(imageList);
+    // setFetchedData.imageList(imageList.data);
     //---------------------------get token from server -------------------------
     const getDownloadAuth = await axios.get(
       "http://localhost:5000/report/getDownloadAuth"
     );
-    console.log(getDownloadAuth);
-    setApiInfo(getDownloadAuth.data);
+    // console.log(getDownloadAuth);
+    // setFetchedData.apiInfo(getDownloadAuth.data);
     // setGetImageOfSelectedFarm(false);
+
+    setFetchedData({
+      imageList: imageList.data,
+      apiInfo: getDownloadAuth.data,
+    });
   };
   //----------------------------------------------------------------------
   useEffect(() => {
@@ -68,6 +77,7 @@ const ReportContent = () => {
     // console.log(getDownloadAuth);
     // setApiInfo(getDownloadAuth.data);
   };
+  console.log(fetchedData);
   // useEffect(() => {
   // const getImageListAtFirstVisit = async () => {
   //   var selectElement = document.querySelector("#selected");
@@ -108,7 +118,7 @@ const ReportContent = () => {
     <div>
       <div className={`${classes.select_box}`}>
         <Form.Select
-          id="selected"
+          id='selected'
           aria-label={`Default select`}
           className={`${classes.select_farm}`}
           onChange={fetchPhoto}
@@ -121,16 +131,19 @@ const ReportContent = () => {
         </Form.Select>
       </div>
       <div className={`${classes.report_list}`}></div>
-      {/* <div>
-        {imageList?.map((i, index) => {
-          <ImageDownloader
-            downloadUrl={apiInfo.data.downloadUrl}
-            downloadToken={apiInfo.data.downloadToken.authorizationToken}
-            bucketName={"FarmManagement"}
-            fileName={i[index]}
-          />;
-        })}
-      </div> */}
+      <div>
+        {fetchedData &&
+          fetchedData.imageList?.map((i, index) => (
+            <ImageDownloader
+              downloadUrl={fetchedData.apiInfo.downloadUrl}
+              downloadToken={
+                fetchedData.apiInfo.downloadToken.authorizationToken
+              }
+              bucketName={"FarmManagement"}
+              fileName={i[index]}
+            />
+          ))}
+      </div>
     </div>
   );
 };

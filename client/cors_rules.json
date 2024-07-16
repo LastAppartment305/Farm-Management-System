@@ -1,0 +1,9 @@
+[
+  {
+    "allowedOrigins": ["https://*"],
+    "allowedHeaders": ["*"],
+    "allowedOperations": ["b2_download_file_by_name", "b2_download_file_by_id"],
+    "exposeHeaders": ["*"],
+    "maxAgeSeconds": 3600
+  }
+]

@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import {
   usePost,
   useGet,
-  useDelete
+  useDelete,
 } from "../../../custom-hook/axios-post/axios-post.jsx";
 import { act } from "react";
 import DeleteConfirmBox from "../../../component/delete-confirmbox/delete-confirmbox.component.jsx";
@@ -19,15 +19,15 @@ const Farm = () => {
     field_name: "",
   });
   const [addFarm, setAddFarm] = useState(false);
-  const [actionForEditAndDelete,setActionForEditAndDelete]=useState(false);
-  const [farmIdToDelete,setFarmIdToDelete]=useState("");
+  const [actionForEditAndDelete, setActionForEditAndDelete] = useState(false);
+  const [farmIdToDelete, setFarmIdToDelete] = useState("");
   const [farmlist, setFarmList] = useState([]);
   //const [editWorkerId, seteditWorkerId] = useState("");
   const [isEditWorker, setIsEditWorker] = useState(false);
 
   const { postData } = usePost("http://localhost:5000/farm/addfarm");
   const { response } = useGet("http://localhost:5000/farm/getfarmlist");
-  const {deleteData}=useDelete('http://localhost:5000/farm/deletefarm')
+  const { deleteData } = useDelete("http://localhost:5000/farm/deletefarm");
 
   const cancelAdd = () => {
     setAddFarm(!addFarm);
@@ -37,9 +37,9 @@ const Farm = () => {
     setIsEditWorker(false);
     setData({
       crop_type: "",
-    location: "",
-    field_name: "",
-    })
+      location: "",
+      field_name: "",
+    });
   };
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,22 +69,22 @@ const Farm = () => {
   const handleDelete = (id) => {
     setActionForEditAndDelete(true);
     setFarmIdToDelete(id);
-    console.log("edit worked: dashboard farm")
+    console.log("edit worked: dashboard farm");
   };
   const handleEdit = (e) => {
     setIsEditWorker(true);
-    setAddFarm(!addFarm)
-    const {Name:name,Crop_type:crop_type,Location:location}=e;
-    setData({field_name:name,crop_type:crop_type,location:location})
-    console.log("edit worked: dashboard farm")
+    setAddFarm(!addFarm);
+    const { Name: name, Crop_type: crop_type, Location: location } = e;
+    setData({ field_name: name, crop_type: crop_type, location: location });
+    console.log("edit worked: dashboard farm");
   };
-  const cancelDeleteConfirmation=()=>{
-    setActionForEditAndDelete(false)
-  }
-  const handleDeleteFarm=async()=>{
-    const x=await deleteData({id:farmIdToDelete});
-    if(x){
-      setActionForEditAndDelete(false)
+  const cancelDeleteConfirmation = () => {
+    setActionForEditAndDelete(false);
+  };
+  const handleDeleteFarm = async () => {
+    const x = await deleteData({ id: farmIdToDelete });
+    if (x) {
+      setActionForEditAndDelete(false);
       const resAfterDelete = await axios.get(
         "http://localhost:5000/farm/getfarmlist"
       );
@@ -92,7 +92,7 @@ const Farm = () => {
         setFarmList(resAfterDelete.data);
       }
     }
-  }
+  };
   useEffect(() => {
     if (response) {
       setFarmList(response.data);
@@ -100,29 +100,33 @@ const Farm = () => {
     }
   }, [response]);
   return (
-    <div className="p-5">
-      <div className="add-worker-btn-wrapper d-flex align-items-center justify-content-end py-2">
+    <div className='p-5'>
+      <div className='add-worker-btn-wrapper d-flex align-items-center justify-content-end py-2'>
         <a
-          type="button"
-          className="add-worker-btn d-flex align-items-center"
+        
+          type='button'
+          className='add-worker-btn d-flex align-items-center'
           onClick={handleClick}
         >
-          <UserRoundPlus className="icon" />
-          <div className="add-worker-btn-text">အသစ်ထည့်မည်</div>
+          <UserRoundPlus className='icon' />
+          <div className='add-worker-btn-text'>အသစ်ထည့်မည်</div>
         </a>
       </div>
-      
-      {actionForEditAndDelete&&(
-        <DeleteConfirmBox cancelDelete={cancelDeleteConfirmation} handleDelete={handleDeleteFarm}/>
+
+      {actionForEditAndDelete && (
+        <DeleteConfirmBox
+          cancelDelete={cancelDeleteConfirmation}
+          handleDelete={handleDeleteFarm}
+        />
       )}
       {addFarm && (
-        <div className="adduser-form-wrapper">
-          <div className="assign-worker-form position-relative">
-            <div className="cancel-btn">
+        <div className='adduser-form-wrapper'>
+          <div className='assign-worker-form position-relative'>
+            <div className='cancel-btn'>
               <X onClick={cancelAdd} />
             </div>
-            <div className="position-relative">
-              <div className="mt-3 w-100">
+            <div className='position-relative'>
+              <div className='mt-3 w-100'>
                 <InputBox
                   typeProps={"text"}
                   name={"field_name"}
@@ -131,7 +135,7 @@ const Farm = () => {
                   InputValue={handleChange}
                 />
               </div>
-              <div className="mt-3 w-100">
+              <div className='mt-3 w-100'>
                 <InputBox
                   typeProps={"text"}
                   name={"crop_type"}
@@ -140,7 +144,7 @@ const Farm = () => {
                   InputValue={handleChange}
                 />
               </div>
-              <div className="mt-3 w-100">
+              <div className='mt-3 w-100'>
                 <InputBox
                   typeProps={"text"}
                   name={"location"}
@@ -151,13 +155,13 @@ const Farm = () => {
               </div>
             </div>
             {isEditWorker && (
-              <div className="d-flex mt-3 justify-content-end">
-                <button className="btn btn-primary">ပြင်ဆင်ရန်</button>
+              <div className='d-flex mt-3 justify-content-end'>
+                <button className='btn btn-primary'>ပြင်ဆင်ရန်</button>
               </div>
             )}
             {!isEditWorker && (
-              <div className="d-flex mt-3 justify-content-end">
-                <button className="btn btn-primary" onClick={handleAddFarm}>
+              <div className='d-flex mt-3 justify-content-end'>
+                <button className='btn btn-primary' onClick={handleAddFarm}>
                   စာရင်းသွင်းရန်
                 </button>
               </div>
@@ -165,24 +169,22 @@ const Farm = () => {
           </div>
         </div>
       )}
-      <div className="">
-            <Accordion>
-            {farmlist?.map((res, index) => (
-              <Accordion.Item eventKey={`${index}`}>
+      <div className=''>
+        <Accordion>
+          {farmlist?.map((res, index) => (
+            <Accordion.Item eventKey={`${index}`}>
               <Accordion.Header>
-                <div className="d-flex">
-                  <div className="me-5">{index + 1}</div>
-                  <div className="">{res.Name}</div>
+                <div className='d-flex'>
+                  <div className='me-5'>{index + 1}</div>
+                  <div className=''>{res.Name}</div>
                 </div>
               </Accordion.Header>
-              <Accordion.Body className="accordion-content">
-                <div
-                  className="fw-bold d-flex w-100 justify-content-between mb-2"
-                >
+              <Accordion.Body className='accordion-content'>
+                <div className='fw-bold d-flex w-100 justify-content-between mb-2'>
                   <div>လယ်ကွက် အချက်အလက်</div>
                   <div>
                     <button
-                      className="btn btn-danger me-3"
+                      className='btn btn-danger me-3'
                       onClick={() => handleDelete(res.FarmId)}
                     >
                       ဖျက်ရန်
@@ -195,7 +197,7 @@ const Farm = () => {
                     </button>
                   </div>
                 </div>
-                <table className="table table-striped w-100">
+                <table className='table table-striped w-100'>
                   <tbody>
                     <tr>
                       <td>လယ်ကွက် အမည်</td>
@@ -213,8 +215,8 @@ const Farm = () => {
                 </table>
               </Accordion.Body>
             </Accordion.Item>
-            ))}
-            </Accordion>
+          ))}
+        </Accordion>
       </div>
     </div>
   );

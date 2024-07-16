@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react"
-import axios from "axios"
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+const imageCache = {}; // Simple in-memory cache
 
 const ImageDownloader = ({
   downloadUrl,
@@ -7,10 +9,17 @@ const ImageDownloader = ({
   bucketName,
   fileName,
 }) => {
-  const [imageSrc, setImageSrc] = useState(null)
-  const [error, setError] = useState(null)
+  const [imageSrc, setImageSrc] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    const cachedImage = imageCache[fileName];
+    if (cachedImage) {
+      // Use cached image if available
+      setImageSrc(cachedImage);
+      return;
+    }
+
     const fetchImage = async () => {
       try {
         const response = await axios.get(
@@ -21,33 +30,37 @@ const ImageDownloader = ({
             },
             responseType: "arraybuffer", // Important for binary data
           }
-        )
+        );
 
-        const blob = new Blob([response.data], { type: "image/jpeg" }) // Adjust type as necessary
-        const imageUrl = URL.createObjectURL(blob)
-        setImageSrc(imageUrl)
+        const blob = new Blob([response.data], { type: "image/jpeg" }); // Adjust type as necessary
+        const imageUrl = URL.createObjectURL(blob);
+
+        // Store the image URL in cache
+        imageCache[fileName] = imageUrl;
+
+        setImageSrc(imageUrl);
       } catch (err) {
-        console.error("Error fetching image:", err)
-        setError(err)
+        console.error("Error fetching image:", err);
+        setError(err);
       }
-    }
+    };
 
-    fetchImage()
-  }, [downloadUrl, downloadToken, bucketName, fileName])
+    fetchImage();
+  }, [downloadUrl, downloadToken, bucketName, fileName]);
 
   if (error) {
-    return <div>Error loading image</div>
+    return <div>Error loading image</div>;
   }
 
   return (
     <div>
       {imageSrc ? (
-        <img src={imageSrc} alt="Downloaded from B2" />
+        <img src={imageSrc} alt='Downloaded from B2' />
       ) : (
         <p>Loading...</p>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default ImageDownloader
+export default ImageDownloader;
