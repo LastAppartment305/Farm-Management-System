@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
-const imageCache = {}; // Simple in-memory cache
-
+const imageCache = {};
 const ImageDownloader = ({
   downloadUrl,
   downloadToken,
@@ -10,8 +8,9 @@ const ImageDownloader = ({
   fileName,
 }) => {
   const [imageSrc, setImageSrc] = useState(null);
+  // const [imageCache, setImageCache] = useState({});
   const [error, setError] = useState(null);
-
+  let imageElement = document.querySelector("img");
   useEffect(() => {
     const cachedImage = imageCache[fileName];
     if (cachedImage) {
@@ -22,22 +21,35 @@ const ImageDownloader = ({
 
     const fetchImage = async () => {
       try {
-        const response = await axios.get(
-          `${downloadUrl}/file/${bucketName}/${fileName}`,
-          {
-            headers: {
-              Authorization: downloadToken,
-            },
-            responseType: "arraybuffer", // Important for binary data
-          }
+        // const processImage = (data) => {
+        //   // Example: Convert ArrayBuffer to Base64
+        //   const buffer = Buffer.from(data, "binary").toString("base64");
+        //   return `data:image/jpeg;base64,${buffer}`;
+        // };
+        // console.log("fetch image from downloader");
+        const response = await axios.post(
+          "http://localhost:5000/report/fetchb2",
+          { downloadUrl, bucketName, fileName, downloadToken },
+          { responseType: "arraybuffer" }
         );
 
-        const blob = new Blob([response.data], { type: "image/jpeg" }); // Adjust type as necessary
-        const imageUrl = URL.createObjectURL(blob);
+        const blob = new Blob([response.data], {
+          type: "image/jpeg",
+        }); // Adjust type as necessary
 
+        // const imageUrl = new FileReader().readAsDataURL(blob);
+        const imageUrl = URL.createObjectURL(blob);
+        // imageElement.src=imageUrl;
+        // console.log(imageUrl);
+        // const processedImage = processImage(response.data);
         // Store the image URL in cache
         imageCache[fileName] = imageUrl;
 
+        // setImageCache((prevCache) => ({
+        //   ...prevCache,
+        //   [fileName]: processedImage,
+        // }));
+        console.log(imageUrl);
         setImageSrc(imageUrl);
       } catch (err) {
         console.error("Error fetching image:", err);

@@ -140,7 +140,7 @@ const ReportContent = () => {
                 fetchedData.apiInfo.downloadToken.authorizationToken
               }
               bucketName={"FarmManagement"}
-              fileName={i[index]}
+              fileName={i}
             />
           ))}
       </div>

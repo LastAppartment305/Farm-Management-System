@@ -197,6 +197,7 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
     );
 
     console.log(authToken);
+
     res.send({
       downloadUrl: authToken.apiInfo.storageApi.downloadUrl,
       downloadToken: downloadToken.data,
@@ -205,4 +206,26 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
     console.error("Error uploading file:", error);
     throw error;
   }
+});
+//-----------------------------------------------------------------
+export const fetchB2Cloud = asyncHandler(async (req, res) => {
+  const { downloadUrl, bucketName, fileName, downloadToken } = req.body;
+
+  // console.log(bucketName, fileName);
+  console.log(`${downloadUrl}/file/${bucketName}/${fileName}`);
+  const fetchImage = await axios.get(
+    `${downloadUrl}/file/${bucketName}/AungKaungMyat/${fileName}`,
+    {
+      headers: {
+        Authorization: downloadToken,
+      },
+      responseType: "arraybuffer", // Important for binary data
+    }
+  );
+  console.log(fetchImage);
+  res.set("Content-Type", "image/jpeg");
+  res.set("Content-Length", fetchImage.data.length);
+
+  // Send the buffer as the response
+  res.send(fetchImage.data);
 });

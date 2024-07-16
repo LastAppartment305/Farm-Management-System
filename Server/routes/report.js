@@ -1,12 +1,14 @@
-import { authenticateToken, authRole } from "../auth/authorization.js"
-import express from "express"
+import { authenticateToken, authRole } from "../auth/authorization.js";
+import express from "express";
 import {
   getReportPhoto,
   getDownloadAuth,
-} from "../controllers/reportController.js"
+  fetchB2Cloud,
+} from "../controllers/reportController.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/getreportlist", authenticateToken, getReportPhoto)
-router.get("/getDownloadAuth", authenticateToken, getDownloadAuth)
-export default router
+router.post("/getreportlist", authenticateToken, getReportPhoto);
+router.get("/getDownloadAuth", authenticateToken, getDownloadAuth);
+router.post("/fetchb2", authenticateToken, fetchB2Cloud);
+export default router;
