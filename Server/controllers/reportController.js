@@ -84,34 +84,37 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
 });
 //---------------------------------------------------------------------
 export const getDownloadAuth = asyncHandler(async (req, res) => {
+  const downladTokenExpirationTime = 24 * 60 * 60;
+  const downloadTokenFileName = "./b2-downloadAuth.json";
   const accountAuthTokenFileName = "./b2-accountAuth.json";
   const defaultExpirationTime = 24 * 60 * 60 * 1000;
   let b2AccountAuthToken = {
     token: null,
     expirationTime: null,
   };
+  let b2DownloadToken = {
+    token: null,
+    expirationTime: null,
+  };
   console.log("getDownloadauth");
 
   //load token from file
-  const loadTokenFromFile = () => {
+  const loadTokenFromFile = (filename, authtoken) => {
     console.log("load from file");
-    if (fs.existsSync(accountAuthTokenFileName)) {
-      const data = JSON.parse(
-        fs.readFileSync(accountAuthTokenFileName, "utf-8")
-      );
-      b2AccountAuthToken = {
-        token: data.token,
-        expirationTime: new Date(data.expirationTime),
-      };
+    if (fs.existsSync(filename)) {
+      const data = JSON.parse(fs.readFileSync(filename, "utf-8"));
+      // authtoken = {
+      //   token: data.token,
+      //   expirationTime: new Date(data.expirationTime),
+      // };
+      authtoken.token = data.token;
+      authtoken.expirationTime = new Date(data.expirationTime);
     }
   };
 
   //save token to file
-  function saveTokenToFile() {
-    fs.writeFileSync(
-      accountAuthTokenFileName,
-      JSON.stringify(b2AccountAuthToken)
-    );
+  function saveTokenToFile(filename, token) {
+    fs.writeFileSync(filename, JSON.stringify(token));
   }
 
   const encodedCredentials = Buffer.from(
@@ -138,10 +141,10 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
         );
       } else {
         b2AccountAuthToken.expirationTime = new Date(
-          data.getTime() + response.data.applicationKeyExpirationTimestamp
+          date.getTime() + response.data.applicationKeyExpirationTimestamp
         );
       }
-      saveTokenToFile();
+      saveTokenToFile(accountAuthTokenFileName, b2AccountAuthToken);
       // console.log("fetch new token");
       // console.log(b2AccountAuthToken);
       return b2AccountAuthToken.token;
@@ -150,24 +153,10 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
     }
   };
 
-  const getAuthorizationToken = async () => {
-    try {
-      const date = new Date();
-      loadTokenFromFile();
-      if (
-        b2AccountAuthToken.token &&
-        b2AccountAuthToken.expirationTime > date
-      ) {
-        return b2AccountAuthToken.token;
-      } else {
-        return await fetchNewAuthToken();
-      }
-    } catch (error) {
-      console.error("Error getting authorization token:", error);
-    }
-  };
-
-  const downloadAuthToken = async (apiurl, authorizationToken) => {
+  //------------------------------------------------------------
+  //
+  //---------start----------------------------------------
+  const fetchNewDownloadToken = async (apiurl, authorizationToken) => {
     try {
       const response = await axios.post(
         `${apiurl}/b2api/v3/b2_get_download_authorization`,
@@ -182,7 +171,63 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
           },
         }
       );
+      const now = new Date();
+      b2DownloadToken.token = response.data;
+      b2DownloadToken.expirationTime = new Date(
+        now.getTime() + downladTokenExpirationTime
+      );
+      // console.log("download token: ", response);
+      // saveTokenToFile(downloadTokenFileName, b2DownloadToken);
+
       return response;
+    } catch (error) {
+      console.log("Error at download token: ", error);
+    }
+  };
+  //---------------end--------------------------------
+  //
+  //----------------------------------------------------------
+  const getAuthorizationToken = async () => {
+    try {
+      const date = new Date();
+      loadTokenFromFile(accountAuthTokenFileName, b2AccountAuthToken);
+      if (
+        b2AccountAuthToken.token &&
+        b2AccountAuthToken.expirationTime > date
+      ) {
+        // console.log(b2AccountAuthToken);
+        return b2AccountAuthToken.token;
+      } else {
+        return await fetchNewAuthToken();
+      }
+    } catch (error) {
+      console.error("Error getting authorization token:", error);
+    }
+  };
+
+  const downloadAuthToken = async (apiurl, authorizationToken) => {
+    try {
+      const now = new Date();
+      loadTokenFromFile(downloadTokenFileName, b2DownloadToken);
+      if (b2DownloadToken.token && b2DownloadToken.expirationTime > now) {
+        return b2DownloadToken.token;
+      } else {
+        return await fetchNewDownloadToken(apiurl, authorizationToken);
+      }
+      // const response = await axios.post(
+      //   `${apiurl}/b2api/v3/b2_get_download_authorization`,
+      //   {
+      //     bucketId: `64dd475ee7bf9ee1920d0118`,
+      //     fileNamePrefix: "AungKaungMyat/",
+      //     validDurationInSeconds: 24 * 60 * 60,
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: authorizationToken,
+      //     },
+      //   }
+      // );
+      // return response;
     } catch (error) {
       console.error("Error uploading image:", error);
       throw error;
@@ -212,7 +257,7 @@ export const fetchB2Cloud = asyncHandler(async (req, res) => {
   const { downloadUrl, bucketName, fileName, downloadToken } = req.body;
 
   // console.log(bucketName, fileName);
-  console.log(`${downloadUrl}/file/${bucketName}/${fileName}`);
+  // console.log(`${downloadUrl}/file/${bucketName}/${fileName}`);
   const fetchImage = await axios.get(
     `${downloadUrl}/file/${bucketName}/AungKaungMyat/${fileName}`,
     {
