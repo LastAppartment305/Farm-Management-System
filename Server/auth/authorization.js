@@ -24,7 +24,7 @@ export const authRole = (role) => {
 
 export const workerAuthToken = (req, res, next) => {
   const authHeader = req.cookies.workerAuth;
-  // console.log(authHeader);
+  console.log(authHeader);
   if (authHeader == null) return res.sendStatus(401);
   jwt.verify(authHeader, process.env.WORKER_TOKEN_SECRET, (err, worker) => {
     if (err) return res.status(403).send(err);

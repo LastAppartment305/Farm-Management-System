@@ -21,14 +21,7 @@ import ReportContent from "./routes/dashboard-content/report-content/dashboard-c
 
 const App = () => {
   const [admin, setadmin] = useState(true);
-  const {
-    IsAdmin,
-    IsOwner,
-    isAuthenticated,
-    setIsAuthenticated,
-    setRole,
-    role,
-  } = useContext(authContext);
+  const { role, verifyWorker } = useContext(authContext);
   const router = createBrowserRouter([
     {
       path: "/",
@@ -92,10 +85,16 @@ const App = () => {
           path: "worker",
           element: <TakePhoto />,
         },
+
+        // {
+        //   path: "worker",
+        //   element: <TakePhoto />,
+        // },
       ],
     },
   ]);
   console.log("App.js: ", role);
+  console.log("App.js : ", verifyWorker);
   return <RouterProvider router={router} />;
 };
 export default App;

@@ -1,3 +1,5 @@
+import classes from "./image-downloader.module.css";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 const imageCache = {};
@@ -65,7 +67,7 @@ const ImageDownloader = ({
   }
 
   return (
-    <div>
+    <div className={`${classes.image_wrapper}`}>
       {imageSrc ? (
         <img src={imageSrc} alt='Downloaded from B2' />
       ) : (

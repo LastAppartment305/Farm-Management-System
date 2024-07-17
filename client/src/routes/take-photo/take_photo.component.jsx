@@ -1,8 +1,10 @@
 import { Camera, X } from "lucide-react";
 import "./take_photo.style.css";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 import { useUploadPhoto } from "../../custom-hook/upload-image/upload-image";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
+import { useNavigate } from "react-router-dom";
+import { authContext } from "../../context/context";
 
 const TakePhoto = () => {
   const videoref = useRef(null);
@@ -12,10 +14,12 @@ const TakePhoto = () => {
     "http://localhost:5000/dashboard/uploadbase64image"
   );
   const [stream, setStream] = useState(null);
+  const navigate = useNavigate();
 
   const switchCamera = () => {
     setOpenCamera(true);
   };
+  const { verifyWorker, setVerifyWorker } = useContext(authContext);
 
   const capture = async () => {
     const video = videoref.current;
@@ -45,7 +49,7 @@ const TakePhoto = () => {
     // const response = await postData({ url: imageUrl });
   };
 
-  const getVideo = () => {
+  const getVideo = async () => {
     navigator.mediaDevices
       .getUserMedia({
         video: { width: 1920, height: 1080 },
@@ -65,7 +69,7 @@ const TakePhoto = () => {
     setOpenCamera(false);
   };
 
-  const stopVideo = () => {
+  const stopVideo = async () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
       setStream(null);
@@ -73,13 +77,26 @@ const TakePhoto = () => {
   };
 
   useEffect(() => {
-    if (openCamera) {
-      getVideo();
-    } else {
-      stopVideo();
-    }
-    return () => {
-      stopVideo();
+    const handleVideo = async () => {
+      if (openCamera) {
+        await getVideo();
+      } else {
+        await stopVideo();
+      }
+    };
+
+    handleVideo();
+    // const getCookie = Cookie.get("workerAuth");
+    // if (getCookie) {
+    //   console.log("cookie exist.");
+    // } else {
+    //   navigate("/worker-login");
+    // }
+    return async () => {
+      await stopVideo();
+      if (!verifyWorker) {
+        navigate("/worker-login");
+      }
     };
   }, [openCamera]);
 
@@ -88,43 +105,49 @@ const TakePhoto = () => {
     if (imageUrl) {
       const response = await postData({ url: imageUrl });
       // Handle the response from the server
-      console.log(response);
+      if (!response || response == null) {
+        setVerifyWorker(false);
+      }
+      // if (!response) {
+      //   console.log("response.status");
+      // }
     }
   };
+  console.log("verifyWorker from take-photo: ", verifyWorker);
 
   return (
-    <div className="container-fluid">
+    <div className='container-fluid'>
       {openCamera && (
-        <div className="video">
-          <div className="video-wrapper">
+        <div className='video'>
+          <div className='video-wrapper'>
             <video ref={videoref}></video>
-            <div className="cancel-btn" onClick={cancelVideoStream}>
+            <div className='cancel-btn' onClick={cancelVideoStream}>
               <X />
             </div>
-            <div className="capture-btn">
-              <button className="capture-btn-inside-stream" onClick={capture}>
-                <Camera className="icon" />
+            <div className='capture-btn'>
+              <button className='capture-btn-inside-stream' onClick={capture}>
+                <Camera className='icon' />
               </button>
             </div>
           </div>
         </div>
       )}
       {!openCamera && (
-        <div className="btn-wrapper w-100">
-          <button className="open-btn" onClick={switchCamera}>
-            <Camera className="icon" />
+        <div className='btn-wrapper w-100'>
+          <button className='open-btn' onClick={switchCamera}>
+            <Camera className='icon' />
           </button>
         </div>
       )}
-      <div className="btn-wrapper">
+      <div className='btn-wrapper'>
         {sessionStorage.getItem("capturedImage") && (
           <>
-            <img src={sessionStorage.getItem("capturedImage")} alt="Captured" />
-            <button className="upload-btn" onClick={handleUpload}>
+            <img src={sessionStorage.getItem("capturedImage")} alt='Captured' />
+            <button className='upload-btn' onClick={handleUpload}>
               Upload
             </button>
             <button
-              className="retake-btn"
+              className='retake-btn'
               onClick={() => sessionStorage.removeItem("capturedImage")}
             >
               Retake

@@ -1,0 +1,11 @@
+.image_wrapper {
+  width: fit-content;
+  margin-bottom: 24px;
+}
+
+.image_wrapper img {
+  border-radius: 14px;
+  width: 100%;
+  height: auto;
+  display: block;
+}

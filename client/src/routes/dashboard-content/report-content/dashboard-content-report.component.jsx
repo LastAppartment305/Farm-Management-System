@@ -7,8 +7,6 @@ import ImageDownloader from "../../../component/image-downloader/image-downloade
 
 const ReportContent = () => {
   const [farmList, setFarmList] = useState([]);
-  // const [imageList, setImageList] = useState(null);
-  // const [apiInfo, setApiInfo] = useState(null);
   const [fetchedData, setFetchedData] = useState({
     imageList: [],
     apiInfo: null,
@@ -32,18 +30,13 @@ const ReportContent = () => {
       "http://localhost:5000/report/getreportlist",
       { farmid: selectedOption }
     );
-    // console.log(imageList);
-    // setFetchedData.imageList(imageList.data);
     //---------------------------get token from server -------------------------
     const getDownloadAuth = await axios.get(
       "http://localhost:5000/report/getDownloadAuth"
     );
-    // console.log(getDownloadAuth);
-    // setFetchedData.apiInfo(getDownloadAuth.data);
-    // setGetImageOfSelectedFarm(false);
-
+    const reverse = imageList.data.reverse();
     setFetchedData({
-      imageList: imageList.data,
+      imageList: reverse,
       apiInfo: getDownloadAuth.data,
     });
   };
@@ -59,6 +52,7 @@ const ReportContent = () => {
     getImageOfSelectedFarm && getImageListAtFirstVisit();
   }, [getImageOfSelectedFarm]);
   const fetchPhoto = async () => {
+    getImageListAtFirstVisit();
     // var selectElement = document.querySelector("#selected");
     // var selectedOption =
     //   selectElement.options[selectElement.selectedIndex].getAttribute("farmid");
@@ -77,7 +71,7 @@ const ReportContent = () => {
     // console.log(getDownloadAuth);
     // setApiInfo(getDownloadAuth.data);
   };
-  console.log(fetchedData);
+  console.log(fetchedData.imageList);
   // useEffect(() => {
   // const getImageListAtFirstVisit = async () => {
   //   var selectElement = document.querySelector("#selected");
@@ -130,19 +124,20 @@ const ReportContent = () => {
           ))}
         </Form.Select>
       </div>
-      <div className={`${classes.report_list}`}></div>
-      <div>
+      <div className={`${classes.image_group}`}>
         {fetchedData &&
-          fetchedData.imageList?.map((i, index) => (
-            <ImageDownloader
-              downloadUrl={fetchedData.apiInfo.downloadUrl}
-              downloadToken={
-                fetchedData.apiInfo.downloadToken.authorizationToken
-              }
-              bucketName={"FarmManagement"}
-              fileName={i}
-            />
-          ))}
+          fetchedData.imageList
+            ?.reverse()
+            .map((i, index) => (
+              <ImageDownloader
+                downloadUrl={fetchedData.apiInfo.downloadUrl}
+                downloadToken={
+                  fetchedData.apiInfo.downloadToken.authorizationToken
+                }
+                bucketName={"FarmManagement"}
+                fileName={i}
+              />
+            ))}
       </div>
     </div>
   );

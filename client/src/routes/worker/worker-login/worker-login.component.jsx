@@ -60,6 +60,7 @@ const WorkerLogin = () => {
         })
         .catch((error) => {
           console.error("Error during sign-in:", error);
+          toast.error("too many request.");
         });
     } else {
       toast.error("ဝင်ရောက်ခွင့်မရှိပါ");
@@ -86,11 +87,14 @@ const WorkerLogin = () => {
     if (verifyWorker) {
       navigate("/worker");
     }
-  });
-  // console.log(ids);
+    // return () => {
+    //   setVerifyWorker(false);
+    // };
+  }, [verifyWorker]);
+  console.log("verfyworker from worker-login: ", verifyWorker);
   return (
     <div>
-      <div id="recaptcha-container"></div>{" "}
+      <div id='recaptcha-container'></div>{" "}
       {/* Add this div for the RecaptchaVerifier */}
       <div className={classes.screen_wrapper}>
         <Toaster toastOptions={{ duration: 4000 }} />
@@ -99,7 +103,7 @@ const WorkerLogin = () => {
             <div className={classes.form_title}>
               နိုင်ငံရွေးချယ်၍ ဖုန်းနံပါတ်ဖြည့်သွင်းပါ
             </div>
-            <div className="mt-3 w-100">
+            <div className='mt-3 w-100'>
               <PhoneInput
                 country={"mm"}
                 value={data.ownerPhone}
@@ -111,7 +115,7 @@ const WorkerLogin = () => {
                 }
               />
             </div>
-            <div className="mt-3 w-100">
+            <div className='mt-3 w-100'>
               <PhoneInput
                 country={"mm"}
                 value={data.phone}
@@ -123,9 +127,9 @@ const WorkerLogin = () => {
                 }
               />
             </div>
-            <div className="button-wrapper">
+            <div className='button-wrapper'>
               <button
-                type="button"
+                type='button'
                 className={`w-100 mt-5 ${classes.submit_btn}`}
                 onClick={onSignup}
               >
@@ -138,20 +142,20 @@ const WorkerLogin = () => {
             <div className={classes.form_title}>
               တစ်ခါသုံးကုဒ် ဖြည့်သွင်းရန်
             </div>
-            <div className="mt-3 w-100 d-flex justify-content-center">
+            <div className='mt-3 w-100 d-flex justify-content-center'>
               <OTPInput
                 value={OTP}
                 onChange={setOTP}
                 autoFocus
                 OTPLength={6}
-                otpType="number"
+                otpType='number'
                 disabled={false}
-                className="otp-container"
+                className='otp-container'
               />
             </div>
-            <div className="button-wrapper">
+            <div className='button-wrapper'>
               <button
-                type="button"
+                type='button'
                 className={`w-100 mt-5 ${classes.submit_btn}`}
                 onClick={onOTPVerify}
               >
