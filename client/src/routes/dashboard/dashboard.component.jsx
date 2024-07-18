@@ -48,8 +48,8 @@ const DashBoard = () => {
   //console.log(isActive)
   return (
     <Fragment>
-      <div className="side-bar">
-        <h2 className="text-white my-5 d-flex justify-content-center">
+      <div className='side-bar'>
+        <h2 className='text-white my-5 d-flex justify-content-center'>
           Dashboard
         </h2>
 
@@ -102,58 +102,58 @@ const DashBoard = () => {
           />
         )}
       </div>
-      <div className="dashboard-content">
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-primary border-bottom border-4">
-          <div class="container-fluid">
-            <div className="left-side-of-nav d-flex">
+      <div className='dashboard-content'>
+        <nav class='navbar navbar-expand-lg navbar-light bg-white border-primary border-bottom border-4'>
+          <div class='container-fluid'>
+            <div className='left-side-of-nav d-flex'>
               <button
-                class="btn toggle-btn"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasExample"
-                aria-controls="offcanvasExample"
+                class='btn toggle-btn'
+                type='button'
+                data-bs-toggle='offcanvas'
+                data-bs-target='#offcanvasExample'
+                aria-controls='offcanvasExample'
               >
-                <span class="navbar-toggler-icon"></span>
+                <span class='navbar-toggler-icon'></span>
               </button>
               <input
-                type="search"
-                className="form-control me-2"
-                placeholder="search"
+                type='search'
+                className='form-control me-2'
+                placeholder='search'
               />
             </div>
-            <div className="right-side-of-nav me-2 d-flex align-items-center">
+            <div className='right-side-of-nav me-2 d-flex align-items-center'>
               <Bell />
-              <div className="profile-icon-wrapper ms-4">
+              <div className='profile-icon-wrapper ms-4'>
                 <a
-                  type="button"
-                  className="profile-icon"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
+                  type='button'
+                  className='profile-icon'
+                  id='dropdownMenuButton1'
+                  data-bs-toggle='dropdown'
+                  aria-expanded='false'
                 >
-                  <img src={image} className="profile-image" />
+                  <img src={image} className='profile-image' />
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                <ul class='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class='dropdown-item' href='#'>
                       {localStorage.getItem("username")}
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class='dropdown-item' href='#'>
                       Another action
                     </a>
                   </li>
                   <li>
-                    <a class="dropdown-item" href="#">
+                    <a class='dropdown-item' href='#'>
                       Something else here
                     </a>
                   </li>
                   <li>
-                    <hr class="dropdown-divider" />
+                    <hr class='dropdown-divider' />
                   </li>
                   <li>
-                    <a class="dropdown-item" onClick={userLogout}>
+                    <a class='dropdown-item' onClick={userLogout}>
                       ထွက်မည်
                     </a>
                   </li>
@@ -162,12 +162,12 @@ const DashBoard = () => {
             </div>
 
             <div
-              class="offcanvas offcanvas-start d-lg-none d-block"
-              tabindex="-1"
-              id="offcanvasExample"
-              aria-labelledby="offcanvasExampleLabel"
+              class='offcanvas offcanvas-start d-lg-none d-block'
+              tabindex='-1'
+              id='offcanvasExample'
+              aria-labelledby='offcanvasExampleLabel'
             >
-              <h2 className=" my-5 d-flex justify-content-center">Dashboard</h2>
+              <h2 className=' my-5 d-flex justify-content-center'>Dashboard</h2>
               {role === "admin" && (
                 <SideBarButton
                   icon={PieChart}
@@ -186,6 +186,14 @@ const DashBoard = () => {
               )}
               {role === "owner" && (
                 <SideBarButton
+                  icon={NotepadText}
+                  buttonText={"အစီအရင်ခံခြင်း"}
+                  isActive={isActive === "owner/report"}
+                  onclick={() => handleClick("owner/report")}
+                />
+              )}
+              {role === "owner" && (
+                <SideBarButton
                   icon={Pickaxe}
                   buttonText={"အလုပ်နေရာချထားခြင်း"}
                   isActive={isActive === "owner/assign-worker"}
@@ -196,8 +204,8 @@ const DashBoard = () => {
                 <SideBarButton
                   icon={User}
                   buttonText={"အလုပ်သမား စာရင်း"}
-                  isActive={isActive === "owner/assign-worker"}
-                  onclick={() => handleClick("owner/assign-worker")}
+                  isActive={isActive === "owner/staff"}
+                  onclick={() => handleClick("owner/staff")}
                 />
               )}
               {role === "owner" && (

@@ -214,20 +214,6 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
       } else {
         return await fetchNewDownloadToken(apiurl, authorizationToken);
       }
-      // const response = await axios.post(
-      //   `${apiurl}/b2api/v3/b2_get_download_authorization`,
-      //   {
-      //     bucketId: `64dd475ee7bf9ee1920d0118`,
-      //     fileNamePrefix: "AungKaungMyat/",
-      //     validDurationInSeconds: 24 * 60 * 60,
-      //   },
-      //   {
-      //     headers: {
-      //       Authorization: authorizationToken,
-      //     },
-      //   }
-      // );
-      // return response;
     } catch (error) {
       console.error("Error uploading image:", error);
       throw error;
@@ -241,7 +227,7 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
       authToken.authorizationToken
     );
 
-    console.log(authToken);
+    console.log("download Token :", downloadToken.data);
 
     res.send({
       downloadUrl: authToken.apiInfo.storageApi.downloadUrl,

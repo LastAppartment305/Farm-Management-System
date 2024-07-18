@@ -92,13 +92,17 @@ const TakePhoto = () => {
     // } else {
     //   navigate("/worker-login");
     // }
+
+    console.log(verifyWorker);
     return async () => {
       await stopVideo();
-      if (!verifyWorker) {
-        navigate("/worker-login");
-      }
     };
   }, [openCamera]);
+  useEffect(() => {
+    if (!verifyWorker) {
+      navigate("/worker-login");
+    }
+  }, [verifyWorker, navigate]);
 
   const handleUpload = async () => {
     const imageUrl = sessionStorage.getItem("capturedImage");

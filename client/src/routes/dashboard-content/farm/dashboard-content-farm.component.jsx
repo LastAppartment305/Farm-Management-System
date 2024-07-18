@@ -103,7 +103,6 @@ const Farm = () => {
     <div className='p-5'>
       <div className='add-worker-btn-wrapper d-flex align-items-center justify-content-end py-2'>
         <a
-        
           type='button'
           className='add-worker-btn d-flex align-items-center'
           onClick={handleClick}
@@ -172,7 +171,7 @@ const Farm = () => {
       <div className=''>
         <Accordion>
           {farmlist?.map((res, index) => (
-            <Accordion.Item eventKey={`${index}`}>
+            <Accordion.Item eventKey={`${index}`} key={index}>
               <Accordion.Header>
                 <div className='d-flex'>
                   <div className='me-5'>{index + 1}</div>

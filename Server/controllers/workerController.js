@@ -25,13 +25,18 @@ export const checkAssign = asyncHandler(async (req, res) => {
 
   Promise.resolve(queryDatabase(getFarmId, value))
     .then((result) => {
-      if (result[0].FarmId && result[0].WorkerId) {
-        res.json({
-          farmid: result[0].FarmId,
-          workerid: result[0].WorkerId,
-          userid: result[0].UserId,
-        });
-        console.log(result);
+      console.log(result);
+      if (result[0]) {
+        if (result[0].FarmId && result[0].WorkerId) {
+          res.json({
+            farmid: result[0].FarmId,
+            workerid: result[0].WorkerId,
+            userid: result[0].UserId,
+          });
+          console.log(result);
+        } else {
+          res.json({ farmid: null });
+        }
       } else {
         res.json({ farmid: null });
       }
