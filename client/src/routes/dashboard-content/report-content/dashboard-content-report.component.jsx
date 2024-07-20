@@ -83,18 +83,17 @@ const ReportContent = () => {
       </div>
       <div className={`${classes.image_group}`}>
         {fetchedData &&
-          fetchedData.imageList
-            ?.reverse()
-            .map((i, index) => (
-              <ImageDownloader
-                downloadUrl={fetchedData.apiInfo.downloadUrl}
-                downloadToken={
-                  fetchedData.apiInfo.downloadToken.authorizationToken
-                }
-                bucketName={"FarmManagement"}
-                fileName={i}
-              />
-            ))}
+          fetchedData.imageList?.map((i, index) => (
+            <ImageDownloader
+              downloadUrl={fetchedData.apiInfo.downloadUrl}
+              downloadToken={
+                fetchedData.apiInfo.downloadToken.authorizationToken
+              }
+              bucketName={"FarmManagement"}
+              fileName={i.filename}
+              date={i.date}
+            />
+          ))}
       </div>
     </div>
   );

@@ -285,11 +285,12 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const __dirname = path.dirname(__filename);
   const { url } = req.body;
   const { farmid, workerid, userid } = req.worker;
+  console.log("farmid", farmid);
   const accountAuthTokenFileName = "./b2-accountAuth.json";
   const defaultExpirationTime = 24 * 60 * 60 * 1000;
   // console.log("dashboardController", farmid, workerid);
   const insertImageIdTo_image =
-    "insert into image (Report_date,Image_path) values (?,?)";
+    "insert into image (Report_date,Image_path,upload_fileId) values (?,?,?)";
   const connectImageIdWithFarmId =
     "insert into report (FarmId,ImageId) values (?,?)";
 
@@ -297,8 +298,19 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     token: null,
     expirationTime: null,
   };
-  const isoDate = new Date();
-  const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
+  // const isoDate = new Date();
+  // const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
+  const localDate = new Date();
+
+  // Format date parts to ensure two digits
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, "0");
+  const day = String(localDate.getDate()).padStart(2, "0");
+  const hours = String(localDate.getHours()).padStart(2, "0");
+  const minutes = String(localDate.getMinutes()).padStart(2, "0");
+  const seconds = String(localDate.getSeconds()).padStart(2, "0");
+
+  const mySQLDateString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
@@ -332,7 +344,6 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
 
   const filePath = path.join(uploadDir, filename);
 
-  const valuesToInsert_image = [mySQLDateString, filename];
   //
   //
   //
@@ -435,19 +446,6 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     authorizationToken,
     filename
   ) => {
-    // try {
-    //   const fileP = path.join("AungKaungMyat", ".folder");
-    //   const emptyFile = Buffer.alloc(0);
-    //   const response = await axios.post(uploadurl, emptyFile, {
-    //     headers: {
-    //       Authorization: authorizationToken,
-    //       "X-Bz-File-Name": fileP,
-    //       "Content-Type": "b2/x-auto",
-    //       "X-Bz-Content-Sha1": "do_not_verify",
-    //       "Content-Length": emptyFile.length,
-    //     },
-    //   });
-    // }
     try {
       const response = await axios.post(uploadurl, imagebinary, {
         headers: {
@@ -458,6 +456,8 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
           "Content-Length": imagebinary.length,
         },
       });
+
+      return response;
     } catch (error) {
       console.error("Error uploading image:", error);
       throw error;
@@ -466,23 +466,27 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
 
   try {
     const authToken = await getAuthorizationToken();
-    // console.log("authToken", authToken);
-    // console.log(b2AccountAuthToken);
-    // console.log(authToken);
     const uploadUrl = await getUploadUrl(
       authToken.apiInfo.storageApi.apiUrl,
       authToken.authorizationToken
     );
-    await uploadImage(
+    const uploadResult = await uploadImage(
       uploadUrl.uploadUrl,
       buffer,
       uploadUrl.authorizationToken,
       filename
     );
+    console.log(uploadResult.data.fileId);
 
+    const valuesToInsert_image = [
+      mySQLDateString,
+      filename,
+      uploadResult.data.fileId,
+    ];
     //store file name in database
     Promise.resolve(queryDatabase(insertImageIdTo_image, valuesToInsert_image))
       .then(async (response) => {
+        console.log(response);
         if (response) {
           const queryResult = await queryDatabase(connectImageIdWithFarmId, [
             farmid,
@@ -507,7 +511,6 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     console.error("Error uploading file:", error);
     throw error;
   }
-
   // console.log(uploadUrl);
 
   // fs.writeFile(filePath, buffer, (err) => {

@@ -47,15 +47,16 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
       });
       offset += batchSize;
       const placeHolder = ids.map(() => "?").join(", ");
-      const getImagePath = `select Image_path from image where ImageId in (${placeHolder})`;
+      const getImagePath = `select Image_path,Report_date from image where ImageId in (${placeHolder})`;
       const imagePath = await queryDatabase(getImagePath, ids);
       imagePath.map((path) => {
         paths.push(
           // path
-          path.Image_path.replace(
-            "/media/aungkaungmyat/Data/learn react/Practices/Intern Project module collection/Farm-management-system/Server/",
-            ""
-          )
+          // path.Image_path
+          {
+            filename: path.Image_path,
+            date: path.Report_date,
+          }
         );
       });
 

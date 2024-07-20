@@ -8,6 +8,7 @@ const ImageDownloader = ({
   downloadToken,
   bucketName,
   fileName,
+  date,
 }) => {
   const [imageSrc, setImageSrc] = useState(null);
   // const [imageCache, setImageCache] = useState({});
@@ -69,7 +70,10 @@ const ImageDownloader = ({
   return (
     <div className={`${classes.image_wrapper}`}>
       {imageSrc ? (
-        <img src={imageSrc} alt='Downloaded from B2' />
+        <div>
+          <div>{date}</div>
+          <img src={imageSrc} alt='Downloaded from B2' />
+        </div>
       ) : (
         <p>Loading...</p>
       )}
