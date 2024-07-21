@@ -55,3 +55,30 @@ video {
   border: 1px solid;
   background: white;
 }
+.image-result-wrapper {
+  position: relative;
+  width: fit-content;
+}
+.image-result-wrapper img {
+  display: block;
+  width: 100%;
+  padding: 0px 20px 50px 20px;
+}
+.upload-btn {
+  position: absolute;
+  right: 37px;
+  bottom: 78px;
+  left: auto;
+  top: auto;
+  background: red;
+  color: white;
+  width: 100px;
+  height: 51px;
+  border: none;
+  display: block;
+  border-radius: 8px;
+}
+.upload-btn SendHorizonal {
+  width: 30px !important;
+  height: 30px !important;
+}

@@ -1,4 +1,4 @@
-import { Camera, X } from "lucide-react";
+import { Camera, X, SendHorizonal } from "lucide-react";
 import "./take_photo.style.css";
 import { useRef, useEffect, useState, useContext } from "react";
 import { useUploadPhoto } from "../../custom-hook/upload-image/upload-image";
@@ -143,19 +143,19 @@ const TakePhoto = () => {
           </button>
         </div>
       )}
-      <div className='btn-wrapper'>
+      <div className='image-result-wrapper'>
         {sessionStorage.getItem("capturedImage") && (
           <>
             <img src={sessionStorage.getItem("capturedImage")} alt='Captured' />
             <button className='upload-btn' onClick={handleUpload}>
-              Upload
+              <SendHorizonal />
             </button>
-            <button
+            {/* <button
               className='retake-btn'
               onClick={() => sessionStorage.removeItem("capturedImage")}
             >
               Retake
-            </button>
+            </button> */}
           </>
         )}
       </div>

@@ -11,6 +11,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import worker from "./routes/worker.js";
 import report from "./routes/report.js";
+import otpServiceRoute from "./routes/otp.js";
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use("/dashboard", dashbordDetail);
 app.use("/farm", farmConcern);
 app.use("/report", report);
 app.use("/worker", worker);
+app.use("/otp", otpServiceRoute);
 app.use("/logout", (req, res) => {
   console.log("This is from index.js: logout work");
   res.clearCookie("authToken");
