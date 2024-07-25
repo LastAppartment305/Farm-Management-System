@@ -5,6 +5,7 @@ import "./dashboard-content.style.css";
 import { useEffect, useRef, useState } from "react";
 import InputBox from "../../component/InputBox/InputBox.component";
 import SelectBox from "../../component/select-box/selectbox.component";
+import Accordion from "react-bootstrap/Accordion";
 import axios from "axios";
 const DashboardContent = () => {
   const { response, loading } = useGet("http://localhost:5000/dashboard");
@@ -13,7 +14,7 @@ const DashboardContent = () => {
   //const [isDelete, setisDelete] = useState(null);
   const [registered, setRegistered] = useState(false);
   const workerdata = response?.data.worker;
-  const farmdata=response?.data.farm;
+  const farmdata = response?.data.farm;
   const { postData } = usePost("http://localhost:5000/dashboard");
 
   const [data, setData] = useState({
@@ -77,24 +78,24 @@ const DashboardContent = () => {
     }
   };
   return (
-    <div className="m-5 dashboard-body h-100">
-      <div className="user-detail-card">
-        <div className="row g-2">
-          <div className="col-lg-4 col-md-6">
+    <div className='m-5 dashboard-body h-100'>
+      <div className='user-detail-card'>
+        <div className='row g-2'>
+          <div className='col-lg-4 col-md-6'>
             <DetailCard
               icon={Users}
               response={userlist?.length}
               cardTitle={"အလုပ်ရှင် စုစုပေါင်း"}
             />
           </div>
-          <div className="col-lg-4 col-md-6">
+          <div className='col-lg-4 col-md-6'>
             <DetailCard
               icon={Users}
               response={workerdata?.length}
               cardTitle={"အလုပ်သမား စုစုပေါင်း"}
             />
           </div>
-          <div className="col-lg-4 col-md-6">
+          <div className='col-lg-4 col-md-6'>
             <DetailCard
               icon={Users}
               response={farmdata?.length}
@@ -103,54 +104,67 @@ const DashboardContent = () => {
           </div>
         </div>
       </div>
-      <div className="user-detail-table">
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">စဥ်</th>
-              <th scope="col">အမည်</th>
-              <th scope="col">ဖုန်းနံပါတ်</th>
-              <th scope="col">ရာထူး</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userlist?.map((res, index) => (
-              <tr key={index} className="w-100">
-                <th scope="row">{index + 1}</th>
-                <td className="row">{res.Name}</td>
-                <td>{res.Phone_no}</td>
-                <td>{res.User_role}</td>
-                <td>
+      <Accordion>
+        {userlist?.map((res, index) => (
+          <Accordion.Item eventKey={`${index}`}>
+            <Accordion.Header>
+              <div className='d-flex'>
+                <div className='me-5'>{index + 1}</div>
+                <div className=''>{res.Name}</div>
+              </div>
+            </Accordion.Header>
+            <Accordion.Body className='accordion-content'>
+              <div className='fw-bold d-flex w-100 justify-content-between mb-2'>
+                <div>အလုပ်ရှင် အချက်အလက်</div>
+                <div>
                   <button
-                    className="btn btn-danger"
+                    className='btn btn-danger me-3'
                     onClick={() => handleDelete(res.UserId)}
                   >
                     ဖျက်ရန်
                   </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="add-worker-btn-wrapper d-flex align-items-center justify-content-end py-2">
+                </div>
+              </div>
+              <table className='table table-striped w-100'>
+                <tbody>
+                  <tr>
+                    <td>အမည်</td>
+                    <td>{res.Name}</td>
+                  </tr>
+                  <tr>
+                    <td>ဖုန်းနံပါတ်</td>
+                    <td>{res.Phone_no}</td>
+                  </tr>
+
+                  <tr>
+                    <td>လိပ်စာ</td>
+                    <td>{res.User_role}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </Accordion.Body>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+
+      <div className='add-worker-btn-wrapper d-flex align-items-center justify-content-end py-2'>
         <a
-          type="button"
-          className="add-worker-btn d-flex align-items-center"
+          type='button'
+          className='add-worker-btn d-flex align-items-center'
           onClick={handleClick}
         >
-          <UserRoundPlus className="icon" />
-          <div className="add-worker-btn-text">လူအသစ်ထည့်ရန်</div>
+          <UserRoundPlus className='icon' />
+          <div className='add-worker-btn-text'>လူအသစ်ထည့်ရန်</div>
         </a>
       </div>
       {addUser && (
-        <div className="adduser-form-wrapper">
-          <div className="assign-worker-form position-relative">
-            <div className="cancel-btn">
+        <div className='adduser-form-wrapper'>
+          <div className='assign-worker-form position-relative'>
+            <div className='cancel-btn'>
               <X onClick={cancelAdd} />
             </div>
-            <div className="position-relative">
-              <div className="mt-3 w-100">
+            <div className='position-relative'>
+              <div className='mt-3 w-100'>
                 <InputBox
                   typeProps={"text"}
                   name={"name"}
@@ -158,7 +172,7 @@ const DashboardContent = () => {
                   InputValue={handleChange}
                 />
               </div>
-              <div className="mt-3 w-100">
+              <div className='mt-3 w-100'>
                 <InputBox
                   typeProps={"text"}
                   name={"phone"}
@@ -166,7 +180,7 @@ const DashboardContent = () => {
                   InputValue={handleChange}
                 />
               </div>
-              <div className="mt-3 w-100">
+              <div className='mt-3 w-100'>
                 <InputBox
                   typeProps={"password"}
                   name={"password"}
@@ -174,7 +188,7 @@ const DashboardContent = () => {
                   InputValue={handleChange}
                 />
               </div>
-              <div className="mt-3 w-100">
+              <div className='mt-3 w-100'>
                 <InputBox
                   typeProps={"password"}
                   name={"confirm_password"}
@@ -182,12 +196,12 @@ const DashboardContent = () => {
                   InputValue={handleChange}
                 />
               </div>
-              <div className="mt-3 w-100">
+              <div className='mt-3 w-100'>
                 <SelectBox InputValue={handleChange} name={"userRole"} />
               </div>
             </div>
-            <div className="d-flex mt-3 justify-content-end">
-              <button className="btn btn-primary" onClick={handleAdd}>
+            <div className='d-flex mt-3 justify-content-end'>
+              <button className='btn btn-primary' onClick={handleAdd}>
                 Add
               </button>
             </div>

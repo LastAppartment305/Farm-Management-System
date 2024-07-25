@@ -11,7 +11,7 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
   // console.log(req.user.id);
   const { farmid } = req.body;
 
-  const batchSize = 3; // Adjust the batch size based on your database capacity
+  const batchSize = 50; // Adjust the batch size based on your database capacity
   let ids = [];
   let paths = [];
   let offset = 0;

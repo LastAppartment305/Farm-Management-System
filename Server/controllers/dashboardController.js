@@ -217,6 +217,7 @@ export const deleteWorker = asyncHandler(async (req, res) => {
             Promise.resolve(queryDatabase(setNullExceptWorkerId, values))
               .then(() => {
                 Promise.resolve(queryDatabase(sql, values)).then(() => {
+                  res.clearCookie("workerAuth");
                   res
                     .status(200)
                     .send({ message: "worker deleted successfully" });
@@ -236,7 +237,10 @@ export const deleteWorker = asyncHandler(async (req, res) => {
         //console.log("farm id exist")
       } else {
         Promise.resolve(queryDatabase(sql, values))
-          .then(() => {})
+          .then(() => {
+            res.clearCookie("workerAuth");
+            res.status(200).send({ message: "worker deleted successfully" });
+          })
           .catch((err) => {
             console.error(err);
             res.status(500).send({ message: "error occur at deleting data" });

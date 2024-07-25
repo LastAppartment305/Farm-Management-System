@@ -1,8 +1,9 @@
 .btn-wrapper {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 200px;
+  margin-top: 100px;
 }
 .open-btn {
   height: 90px;
@@ -44,6 +45,15 @@ video {
   margin-right: 10px;
   margin-top: 10px;
 }
+.image-remove-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 25px;
+  margin-top: 10px;
+  background: none;
+  border: none;
+}
 .video-wrapper {
   position: relative;
 }
@@ -58,6 +68,13 @@ video {
 .image-result-wrapper {
   position: relative;
   width: fit-content;
+}
+.image-result-wrapper X {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  left: auto;
+  bottom: auto;
 }
 .image-result-wrapper img {
   display: block;
@@ -81,4 +98,9 @@ video {
 .upload-btn SendHorizonal {
   width: 30px !important;
   height: 30px !important;
+}
+.logout-btn {
+  display: flex;
+  justify-content: end;
+  margin-top: 10px;
 }

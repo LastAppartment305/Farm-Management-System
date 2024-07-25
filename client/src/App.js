@@ -18,6 +18,7 @@ import AssignWorker from "./routes/dashboard-content/assign-worker/dashboard-con
 import Farm from "./routes/dashboard-content/farm/dashboard-content-farm.component";
 import WorkerLogin from "./routes/worker/worker-login/worker-login.component";
 import ReportContent from "./routes/dashboard-content/report-content/dashboard-content-report.component";
+import MainPage from "./routes/main-page/main-page.component";
 
 const App = () => {
   const [admin, setadmin] = useState(true);
@@ -25,6 +26,11 @@ const App = () => {
   const router = createBrowserRouter([
     {
       path: "/",
+      element: <MainPage />,
+    },
+    {
+      path: "/",
+      // element: <MainPage />,
       children: [
         {
           path: "worker-login",

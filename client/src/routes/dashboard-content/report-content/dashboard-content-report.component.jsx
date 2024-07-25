@@ -82,8 +82,8 @@ const ReportContent = () => {
         </Form.Select>
       </div>
       <div className={`${classes.image_group}`}>
-        {fetchedData &&
-          fetchedData.imageList?.map((i, index) => (
+        {fetchedData.imageList.length > 0 ? (
+          fetchedData.imageList.map((i, index) => (
             <ImageDownloader
               downloadUrl={fetchedData.apiInfo.downloadUrl}
               downloadToken={
@@ -93,7 +93,10 @@ const ReportContent = () => {
               fileName={i.filename}
               date={i.date}
             />
-          ))}
+          ))
+        ) : (
+          <div className={`${classes.empty_report}`}>ဓာတ်ပုံမရှိပါ</div>
+        )}
       </div>
     </div>
   );

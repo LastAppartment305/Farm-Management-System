@@ -61,14 +61,6 @@ const DashBoard = () => {
             onclick={() => handleClick("admin")}
           />
         )}
-        {role === "admin" && (
-          <SideBarButton
-            icon={Captions}
-            buttonText={"Permission"}
-            isActive={isActive === "admin/permission"}
-            onclick={() => handleClick("admin/permission")}
-          />
-        )}
         {role === "owner" && (
           <SideBarButton
             icon={NotepadText}
@@ -135,18 +127,8 @@ const DashBoard = () => {
                 </a>
                 <ul class='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
                   <li>
-                    <a class='dropdown-item' href='#'>
+                    <a class='dropdown-item fw-bold' href='#'>
                       {localStorage.getItem("username")}
-                    </a>
-                  </li>
-                  <li>
-                    <a class='dropdown-item' href='#'>
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <a class='dropdown-item' href='#'>
-                      Something else here
                     </a>
                   </li>
                   <li>
@@ -172,16 +154,8 @@ const DashBoard = () => {
                 <SideBarButton
                   icon={PieChart}
                   buttonText={"အချက်အလက်များ"}
-                  isActive={isActive === "home"}
-                  onclick={() => handleClick("home")}
-                />
-              )}
-              {role === "admin" && (
-                <SideBarButton
-                  icon={Captions}
-                  buttonText={"Permission"}
-                  isActive={isActive === "permission"}
-                  onclick={() => handleClick("permission")}
+                  isActive={isActive === "admin"}
+                  onclick={() => handleClick("admin")}
                 />
               )}
               {role === "owner" && (

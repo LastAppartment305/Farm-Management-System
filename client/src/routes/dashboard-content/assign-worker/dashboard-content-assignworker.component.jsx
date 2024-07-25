@@ -71,16 +71,16 @@ const AssignWorker = () => {
   // console.log("dashboard-assignworker com", selectedFarmId);
   return (
     <div className={`${classes.content} p-5`}>
-      <div class="accordion" id="accordionExample">
+      <div class='accordion' id='accordionExample'>
         {farmlist?.map((res, index) => (
-          <div class="accordion-item" key={index}>
-            <h2 class="accordion-header">
+          <div class='accordion-item' key={index}>
+            <h2 class='accordion-header'>
               <button
-                class="accordion-button collapsed"
-                type="button"
-                data-bs-toggle="collapse"
+                class='accordion-button collapsed'
+                type='button'
+                data-bs-toggle='collapse'
                 data-bs-target={`#collapse${numtowords.toWords(index + 1)}`}
-                aria-expanded="false"
+                aria-expanded='false'
                 aria-controls={`collapse${numtowords.toWords(index + 1)}`}
               >
                 {res.Name}
@@ -88,7 +88,7 @@ const AssignWorker = () => {
                   {res.Crop_type}
                 </div>
                 {res.WorkerId && (
-                  <div className="w-100 d-flex justify-content-end me-3">
+                  <div className='w-100 d-flex justify-content-end me-3'>
                     <img
                       src={success}
                       className={`${classes.success_icon} ms-3`}
@@ -99,17 +99,17 @@ const AssignWorker = () => {
             </h2>
             <div
               id={`collapse${numtowords.toWords(index + 1)}`}
-              class="accordion-collapse collapse"
-              aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample"
+              class='accordion-collapse collapse'
+              aria-labelledby='headingOne'
+              data-bs-parent='#accordionExample'
             >
               <div class={`accordion-body ${classes.accordion_body}`}>
-                <div className="fw-bold d-flex w-100 justify-content-between">
+                <div className='fw-bold d-flex w-100 justify-content-between'>
                   <div>အလုပ်သမား အချက်အလက်</div>
                   <div>
                     {res.WorkerId && (
                       <button
-                        className="btn btn-danger"
+                        className='btn btn-danger'
                         onClick={() =>
                           deleteAssignWorker(res.FarmId, res.WorkerId)
                         }
@@ -119,26 +119,26 @@ const AssignWorker = () => {
                     )}
                     {!res.WorkerId && (
                       <button
-                        type="button"
+                        type='button'
                         className={`${classes.assign_worker_btn} btn btn-primary`}
                         onClick={() => assignWorkerbtn(res.FarmId)}
-                        data-bs-toggle="offcanvas"
-                        href="#assignWorker"
-                        data-bs-target="#assignWorker"
-                        aria-controls="offcanvasExample"
+                        data-bs-toggle='offcanvas'
+                        href='#assignWorker'
+                        data-bs-target='#assignWorker'
+                        aria-controls='offcanvasExample'
                       >
                         အလုပ်သမားထည့်ရန်
                       </button>
                     )}
                   </div>
                 </div>
-                <table className="table table-striped w-100">
+                <table className='table table-striped w-100'>
                   <tbody>
                     {workerlist
                       ?.filter((data) => data.WorkerId === res.WorkerId)
                       .map((filteredData) => (
                         <>
-                          <tr className="w-100" key={filteredData.WorkerId}>
+                          <tr className='w-100' key={filteredData.WorkerId}>
                             <td>အမည်</td>
                             <td>{filteredData.Name}</td>
                           </tr>
@@ -146,7 +146,7 @@ const AssignWorker = () => {
                             <td>ဖုန်းနံပါတ်</td>
                             <td>{filteredData.Phone_no}</td>
                           </tr>
-                          <div className="d-none">
+                          <div className='d-none'>
                             {assignWorkerRef.current.push(
                               filteredData.WorkerId
                             )}
@@ -160,21 +160,21 @@ const AssignWorker = () => {
 
             <div
               class={`offcanvas offcanvas-end ${classes.assign_worker_offcanvas}`}
-              tabindex="-1"
-              id="assignWorker"
-              aria-labelledby="offcanvasExampleLabel"
-              aria-modal="false"
+              tabindex='-1'
+              id='assignWorker'
+              aria-labelledby='offcanvasExampleLabel'
+              aria-modal='false'
             >
-              <div class="offcanvas-header">
+              <div class='offcanvas-header'>
                 <button
-                  type="button"
-                  class="btn-close text-reset"
-                  data-bs-dismiss="offcanvas"
-                  aria-label="Close"
+                  type='button'
+                  class='btn-close text-reset'
+                  data-bs-dismiss='offcanvas'
+                  aria-label='Close'
                 ></button>
               </div>
-              <div class="offcanvas-body">
-                <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+              <div class='offcanvas-body'>
+                <h5 class='offcanvas-title' id='offcanvasExampleLabel'>
                   ကျန်သောအလုပ်သမားများ
                 </h5>
                 {selectedFarmId && (
@@ -189,8 +189,8 @@ const AssignWorker = () => {
                       .map((r, index) => (
                         <button
                           key={index}
-                          className="list-group-item list-group-item-action"
-                          type="button"
+                          className='list-group-item list-group-item-action'
+                          type='button'
                           onClick={() => {
                             assignWorkerToFarm(r.WorkerId, selectedFarmId);
                           }}
@@ -204,6 +204,9 @@ const AssignWorker = () => {
             </div>
           </div>
         ))}
+      </div>
+      <div className='empty-farm'>
+        {farmlist.length == 0 && <div>လယ်ကွက်များမရှိပါ</div>}
       </div>
     </div>
   );

@@ -1,53 +1,68 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 .add-worker-btn-wrapper {
-    position: fixed;
-    margin-right: 34px;
-    margin-bottom: 34px;
-    right: 0;
-    bottom: 0;
-    background-color: white;
-    border-radius: 15px;
-  }
-  .assign-worker-form {
-    padding: 32px;
-    width: 600px;
-    justify-content: center;
-    z-index: 99999999;
-    background-color: white;
-    flex-direction: column;
-  }
-  .adduser-form-wrapper {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9;
-  }
-  .delete-confirmation-wrapper{
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9;
-  }
-  .delete-confirmation-layout{
-    padding: 32px;
+  position: fixed;
+  margin-right: 34px;
+  margin-bottom: 34px;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  border-radius: 15px;
+}
+.assign-worker-form {
+  padding: 32px;
+  width: 600px;
+  justify-content: center;
+  z-index: 99999999;
+  background-color: white;
+  flex-direction: column;
+}
+.adduser-form-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9;
+}
+.delete-confirmation-wrapper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9;
+}
+.delete-confirmation-layout {
+  padding: 32px;
   width: 310px;
   display: flex;
   justify-content: center;
   z-index: 99999999;
   background-color: white;
   flex-direction: row;
-  }
-  .accordion-content{
-    background-color: #dcdbdbcc;
-  }
+}
+.accordion-content {
+  background-color: #dcdbdbcc;
+}
+.farm-icon {
+  width: 50px;
+  height: 50px;
+  stroke-width: 1.3;
+}
+.empty-farm {
+  display: flex;
+  justify-content: center;
+  color: #a5b0c4;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+}

@@ -5,10 +5,11 @@ import { useUploadPhoto } from "../../custom-hook/upload-image/upload-image";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
 import { useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
+import { Toaster, toast } from "react-hot-toast";
 
 const TakePhoto = () => {
   const videoref = useRef(null);
-  const canvasref = useRef(null);
+  const [removeImage, setRemoveImage] = useState(false);
   const [openCamera, setOpenCamera] = useState(false);
   const { postData } = usePost(
     "http://localhost:5000/dashboard/uploadbase64image"
@@ -46,6 +47,7 @@ const TakePhoto = () => {
     // Store image in session storage
     sessionStorage.setItem("capturedImage", imageUrl);
     setOpenCamera(false);
+    setRemoveImage(true);
     // const response = await postData({ url: imageUrl });
   };
 
@@ -98,29 +100,44 @@ const TakePhoto = () => {
       await stopVideo();
     };
   }, [openCamera]);
-  useEffect(() => {
-    if (!verifyWorker) {
-      navigate("/worker-login");
-    }
-  }, [verifyWorker, navigate]);
+  // useEffect(() => {
+  //   if (!verifyWorker) {
+  //     navigate("/worker-login");
+  //   }
+  // }, [verifyWorker, navigate]);
 
   const handleUpload = async () => {
     const imageUrl = sessionStorage.getItem("capturedImage");
     if (imageUrl) {
       const response = await postData({ url: imageUrl });
-      // Handle the response from the server
-      if (!response || response == null) {
-        setVerifyWorker(false);
+      console.log("take photo", response);
+      if (response === undefined) {
+        // setVerifyWorker(false);
+        navigate("/worker-login");
+        sessionStorage.removeItem("capturedImage");
+      } else {
+        toast.success("အောင်မြင်ပါသည်");
+        sessionStorage.removeItem("capturedImage");
       }
-      // if (!response) {
-      //   console.log("response.status");
-      // }
     }
+  };
+  const removeCaptureImage = () => {
+    sessionStorage.removeItem("capturedImage");
+    setRemoveImage(false);
+  };
+  const logout = () => {
+    navigate("/worker-login");
   };
   console.log("verifyWorker from take-photo: ", verifyWorker);
 
   return (
     <div className='container-fluid'>
+      <div className='logout-btn '>
+        <button className='btn btn-primary fs-5' onClick={logout}>
+          ထွက်ရန်
+        </button>
+      </div>
+      <Toaster toastOptions={{ duration: 3000 }} />
       {openCamera && (
         <div className='video'>
           <div className='video-wrapper'>
@@ -144,18 +161,15 @@ const TakePhoto = () => {
         </div>
       )}
       <div className='image-result-wrapper'>
-        {sessionStorage.getItem("capturedImage") && (
+        {sessionStorage.getItem("capturedImage") && removeImage && (
           <>
             <img src={sessionStorage.getItem("capturedImage")} alt='Captured' />
+            <button className='image-remove-btn' onClick={removeCaptureImage}>
+              <X />
+            </button>
             <button className='upload-btn' onClick={handleUpload}>
               <SendHorizonal />
             </button>
-            {/* <button
-              className='retake-btn'
-              onClick={() => sessionStorage.removeItem("capturedImage")}
-            >
-              Retake
-            </button> */}
           </>
         )}
       </div>

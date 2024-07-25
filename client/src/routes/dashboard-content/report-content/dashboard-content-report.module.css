@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
 .select_box {
   width: 100%;
   display: inline-block;
@@ -10,4 +12,12 @@
 }
 .image_group {
   padding: 20px 20px 20px 20px;
+}
+.empty_report {
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: #a5b0c4;
 }

@@ -182,8 +182,9 @@ export const deleteFarm = asyncHandler(async (req, res) => {
   //   }
   // });
   Promise.resolve(queryDatabase(getWorkerIdFromFarm, farmId))
-    .then((result) => {
+    .then(async (result) => {
       if (result[0].WorkerId) {
+        console.log(result);
         return queryDatabase(setNullToFarmId_worker_detail, [
           result[0].WorkerId,
         ])
@@ -196,13 +197,14 @@ export const deleteFarm = asyncHandler(async (req, res) => {
           .then((result) => {
             const ids = [];
             if (result.length > 0) {
+              console.log(result);
               result.forEach(async (e) => {
                 ids.push(e.ImageId);
                 const authToken = await getAuthorizationToken();
                 const deleteResult = await axios.post(
                   `${authToken.apiInfo.storageApi.apiUrl}/b2api/v3/b2_delete_file_version`,
                   {
-                    fileName: e.Image_path,
+                    fileName: `AungKaungMyat/${e.Image_path}`,
                     fileId: e.upload_fileId,
                     bypassGovernance: true,
                   },
@@ -214,7 +216,7 @@ export const deleteFarm = asyncHandler(async (req, res) => {
                 );
                 console.log(
                   "delete images from server results: ",
-                  deleteResult
+                  deleteResult.data
                 );
               });
               console.log(ids);
@@ -222,9 +224,14 @@ export const deleteFarm = asyncHandler(async (req, res) => {
               const deleteImage = `delete from image where ImageId in (${placeHolder})`;
               // console.log(deleteImage);
               return queryDatabase(deleteImage, ids);
+            } else {
+              console.log(
+                `${req.user.username} deleted a farm with no reports.`
+              );
             }
           })
           .then(() => {
+            res.clearCookie("workerAuth");
             return queryDatabase(deleteFarm, farmId);
           })
           .then(() => {
@@ -232,41 +239,50 @@ export const deleteFarm = asyncHandler(async (req, res) => {
             res.json({ message: "Data deleted successfully" });
           });
       } else {
-        return queryDatabase(getImagePath, farmId).then((result) => {
-          const ids = [];
-          if (result.length > 0) {
-            result.forEach(async (e) => {
-              ids.push(e.ImageId);
-              const authToken = await getAuthorizationToken();
-              const deleteResult = await axios.post(
-                `${authToken.apiInfo.storageApi.apiUrl}/b2api/v3/b2_delete_file_version`,
-                {
-                  fileName: e.Image_path,
-                  fileId: e.upload_fileId,
-                  bypassGovernance: true,
-                },
-                {
-                  headers: {
-                    Authorization: authToken.authorizationToken,
+        return queryDatabase(getImagePath, farmId)
+          .then(async (result) => {
+            const ids = [];
+            if (result.length > 0) {
+              result.forEach(async (e) => {
+                ids.push(e.ImageId);
+                const authToken = await getAuthorizationToken();
+                const deleteResult = await axios.post(
+                  `${authToken.apiInfo.storageApi.apiUrl}/b2api/v3/b2_delete_file_version`,
+                  {
+                    fileName: `AungKaungMyat/${e.Image_path}`,
+                    fileId: e.upload_fileId,
+                    bypassGovernance: true,
                   },
-                }
+                  {
+                    headers: {
+                      Authorization: authToken.authorizationToken,
+                    },
+                  }
+                );
+                console.log(
+                  "delete images from server results: ",
+                  deleteResult.data
+                );
+              });
+              const placeHolder = ids.map(() => "?").join(", ");
+              const deleteImage = `delete from image where ImageId in (${placeHolder})`;
+              // console.log(deleteImage);
+
+              return queryDatabase(deleteImage, ids);
+            } else {
+              console.log(
+                `${req.user.username} deleted a farm with no reports.`
               );
-              console.log("delete images from server results: ", deleteResult);
-            });
-            const placeHolder = ids.map(() => "?").join(", ");
-            const deleteImage = `delete from image where ImageId in (${placeHolder})`;
-            // console.log(deleteImage);
-            return queryDatabase(deleteImage, ids).then(() => {
-              console.log("deleted successfully");
-              res.json({ message: "Data deleted successfully" });
-            });
-          } else {
-            return queryDatabase(deleteFarm, farmId).then(() => {
-              console.log("deleted successfully");
-              res.json({ message: "Data deleted successfully" });
-            });
-          }
-        });
+            }
+          })
+          .then(() => {
+            res.clearCookie("workerAuth");
+            return queryDatabase(deleteFarm, farmId);
+          })
+          .then(() => {
+            console.log("deleted successfully");
+            res.json({ message: "Farm deleted successfully" });
+          });
       }
     })
     .catch((err) => {

@@ -106,6 +106,7 @@ const Staff = () => {
   const cancelDeleteConfirmation = () => {
     setActionForEditAndDelete(false);
   };
+
   const handleDeleteWorker = async () => {
     //console.log("staff component ",WorkerIdToDelete)
     const x = await deleteData({ id: WorkerIdToDelete });
@@ -138,16 +139,16 @@ const Staff = () => {
   }, [JSON.stringify(workerList), isEditWorker]);
   return (
     <div>
-      <div className="navigation-bar ">
-        <div className="m-5 h-100">
-          <div className="add-worker-btn-wrapper d-flex align-items-center justify-content-end">
+      <div className=''>
+        <div className='m-5 h-100 staff-component-body'>
+          <div className='add-worker-btn-wrapper d-flex align-items-center justify-content-end'>
             <a
-              type="button"
-              className="add-worker-btn d-flex align-items-center"
+              type='button'
+              className='add-worker-btn d-flex align-items-center'
               onClick={handleClick}
             >
-              <UserRoundPlus className="icon" />
-              <div className="add-worker-btn-text">အသစ်ထည့်မည်</div>
+              <UserRoundPlus className='user-icon' />
+              {/* <div className='add-worker-btn-text'>အသစ်ထည့်မည်</div> */}
             </a>
           </div>
           {actionForEditAndDelete && (
@@ -157,13 +158,13 @@ const Staff = () => {
             />
           )}
           {addWorker && (
-            <div className="adduser-form-wrapper">
-              <div className="assign-worker-form position-relative">
-                <div className="cancel-btn">
+            <div className='adduser-form-wrapper'>
+              <div className='assign-worker-form position-relative'>
+                <div className='cancel-btn'>
                   <X onClick={cancelAdd} />
                 </div>
-                <div className="position-relative">
-                  <div className="mt-3 w-100">
+                <div className='position-relative'>
+                  <div className='mt-3 w-100'>
                     <InputBox
                       typeProps={"text"}
                       name={"name"}
@@ -172,22 +173,22 @@ const Staff = () => {
                       InputValue={handleChange}
                     />
                   </div>
-                  <div className="mt-3 w-100">
+                  <div className='mt-3 w-100'>
                     <select
-                      class="form-select"
-                      aria-label="Default select example"
+                      class='form-select'
+                      aria-label='Default select example'
                       value={data.gender}
-                      name="gender"
+                      name='gender'
                       onChange={handleChange}
                     >
-                      <option value="male" selected>
+                      <option value='male' selected>
                         ကျား
                       </option>
-                      <option value="female">မ</option>
+                      <option value='female'>မ</option>
                     </select>
                   </div>
 
-                  <div className="mt-3 w-100">
+                  <div className='mt-3 w-100'>
                     <PhoneInput
                       country={"mm"}
                       value={data.phone}
@@ -200,7 +201,7 @@ const Staff = () => {
                     />
                   </div>
 
-                  <div className="mt-3 w-100">
+                  <div className='mt-3 w-100'>
                     <InputBox
                       typeProps={"text"}
                       name={"address"}
@@ -209,7 +210,7 @@ const Staff = () => {
                       InputValue={handleChange}
                     />
                   </div>
-                  <div className="mt-3 w-100">
+                  <div className='mt-3 w-100'>
                     <InputBox
                       typeProps={"text"}
                       name={"age"}
@@ -220,15 +221,15 @@ const Staff = () => {
                   </div>
                 </div>
                 {isEditWorker && (
-                  <div className="d-flex mt-3 justify-content-end">
-                    <button className="btn btn-primary" onClick={postEditData}>
+                  <div className='d-flex mt-3 justify-content-end'>
+                    <button className='btn btn-primary' onClick={postEditData}>
                       ပြင်ဆင်ရန်
                     </button>
                   </div>
                 )}
                 {!isEditWorker && (
-                  <div className="d-flex mt-3 justify-content-end">
-                    <button className="btn btn-primary" onClick={handleAdd}>
+                  <div className='d-flex mt-3 justify-content-end'>
+                    <button className='btn btn-primary' onClick={handleAdd}>
                       စာရင်းသွင်းရန်
                     </button>
                   </div>
@@ -236,16 +237,16 @@ const Staff = () => {
               </div>
             </div>
           )}
-          <div className="user-detail-card">
-            <div className="row g-2">
-              <div className="col-lg-4 col-md-6">
+          <div className='user-detail-card'>
+            <div className='row g-2'>
+              <div className='col-lg-4 col-md-6'>
                 <DetailCard
                   icon={Users}
                   response={workerList ? workerList.length : "0"}
                   cardTitle={"အလုပ်သမား စုစုပေါင်း"}
                 />
               </div>
-              <div className="col-lg-4 col-md-6">
+              <div className='col-lg-4 col-md-6'>
                 <DetailCard
                   icon={Users}
                   response={
@@ -256,7 +257,7 @@ const Staff = () => {
                   cardTitle={"ကျား"}
                 />
               </div>
-              <div className="col-lg-4 col-md-6">
+              <div className='col-lg-4 col-md-6'>
                 <DetailCard
                   icon={Users}
                   response={
@@ -269,22 +270,22 @@ const Staff = () => {
               </div>
             </div>
           </div>
-          <div className="user-detail">
+          <div className='user-detail'>
             <Accordion>
               {workerList?.map((res, index) => (
                 <Accordion.Item eventKey={`${index}`}>
                   <Accordion.Header>
-                    <div className="d-flex">
-                      <div className="me-5">{index + 1}</div>
-                      <div className="">{res.Name}</div>
+                    <div className='d-flex'>
+                      <div className='me-5'>{index + 1}</div>
+                      <div className=''>{res.Name}</div>
                     </div>
                   </Accordion.Header>
-                  <Accordion.Body className="accordion-content">
-                    <div className="fw-bold d-flex w-100 justify-content-between mb-2">
+                  <Accordion.Body className='accordion-content'>
+                    <div className='fw-bold d-flex w-100 justify-content-between mb-2'>
                       <div>အလုပ်သမား အချက်အလက်</div>
                       <div>
                         <button
-                          className="btn btn-danger me-3"
+                          className='btn btn-danger me-3'
                           onClick={() => handleDelete(res.WorkerId)}
                         >
                           ဖျက်ရန်
@@ -297,7 +298,7 @@ const Staff = () => {
                         </button>
                       </div>
                     </div>
-                    <table className="table table-striped w-100">
+                    <table className='table table-striped w-100'>
                       <tbody>
                         <tr>
                           <td>အမည်</td>
@@ -327,6 +328,9 @@ const Staff = () => {
             </Accordion>
           </div>
         </div>
+      </div>
+      <div className='empty-worker'>
+        {workerList.length == 0 && <div>အလုပ်သမားမရှိပါ</div>}
       </div>
     </div>
   );

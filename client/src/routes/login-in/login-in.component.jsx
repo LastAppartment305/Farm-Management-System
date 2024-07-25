@@ -5,6 +5,7 @@ import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
 import { useNavigate, Link } from "react-router-dom";
 import { authContext } from "../../context/context";
+import { toast, Toaster } from "react-hot-toast";
 
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -34,10 +35,12 @@ const Login = () => {
 
   const handleClick = async () => {
     const res = await postData(data);
-    if (res) {
+    if (res != "") {
       localStorage.setItem("role", res);
       localStorage.setItem("username", data.name);
       setRole(res);
+    } else {
+      toast.error("မှားယွင်းနေပါသည်");
     }
     //console.log("login component:response data", res);
   };
@@ -54,11 +57,12 @@ const Login = () => {
   });
   return (
     <div>
-      <div className="screen-wrapper m-0">
-        <div className="form-wrapper">
-          <p className="form-header">အကောင့်ဝင်ရောက်ရန်</p>
-          <div className="row">
-            <div className="position-relative">
+      <div className='screen-wrapper m-0'>
+        <Toaster toastOptions={{ duration: 4000 }} />
+        <div className='form-wrapper'>
+          <p className='form-header'>အကောင့်ဝင်ရောက်ရန်</p>
+          <div className='row'>
+            <div className='position-relative'>
               <InputBox
                 typeProps={"text"}
                 name={"name"}
@@ -67,15 +71,15 @@ const Login = () => {
                 value={data.name}
               />
               <button
-                className="position-absolute clear-btn"
+                className='position-absolute clear-btn'
                 onClick={ClearInputBoxForName}
               >
-                <CircleX className="circleX" />
+                <CircleX className='circleX' />
               </button>
             </div>
           </div>
-          <div className="row mt-3">
-            <div className="position-relative">
+          <div className='row mt-3'>
+            <div className='position-relative'>
               <InputBox
                 typeProps={passwordVisible ? "text" : "password"}
                 name={"password"}
@@ -84,39 +88,39 @@ const Login = () => {
                 InputValue={handleChange}
                 value={data.password}
               />
-              <button className="position-absolute clear-btn">
+              <button className='position-absolute clear-btn'>
                 {passwordVisible ? (
                   <Eye
                     onClick={() => {
                       setPasswordVisible(false);
                     }}
-                    className="circleX"
+                    className='circleX'
                   />
                 ) : (
                   <EyeOff
                     onClick={() => {
                       setPasswordVisible(true);
                     }}
-                    className="circleX"
+                    className='circleX'
                   />
                 )}
               </button>
             </div>
           </div>
-          <div className="button-wrapper">
+          <div className='button-wrapper'>
             <button
-              type="button"
-              className="btn btn-primary w-100 mt-5 submit-btn"
+              type='button'
+              className='btn btn-primary w-100 mt-5 submit-btn'
               onClick={handleClick}
             >
               ဝင်ရောက်ရန်
             </button>
           </div>
-          <div className="sign-in-as-worker">
-            <Link to="/worker-login">အလုပ်သမားအဖြစ် ဝင်ရောက်ရန်</Link>
+          <div className='sign-in-as-worker'>
+            <Link to='/worker-login'>အလုပ်သမားအဖြစ် ဝင်ရောက်ရန်</Link>
           </div>
-          <div className="create-new-account">
-            <Link to="/signup">အကောင့်သစ်ပြုလုပ်ရန်</Link>
+          <div className='create-new-account'>
+            <Link to='/signup'>အကောင့်သစ်ပြုလုပ်ရန်</Link>
           </div>
         </div>
       </div>
