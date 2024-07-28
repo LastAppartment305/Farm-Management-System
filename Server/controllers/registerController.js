@@ -82,3 +82,50 @@ export const loginCheck = asyncHandler(async (req, res) => {
     }
   });
 });
+//--------------------------------------------
+export const getUserInformation = asyncHandler(async (req, res) => {
+  const getUser = "select * from user where Name=?";
+  const values = [req.body.name];
+  console.log(req.body);
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  Promise.resolve(
+    queryDatabase(getUser, values).then((result) => {
+      console.log(result);
+      res.json({ data: result[0] });
+    })
+  );
+  // console.log("This is username : ", values);
+});
+//--------------------------------------------------------------
+export const editUserInformation = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { name, phone, oldPhone } = req.body;
+  const modifyUserData = "update user set Name=?,Phone_no=? where Phone_no=?";
+  const values = [name, phone, oldPhone];
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  Promise.resolve(
+    queryDatabase(modifyUserData, values).then((result) => {
+      if (result) {
+        res.send({ status: true });
+      }
+    })
+  );
+});

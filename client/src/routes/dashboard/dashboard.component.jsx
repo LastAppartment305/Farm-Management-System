@@ -10,18 +10,28 @@ import {
   Sprout,
   NotepadText,
 } from "lucide-react";
-import { useLogout } from "../../custom-hook/axios-post/axios-post";
+import { useLogout, usePost } from "../../custom-hook/axios-post/axios-post";
 import { Outlet, useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
 import image from "../../component/assets/img/ricefield.jpg";
 import { useSearchParams } from "react-router-dom";
 import SideBarButton from "../../component/side_bar_button/side_bar_button.component";
+import InputBox from "../../component/InputBox/InputBox.component";
+import PhoneInput from "react-phone-input-2";
+import { X } from "lucide-react";
 
 const DashBoard = () => {
   const [isActive, setIsActive] = useState("");
+  const [userInfo, setUserInfo] = useState({
+    name: null,
+    phone: null,
+    oldPhone: null,
+  });
   const { response, loading, fetchData } = useLogout(
     "http://localhost:5000/logout"
   );
+  const { postData } = usePost("http://localhost:5000/getUserInfo");
+  const { postData: editUser } = usePost("http://localhost:5000/editUserInfo");
   const { isAuthenticated, setRole, role } = useContext(authContext);
   //-------------------------------------
   const navigate = useNavigate();
@@ -30,6 +40,46 @@ const DashBoard = () => {
     navigate(`/dashboard/${buttontext}`);
   };
 
+  const editUserProfile = async () => {
+    let user = localStorage.getItem("username");
+    const userData = await postData({ name: user });
+    console.log(userData);
+    userData &&
+      setUserInfo({
+        name: userData.data.Name,
+        phone: userData.data.Phone_no,
+        oldPhone: userData.data.Phone_no,
+      });
+    // console.log(userInfo[0]);
+  };
+  const closeForm = () => {
+    setUserInfo({
+      name: null,
+      phone: null,
+      oldPhone: null,
+    });
+  };
+
+  const changeUserInfo = async () => {
+    const result = await editUser(userInfo);
+    localStorage.setItem("username", userInfo.name);
+    console.log(result);
+    if (result.status) {
+      setUserInfo({
+        name: null,
+        phone: null,
+        oldPhone: null,
+      });
+    }
+  };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // console.log("staff component ", data);
+  };
   const userLogout = async () => {
     await fetchData();
     localStorage.removeItem("role");
@@ -42,10 +92,13 @@ const DashBoard = () => {
     const fullPath = window.location.pathname;
     const trimPath = fullPath.replace("/dashboard/", "");
     setIsActive(trimPath);
+
     // console.log("dashboard useEffect", localStorage.getItem("role"));
     // console.log("logging role from context in dashboard com: ", role);
   }, []);
   //console.log(isActive)
+
+  console.log("userInfo from react: ", userInfo);
   return (
     <Fragment>
       <div className='side-bar'>
@@ -88,7 +141,7 @@ const DashBoard = () => {
         {role === "owner" && (
           <SideBarButton
             icon={Sprout}
-            buttonText={"လယ် အရေအတွက်"}
+            buttonText={"လယ် စာရင်း"}
             isActive={isActive === "owner/farm"}
             onclick={() => handleClick("owner/farm")}
           />
@@ -135,9 +188,14 @@ const DashBoard = () => {
                     <hr class='dropdown-divider' />
                   </li>
                   <li>
-                    <a class='dropdown-item' onClick={userLogout}>
+                    <button class='dropdown-item' onClick={editUserProfile}>
+                      ပြင်ဆင်ရန်
+                    </button>
+                  </li>
+                  <li>
+                    <button class='dropdown-item' onClick={userLogout}>
                       ထွက်မည်
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -193,6 +251,44 @@ const DashBoard = () => {
             </div>
           </div>
         </nav>
+        {userInfo.name != null && userInfo.phone != null && (
+          <div className='adduser-form-wrapper'>
+            <div className='assign-worker-form position-relative'>
+              <div className='cancel-btn'>
+                <X onClick={closeForm} />
+              </div>
+              <div className='position-relative'>
+                <div className='mt-3 w-100'>
+                  <InputBox
+                    typeProps={"text"}
+                    name={"name"}
+                    value={userInfo.name}
+                    InputValue={handleChange}
+                  />
+                </div>
+
+                <div className='mt-3 w-100'>
+                  <PhoneInput
+                    country={"mm"}
+                    value={userInfo.phone}
+                    onChange={(e) =>
+                      setUserInfo((prev) => ({
+                        ...prev,
+                        phone: e,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className='d-flex mt-3 justify-content-end'>
+                <button className='btn btn-primary' onClick={changeUserInfo}>
+                  ပြင်ဆင်ရန်
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
         <Outlet />
       </div>
     </Fragment>
