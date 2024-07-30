@@ -1,18 +1,20 @@
 import "./InputBox.style.css";
 import { CircleX } from "lucide-react";
 
+import { useForm, fieldValues } from "react-hook-form";
+
 const InputBox = ({ typeProps, name, holder, InputValue, value }) => {
   return (
-    <div className="">
+    <div className=''>
       <input
         type={typeProps}
         name={name}
         placeholder={holder}
-        required="required"
-        className="inputbox"
+        className='inputbox'
         onChange={InputValue}
-        autoComplete="off"
+        autoComplete='off'
         value={value}
+        required
       />
     </div>
   );

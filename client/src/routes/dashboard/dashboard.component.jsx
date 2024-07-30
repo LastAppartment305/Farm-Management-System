@@ -98,7 +98,7 @@ const DashBoard = () => {
   }, []);
   //console.log(isActive)
 
-  console.log("userInfo from react: ", userInfo);
+  // console.log("userInfo from react: ", userInfo);
   return (
     <Fragment>
       <div className='side-bar'>

@@ -4,18 +4,19 @@ import fs from "fs";
 import axios from "axios";
 
 export const addNewFarm = asyncHandler(async (req, res) => {
-  const { crop_type, location, field_name } = req.body;
+  const { crop_type, location, field_name, legal_code } = req.body;
   const isoDate = new Date();
   const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
 
   const insertToFarm =
-    "insert into farm(Crop_type,Location,UserId,Name,created_at) values(?,?,?,?,?)";
+    "insert into farm(Crop_type,Location,UserId,Name,created_at,Legal_farmcode) values(?,?,?,?,?,?)";
   const insertToFarmValues = [
     crop_type,
     location,
     req.user.id,
     field_name,
     mySQLDateString,
+    legal_code,
   ];
 
   connection.query(insertToFarm, insertToFarmValues, (err, result) => {
@@ -288,5 +289,35 @@ export const deleteFarm = asyncHandler(async (req, res) => {
     .catch((err) => {
       console.error("Error deleting data", err);
       res.status(500).json({ error: "An error occurred while deleting data" });
+    });
+});
+//----------------------------------------------------------------
+export const editFarmDetails = asyncHandler(async (req, res) => {
+  // console.log(req.body);
+  const { id } = req.body;
+  const { field_name, crop_type, location, legal_code } = req.body.data;
+
+  const editFarmQuery =
+    "update farm set Crop_type=?,Location=?,Name=?,Legal_farmcode=? where FarmId=?";
+  const queryValues = [crop_type, location, field_name, legal_code, id];
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  Promise.resolve(queryDatabase(editFarmQuery, queryValues))
+    .then(() => {
+      res.status(200).send({ message: "update worker data successful" });
+    })
+    .catch((err) => {
+      console.error(err);
+      res
+        .status(500)
+        .send({ message: "unexpected error occur while updating worker data" });
     });
 });

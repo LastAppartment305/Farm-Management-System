@@ -50,6 +50,16 @@
   background-color: white;
   flex-direction: column;
 }
+.assign-worker-form input,
+.assign-worker-form select {
+  height: 64px;
+  border-radius: 5rem;
+  border: 1px solid #ced4da;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  width: 100%;
+  margin-top: 1rem;
+}
 .cancel-btn {
   position: absolute;
   right: 0;
@@ -91,3 +101,9 @@
   color: #a5b0c4;
   font-weight: 600;
 }
+/* .dropdown-btn {
+  width: -webkit-fill-available;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+} */

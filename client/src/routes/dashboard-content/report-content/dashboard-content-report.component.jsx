@@ -92,6 +92,7 @@ const ReportContent = () => {
               bucketName={"FarmManagement"}
               fileName={i.filename}
               date={i.date}
+              description={i.description}
             />
           ))
         ) : (

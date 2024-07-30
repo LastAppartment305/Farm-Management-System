@@ -9,6 +9,7 @@ import {
   deleteWorker,
   editWorker,
   receiveUploadPhoto,
+  retrieveWorkerInfo,
 } from "../controllers/dashboardController.js";
 import {
   authenticateToken,
@@ -30,4 +31,5 @@ router.delete(
   deleteAssignWorkerFromFarm
 );
 router.post("/uploadbase64image", workerAuthToken, receiveUploadPhoto);
+router.get("/getWorkerInfo", workerAuthToken, retrieveWorkerInfo);
 export default router;

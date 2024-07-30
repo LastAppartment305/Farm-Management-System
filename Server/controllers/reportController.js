@@ -47,7 +47,7 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
       });
       offset += batchSize;
       const placeHolder = ids.map(() => "?").join(", ");
-      const getImagePath = `select Image_path,Report_date from image where ImageId in (${placeHolder})`;
+      const getImagePath = `select Image_path,Report_date,Image_description from image where ImageId in (${placeHolder})`;
       const imagePath = await queryDatabase(getImagePath, ids);
       imagePath.map((path) => {
         paths.push(
@@ -56,6 +56,7 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
           {
             filename: path.Image_path,
             date: path.Report_date,
+            description: path.Image_description,
           }
         );
       });

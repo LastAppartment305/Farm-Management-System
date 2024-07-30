@@ -287,14 +287,14 @@ export const editWorker = asyncHandler(async (req, res) => {
 export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const { url } = req.body;
+  const { url, description } = req.body;
   const { farmid, workerid, userid } = req.worker;
   console.log("farmid", farmid);
   const accountAuthTokenFileName = "./b2-accountAuth.json";
   const defaultExpirationTime = 24 * 60 * 60 * 1000;
   // console.log("dashboardController", farmid, workerid);
   const insertImageIdTo_image =
-    "insert into image (Report_date,Image_path,upload_fileId) values (?,?,?)";
+    "insert into image (Report_date,Image_path,upload_fileId,Image_description) values (?,?,?,?)";
   const connectImageIdWithFarmId =
     "insert into report (FarmId,ImageId) values (?,?)";
 
@@ -486,6 +486,7 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
       mySQLDateString,
       filename,
       uploadResult.data.fileId,
+      description,
     ];
     //store file name in database
     Promise.resolve(queryDatabase(insertImageIdTo_image, valuesToInsert_image))
@@ -662,5 +663,32 @@ export const deleteAssignWorkerFromFarm = asyncHandler(async (req, res) => {
         message:
           "unexpected error occur at deleting farm id from worker detail",
       });
+    });
+});
+//--------------------------------------------------------
+export const retrieveWorkerInfo = asyncHandler(async (req, res) => {
+  const { workerid } = req.worker;
+  console.log(workerid);
+  const retrieveWorker = "select * from worker where WorkerId=?";
+  const values = [workerid];
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
+    });
+  };
+
+  Promise.resolve(queryDatabase(retrieveWorker, values))
+    .then(([result]) => {
+      if (result.WorkerId) {
+        console.log(result);
+        res.send(result);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
     });
 });

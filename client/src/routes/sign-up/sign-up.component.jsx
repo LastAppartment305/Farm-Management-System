@@ -70,14 +70,14 @@ const SignUp = () => {
   };
 
   return (
-    <div className="main-wrapper">
-      <div className="container-fluid p-0">
-        <div className="screen-wrapper">
-          <div className="form-container border">
-            <div className="w-100">
-              <p className="form-header">အကောင့်သစ်ပြုလုပ်ရန်</p>
-              <div className="row">
-                <div className="position-relative">
+    <div className='main-wrapper'>
+      <div className='container-fluid p-0'>
+        <div className='screen-wrapper'>
+          <div className='form-container border'>
+            <div className='w-100'>
+              <p className='form-header'>အကောင့်သစ်ပြုလုပ်ရန်</p>
+              <div className='row'>
+                <div className='position-relative'>
                   <InputBox
                     typeProps={"text"}
                     name={"name"}
@@ -86,33 +86,35 @@ const SignUp = () => {
                     value={data.name}
                   />
                   <button
-                    className="position-absolute clear-btn"
+                    className='position-absolute clear-btn'
                     onClick={ClearInputBoxForName}
                   >
-                    <CircleX className="circleX" />
+                    <CircleX className='circleX' />
                   </button>
                 </div>
               </div>
-              <div className="row mt-3">
-                <div className="position-relative">
-                <PhoneInput
-                      country={"mm"}
-                      value={data.phone}
-                      onChange={(e)=>setdata((prev)=>({
+              <div className='row mt-3'>
+                <div className='position-relative'>
+                  <PhoneInput
+                    country={"mm"}
+                    value={data.phone}
+                    onChange={(e) =>
+                      setdata((prev) => ({
                         ...prev,
-                        phone:e,
-                      }))}
-                    />
+                        phone: e,
+                      }))
+                    }
+                  />
                   <button
-                    className="position-absolute clear-btn"
+                    className='position-absolute clear-btn'
                     onClick={ClearInputBoxForPhone}
                   >
-                    <CircleX className="circleX" />
+                    <CircleX className='circleX' />
                   </button>
                 </div>
               </div>
-              <div className="row mt-3">
-                <div className="position-relative">
+              <div className='row mt-3'>
+                <div className='position-relative'>
                   <InputBox
                     typeProps={passwordVisible ? "text" : "password"}
                     name={"password"}
@@ -121,68 +123,68 @@ const SignUp = () => {
                     InputValue={handleChange}
                     value={data.password}
                   />
-                  <button className="position-absolute clear-btn">
+                  <button className='position-absolute clear-btn'>
                     {passwordVisible ? (
                       <Eye
                         onClick={() => {
                           setPasswordVisible(false);
                         }}
-                        className="circleX"
+                        className='circleX'
                       />
                     ) : (
                       <EyeOff
                         onClick={() => {
                           setPasswordVisible(true);
                         }}
-                        className="circleX"
+                        className='circleX'
                       />
                     )}
                   </button>
                 </div>
               </div>
-              <div className="row mt-3">
-                <div className="position-relative">
+              <div className='row mt-3'>
+                <div className='position-relative'>
                   <InputBox
                     typeProps={confirmPasswordVisible ? "text" : "password"}
                     name={"confirm_password"}
                     ref={checkConfirmPassword}
-                    holder={"စကားဝှက်ပြန်ရိုက်"}
+                    holder={"စကားဝှက်ထပ်မံရိုက်သွင်းပါ"}
                     InputValue={handleChange}
                     value={data.confirm_password}
                   />
-                  <button className="position-absolute clear-btn">
+                  <button className='position-absolute clear-btn'>
                     {confirmPasswordVisible ? (
                       <Eye
                         onClick={() => {
                           setConfirmPasswordVisible(false);
                         }}
-                        className="circleX"
+                        className='circleX'
                       />
                     ) : (
                       <EyeOff
                         onClick={() => {
                           setConfirmPasswordVisible(true);
                         }}
-                        className="circleX"
+                        className='circleX'
                       />
                     )}
                   </button>
                 </div>
               </div>
-              <div className="row mt-3">
+              <div className='row mt-3'>
                 <SelectBox InputValue={handleChange} name={"userRole"} />
               </div>
-              <div className="button-wrapper">
+              <div className='button-wrapper'>
                 <button
-                  type="button"
-                  className="btn btn-primary w-100 mt-5 submit-btn"
+                  type='button'
+                  className='btn btn-primary w-100 mt-5 submit-btn'
                   onClick={handleClick}
                 >
                   စာရင်းသွင်းရန်
                 </button>
               </div>
-              <p className="d-flex justify-content-center mt-3">
-                <Link to="/login">အကောင့်ရှိပီးသားလား</Link>
+              <p className='d-flex justify-content-center mt-3'>
+                <Link to='/login'>အကောင့်ရှိပီးသားလား</Link>
               </p>
             </div>
           </div>
