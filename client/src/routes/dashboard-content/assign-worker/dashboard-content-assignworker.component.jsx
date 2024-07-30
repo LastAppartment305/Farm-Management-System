@@ -83,18 +83,20 @@ const AssignWorker = () => {
                 aria-expanded='false'
                 aria-controls={`collapse${numtowords.toWords(index + 1)}`}
               >
-                {res.Name}
-                <div className={`${classes.crop_type} ms-5`}>
-                  {res.Crop_type}
-                </div>
-                {res.WorkerId && (
-                  <div className='w-100 d-flex justify-content-end me-3'>
-                    <img
-                      src={success}
-                      className={`${classes.success_icon} ms-3`}
-                    />
+                <div className='row w-100'>
+                  <div className='col-4'>{res.Name}</div>
+                  <div className='col-4'>{res.Crop_type}</div>
+                  <div className='col-4'>
+                    {res.WorkerId && (
+                      <div className=' d-flex justify-content-end me-3'>
+                        <img
+                          src={success}
+                          className={`${classes.success_icon} ms-3`}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </button>
             </h2>
             <div
