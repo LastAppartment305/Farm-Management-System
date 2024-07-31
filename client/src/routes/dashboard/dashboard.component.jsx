@@ -39,9 +39,9 @@ const DashBoard = () => {
   );
   const { postData } = usePost("http://localhost:5000/getUserInfo");
   const { postData: editUser } = usePost("http://localhost:5000/editUserInfo");
-  const { response: getNoti } = useGet(
-    "http://localhost:5000/noti/getAllNotification"
-  );
+  // const { response: getNoti } = useGet(
+  //   "http://localhost:5000/noti/getAllNotification"
+  // );
   const { isAuthenticated, setRole, role } = useContext(authContext);
   //-------------------------------------
   const navigate = useNavigate();
@@ -146,8 +146,30 @@ const DashBoard = () => {
       socket.off("receivingEvent", listenToEvent);
     };
   }, []);
-  console.log("from dashboard: ", getNoti);
+  useEffect(() => {
+    const fetchNotication = async () => {
+      const getNoti = await axios.get(
+        "http://localhost:5000/noti/getAllNotification"
+      );
+      if (getNoti) {
+        // window.location.reload();
+        setNotifications(getNoti.data);
+        console.log(getNoti);
+      }
+    };
+    fetchNotication();
+  }, []);
+  const closeNotificationSideBar = async () => {
+    const FetchNotiAgain = await axios.get(
+      "http://localhost:5000/noti/changeNotiStatus"
+    );
+    if (FetchNotiAgain) {
+      setNotifications(FetchNotiAgain.data);
+    }
+    console.log("change noti status: ", notifications);
+  };
 
+  console.log(notifications);
   return (
     <Fragment>
       <div className='side-bar'>
@@ -216,7 +238,15 @@ const DashBoard = () => {
               />
             </div>
             <div className='right-side-of-nav me-2 d-flex align-items-center'>
-              <a href='#' onClick={handleNoti} className='noti-btn'>
+              <a
+                href='#Noti'
+                onClick={handleNoti}
+                className='noti-btn'
+                type='button'
+                data-bs-toggle='offcanvas'
+                data-bs-target='#Noti'
+                aria-controls='offcanvasExample'
+              >
                 <Bell />
               </a>
               <div className='profile-icon-wrapper ms-4'>
@@ -341,6 +371,37 @@ const DashBoard = () => {
           </div>
         )}
         <Outlet />
+        <div
+          class='offcanvas offcanvas-end'
+          tabindex='-1'
+          id='Noti'
+          aria-labelledby='offcanvasExampleLabel'
+          aria-modal='false'
+        >
+          <div class='offcanvas-header'>
+            <h5 id='offcanvasRightLabel'>
+              <Bell />
+            </h5>
+            <button
+              type='button'
+              onClick={closeNotificationSideBar}
+              class='btn-close text-reset'
+              data-bs-dismiss='offcanvas'
+              aria-label='Close'
+            ></button>
+          </div>
+          <div class='offcanvas-body'>
+            {notifications?.map((item, index) => (
+              <div
+                key={index}
+                className={!item.noti_status && "notification-content"}
+              >
+                <div>{item.noti_message}</div>
+                <hr></hr>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </Fragment>
   );

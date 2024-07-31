@@ -41,6 +41,9 @@
   margin-right: 31px !important;
   box-shadow: 5px 5px 15px -10px;
 }
+.notification-content {
+  background-color: #dcdbdbcc;
+}
 @media (max-width: 1024px) {
   .toggle-btn {
     display: block !important;

@@ -38,9 +38,9 @@ export const sendOTPMessage = asyncHandler(async (req, res) => {
 //------------------------------------------------------
 export const getNotification = asyncHandler(async (req, res) => {
   const { id } = req.user;
-
+  console.log(id);
   const queryNotification =
-    "select noti_message,noti_status from image where ImageId in (select ImageId from report where FarmId in (select FarmId from worker_detail where UserId=?))";
+    "select noti_message,noti_status from image where ImageId in (select ImageId from report where FarmId in (select FarmId from farm where UserId=?))";
 
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
@@ -61,5 +61,41 @@ export const getNotification = asyncHandler(async (req, res) => {
     .catch((err) => {
       console.error(err);
       res.status(500).send({ message: "problem at getting notification" });
+    });
+});
+//----------------------------------------
+export const NotiStatus = asyncHandler(async (req, res) => {
+  const { id } = req.user;
+
+  const changeNotiQuery =
+    "update image set noti_status=? where ImageId in (select ImageId from report where FarmId in (select FarmId from farm where UserId=?))";
+  const queryNotification =
+    "select noti_message,noti_status from image where ImageId in (select ImageId from report where FarmId in (select FarmId from farm where UserId=?))";
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  Promise.resolve(queryDatabase(changeNotiQuery, [true, id]))
+    .then(() => {
+      return queryDatabase(queryNotification, [id])
+        .then((result) => {
+          if (result) {
+            console.log("notification messages from notiCom: ", result);
+            res.send(result);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          res.status(500).send({ message: "problem at getting notification" });
+        });
+    })
+    .catch((err) => {
+      res.status(500).send({ message: "error at updating" });
     });
 });
