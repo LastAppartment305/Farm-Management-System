@@ -53,7 +53,7 @@ const ImageDownloader = ({
         //   ...prevCache,
         //   [fileName]: processedImage,
         // }));
-        console.log(imageUrl);
+        // console.log(imageUrl);
         setImageSrc(imageUrl);
       } catch (err) {
         console.error("Error fetching image:", err);

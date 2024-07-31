@@ -2,6 +2,8 @@ import twilio from "twilio";
 import express from "express";
 import asyncHandler from "express-async-handler";
 import dotenv from "dotenv";
+import { connection } from "../index.js";
+import { io } from "../index.js";
 
 dotenv.config();
 export const sendOTPMessage = asyncHandler(async (req, res) => {
@@ -32,4 +34,32 @@ export const sendOTPMessage = asyncHandler(async (req, res) => {
     console.error(error);
     res.status(500).json({ success: false, error: error.message });
   }
+});
+//------------------------------------------------------
+export const getNotification = asyncHandler(async (req, res) => {
+  const { id } = req.user;
+
+  const queryNotification =
+    "select noti_message,noti_status from image where ImageId in (select ImageId from report where FarmId in (select FarmId from worker_detail where UserId=?))";
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  Promise.resolve(queryDatabase(queryNotification, [id]))
+    .then((result) => {
+      if (result) {
+        console.log("notification messages from notiCom: ", result);
+        res.send(result);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send({ message: "problem at getting notification" });
+    });
 });

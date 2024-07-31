@@ -6,6 +6,9 @@
   background-color: #adb5bd40;
   overflow: hidden;
 } */
+.noti-btn {
+  color: black;
+}
 .side-bar {
   background-color: black;
   width: 250px;

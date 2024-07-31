@@ -294,9 +294,11 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const defaultExpirationTime = 24 * 60 * 60 * 1000;
   // console.log("dashboardController", farmid, workerid);
   const insertImageIdTo_image =
-    "insert into image (Report_date,Image_path,upload_fileId,Image_description) values (?,?,?,?)";
+    "insert into image (Report_date,Image_path,upload_fileId,Image_description,noti_message,noti_status) values (?,?,?,?,?,?)";
   const connectImageIdWithFarmId =
     "insert into report (FarmId,ImageId) values (?,?)";
+  const getWorkerName = "select Name from worker where WorkerId=?";
+  const getFarmName = "select Name from farm where FarmId=?";
 
   let b2AccountAuthToken = {
     token: null,
@@ -480,30 +482,50 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
       uploadUrl.authorizationToken,
       filename
     );
-    console.log(uploadResult.data.fileId);
+    // console.log(uploadResult.data.fileId);
+    Promise.all([
+      queryDatabase(getWorkerName, [workerid]),
+      queryDatabase(getFarmName, [farmid]),
+    ])
+      .then(([workerName, farmName]) => {
+        // if (workerName && farmName) {
+        //   console.log(workerName);
+        //   console.log(farmName);
+        // }
+        const valuesToInsert_image = [
+          mySQLDateString,
+          filename,
+          uploadResult.data.fileId,
+          description,
+          `${workerName[0].Name} send an image for ${farmName[0].Name}`,
+          false,
+        ];
+        //store file name in database
+        Promise.resolve(
+          queryDatabase(insertImageIdTo_image, valuesToInsert_image)
+        ).then(async (response) => {
+          // console.log(response);
+          if (response) {
+            // const workerName = await queryDatabase(getWorkerName, [workerid]);
+            // if (workerName) {
+            //   console.log("workerName: ", workerName[0].Name);
+            // }
+            // const farmName = await queryDatabase(getFarmName, [farmid]);
+            // if (farmName) {
+            //   console.log("farm name: ", farmName);
+            // }
+            const queryResult = await queryDatabase(connectImageIdWithFarmId, [
+              farmid,
+              response.insertId,
+            ]);
+            return {
+              queryResult,
+              // id: response.insertId,
+            };
+          }
 
-    const valuesToInsert_image = [
-      mySQLDateString,
-      filename,
-      uploadResult.data.fileId,
-      description,
-    ];
-    //store file name in database
-    Promise.resolve(queryDatabase(insertImageIdTo_image, valuesToInsert_image))
-      .then(async (response) => {
-        console.log(response);
-        if (response) {
-          const queryResult = await queryDatabase(connectImageIdWithFarmId, [
-            farmid,
-            response.insertId,
-          ]);
-          return {
-            queryResult,
-            // id: response.insertId,
-          };
-        }
-
-        console.log(`upload ${filename} at ${mySQLDateString}`);
+          // console.log(`upload ${filename} at ${mySQLDateString}`);
+        });
       })
       .catch((err) => {
         console.log(err);

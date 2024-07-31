@@ -10,7 +10,11 @@ import {
   Sprout,
   NotepadText,
 } from "lucide-react";
-import { useLogout, usePost } from "../../custom-hook/axios-post/axios-post";
+import {
+  useLogout,
+  usePost,
+  useGet,
+} from "../../custom-hook/axios-post/axios-post";
 import { Outlet, useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
 import image from "../../component/assets/img/ricefield.jpg";
@@ -19,9 +23,12 @@ import SideBarButton from "../../component/side_bar_button/side_bar_button.compo
 import InputBox from "../../component/InputBox/InputBox.component";
 import PhoneInput from "react-phone-input-2";
 import { X } from "lucide-react";
+import axios from "axios";
+import io from "socket.io-client";
 
 const DashBoard = () => {
   const [isActive, setIsActive] = useState("");
+  const [notifications, setNotifications] = useState(null);
   const [userInfo, setUserInfo] = useState({
     name: null,
     phone: null,
@@ -32,6 +39,9 @@ const DashBoard = () => {
   );
   const { postData } = usePost("http://localhost:5000/getUserInfo");
   const { postData: editUser } = usePost("http://localhost:5000/editUserInfo");
+  const { response: getNoti } = useGet(
+    "http://localhost:5000/noti/getAllNotification"
+  );
   const { isAuthenticated, setRole, role } = useContext(authContext);
   //-------------------------------------
   const navigate = useNavigate();
@@ -88,17 +98,56 @@ const DashBoard = () => {
 
     navigate("/login");
   };
+  const handleNoti = async () => {
+    // console.log("This is notification");
+  };
   useEffect(() => {
     const fullPath = window.location.pathname;
     const trimPath = fullPath.replace("/dashboard/", "");
     setIsActive(trimPath);
 
+    // if (getNoti) {
+    //   setNotifications(getNoti);
+    // }
+
+    // const fetchNotication = async () => {
+    //   const getNoti = await axios.get(
+    //     "http://localhost:5000/noti/getAllNotification"
+    //   );
+    //   if (getNoti) {
+    //     // window.location.reload();
+    //     // setNotifications(getNoti);
+    //   }
+    // };
+    // fetchNotication();
+
     // console.log("dashboard useEffect", localStorage.getItem("role"));
     // console.log("logging role from context in dashboard com: ", role);
   }, []);
-  //console.log(isActive)
+  useEffect(() => {
+    const socket = io.connect("http://localhost:5000", {
+      transports: ["websocket"],
+      withCredentials: true,
+    });
+    const listenToEvent = async (value) => {
+      // console.log(value);
+      // const getNoti = await axios.get(
+      //   "http://localhost:5000/noti/getAllNotification"
+      // );
+      // if (getNoti) {
 
-  // console.log("userInfo from react: ", userInfo);
+      //   setNotifications(getNoti);
+      // }
+      window.location.reload();
+    };
+    socket.on("receivingEvent", listenToEvent);
+
+    return () => {
+      socket.off("receivingEvent", listenToEvent);
+    };
+  }, []);
+  console.log("from dashboard: ", getNoti);
+
   return (
     <Fragment>
       <div className='side-bar'>
@@ -167,7 +216,9 @@ const DashBoard = () => {
               />
             </div>
             <div className='right-side-of-nav me-2 d-flex align-items-center'>
-              <Bell />
+              <a href='#' onClick={handleNoti} className='noti-btn'>
+                <Bell />
+              </a>
               <div className='profile-icon-wrapper ms-4'>
                 <a
                   type='button'

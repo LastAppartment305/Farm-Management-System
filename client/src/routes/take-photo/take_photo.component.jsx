@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { authContext } from "../../context/context";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
+import io from "socket.io-client";
 
 const TakePhoto = () => {
   const videoref = useRef(null);
@@ -17,7 +18,7 @@ const TakePhoto = () => {
   const { postData } = usePost(
     "http://localhost:5000/dashboard/uploadbase64image"
   );
-  const { response } = useGet("http://localhost:5000/dashboard/getWorkerInfo");
+  const { response } = useGet("http://localhost:5000");
   const [stream, setStream] = useState(null);
   const navigate = useNavigate();
 
@@ -94,6 +95,7 @@ const TakePhoto = () => {
     };
 
     handleVideo();
+
     // const getCookie = Cookie.get("workerAuth");
     // if (getCookie) {
     //   console.log("cookie exist.");
@@ -119,6 +121,10 @@ const TakePhoto = () => {
   }, []);
 
   const handleUpload = async () => {
+    const socket = io.connect("http://localhost:5000", {
+      transports: ["websocket"],
+      withCredentials: true,
+    });
     const imageUrl = sessionStorage.getItem("capturedImage");
     if (imageUrl) {
       const response = await postData({
@@ -134,6 +140,7 @@ const TakePhoto = () => {
         toast.success("အောင်မြင်ပါသည်");
         setRemoveImage(!removeImage);
         sessionStorage.removeItem("capturedImage");
+        socket.emit("emittingEvent", "This is text");
       }
     }
   };

@@ -10,12 +10,15 @@ dotenv.config();
 export const getReportPhoto = asyncHandler(async (req, res) => {
   // console.log(req.user.id);
   const { farmid } = req.body;
+  const { id } = req.user;
 
   const batchSize = 50; // Adjust the batch size based on your database capacity
   let ids = [];
   let paths = [];
   let offset = 0;
   let hasMore = true;
+
+  // const getNotiMessageAndStatus='select noti_message,noti_status from report where FarmId in(select FarmId from worker_detail where UserId=?)'
   const getImageIdFrom_worker_detail = `select ImageId from report where FarmId=? and exists (select * from report where FarmId=?) limit ? offset ?`;
 
   const queryDatabase = (sql, value) => {
@@ -47,7 +50,7 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
       });
       offset += batchSize;
       const placeHolder = ids.map(() => "?").join(", ");
-      const getImagePath = `select Image_path,Report_date,Image_description from image where ImageId in (${placeHolder})`;
+      const getImagePath = `select Image_path,Report_date,Image_description,noti_message,noti_status from image where ImageId in (${placeHolder})`;
       const imagePath = await queryDatabase(getImagePath, ids);
       imagePath.map((path) => {
         paths.push(
@@ -57,6 +60,8 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
             filename: path.Image_path,
             date: path.Report_date,
             description: path.Image_description,
+            noti_message: path.noti_message,
+            noti_status: path.noti_status,
           }
         );
       });
@@ -255,7 +260,7 @@ export const fetchB2Cloud = asyncHandler(async (req, res) => {
       responseType: "arraybuffer", // Important for binary data
     }
   );
-  console.log(fetchImage);
+  // console.log(fetchImage);
   res.set("Content-Type", "image/jpeg");
   res.set("Content-Length", fetchImage.data.length);
 

@@ -11,7 +11,9 @@ import path from "path";
 import { fileURLToPath } from "url";
 import worker from "./routes/worker.js";
 import report from "./routes/report.js";
-import otpServiceRoute from "./routes/otp.js";
+import notiServiceRoute from "./routes/noti.js";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 const app = express();
 
@@ -43,12 +45,33 @@ app.use("/dashboard", dashbordDetail);
 app.use("/farm", farmConcern);
 app.use("/report", report);
 app.use("/worker", worker);
-app.use("/otp", otpServiceRoute);
+app.use("/noti", notiServiceRoute);
 app.use("/logout", (req, res) => {
   console.log("This is from index.js: logout work");
   res.clearCookie("authToken");
   res.send(true);
 });
+const server = http.createServer(app);
+const io = new SocketIOServer(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+  socket.on("disconnect", () => {
+    console.log("A user disconnected:", socket.id);
+  });
+
+  socket.on("emittingEvent", (msg) => {
+    console.log("index: ", msg);
+    io.emit("receivingEvent", "I got this");
+  });
+});
 
 const PORT = 5000;
-app.listen(PORT, () => console.log(`Server is running at port ${PORT}`));
+server.listen(PORT, () => console.log(`Server is running at port ${PORT}`));
+export { io };
