@@ -1,13 +1,18 @@
 import "./login-in.style.css";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import InputBox from "../../component/InputBox/InputBox.component";
 import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
 import { useNavigate, Link } from "react-router-dom";
 import { authContext } from "../../context/context";
 import { toast, Toaster } from "react-hot-toast";
+import { z } from "zod";
 
 const Login = () => {
+  const loginSchema = z.object({
+    name: z.string().min(1, { message: "နာမည်ထည့်ရန်လိုအပ်ပါသည်" }),
+    password: z.string().min(1, { message: "စကားဝှက်ထည့်ရန်လိုအပ်ပါသည်" }),
+  });
   const [passwordVisible, setPasswordVisible] = useState(false);
   //const [loginrole, setloginRole] = useState(null);
   const [data, setdata] = useState({
@@ -15,6 +20,7 @@ const Login = () => {
     password: "",
   });
   const { setRole, role } = useContext(authContext); //manipulate data from context
+  const validationErrors = useRef("");
   const navigate = useNavigate();
   const { postData } = usePost("http://localhost:5000/login");
   //console.log(response);
@@ -33,14 +39,24 @@ const Login = () => {
     }));
   };
 
-  const handleClick = async () => {
-    const res = await postData(data);
-    if (res != "") {
-      localStorage.setItem("role", res);
-      localStorage.setItem("username", data.name);
-      setRole(res);
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const result = loginSchema.safeParse(data);
+    if (result.success) {
+      const res = await postData(data);
+      if (res != "") {
+        localStorage.setItem("role", res);
+        localStorage.setItem("username", data.name);
+        setRole(res);
+      } else {
+        toast.error("မှားယွင်းနေပါသည်");
+      }
     } else {
-      toast.error("မှားယွင်းနေပါသည်");
+      validationErrors.current = result.error.formErrors.fieldErrors;
+      console.log(validationErrors.current);
+
+      // console.log("This is validation errors: ", validationErrors.current);
+      toast.error(Object.values(validationErrors.current)[0]);
     }
     //console.log("login component:response data", res);
   };
@@ -59,36 +75,36 @@ const Login = () => {
     <div>
       <div className='screen-wrapper m-0'>
         <Toaster toastOptions={{ duration: 4000 }} />
-        <div className='form-wrapper'>
+        <form className='form-wrapper' onSubmit={handleClick}>
           <p className='form-header'>အကောင့်ဝင်ရောက်ရန်</p>
           <div className='row'>
             <div className='position-relative'>
-              <InputBox
-                typeProps={"text"}
-                name={"name"}
-                holder={"အမည်"}
-                InputValue={handleChange}
+              <input
+                type='text'
+                name='name'
+                placeholder='အမည်'
+                onChange={handleChange}
                 value={data.name}
               />
-              <button
+              <a
                 className='position-absolute clear-btn'
                 onClick={ClearInputBoxForName}
               >
                 <CircleX className='circleX' />
-              </button>
+              </a>
             </div>
           </div>
           <div className='row mt-3'>
             <div className='position-relative'>
-              <InputBox
-                typeProps={passwordVisible ? "text" : "password"}
-                name={"password"}
+              <input
+                type={passwordVisible ? "text" : "password"}
+                name='password'
                 // ref={checkPassword}
-                holder={"စကားဝှက်"}
-                InputValue={handleChange}
+                placeholder='စကားဝှက်'
+                onChange={handleChange}
                 value={data.password}
               />
-              <button className='position-absolute clear-btn'>
+              <a className='position-absolute clear-btn'>
                 {passwordVisible ? (
                   <Eye
                     onClick={() => {
@@ -104,14 +120,13 @@ const Login = () => {
                     className='circleX'
                   />
                 )}
-              </button>
+              </a>
             </div>
           </div>
           <div className='button-wrapper'>
             <button
-              type='button'
+              type='submit'
               className='btn btn-primary w-100 mt-5 submit-btn'
-              onClick={handleClick}
             >
               ဝင်ရောက်ရန်
             </button>
@@ -122,7 +137,7 @@ const Login = () => {
           <div className='create-new-account'>
             <Link to='/signup'>အကောင့်သစ်ပြုလုပ်ရန်</Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -23,16 +23,42 @@ export const registerController = asyncHandler(async (req, res) => {
   const encodedPassword = await storePassword(password);
   const sql =
     "INSERT INTO user (Name, Phone_no, User_role, Created_at, Password) VALUES (?,?,?,?,?)";
+  const checkPhoneNo = "select Phone_no from user where Phone_no=?";
+  const checkName = "select Name from user where Name=?";
+  const checkPassword = "select Password from user where Password=?";
 
   const values = [name, phone, userRole, mySQLDateString, encodedPassword];
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
 
-  connection.query(sql, values, function (err, result) {
-    if (err) {
-      console.error("Error inserting data:", err);
-      res.status(500).json({ error: "An error occurred while inserting data" });
+  Promise.resolve(queryDatabase(checkName, [name])).then((result) => {
+    console.log(result);
+    if (!result[0]) {
+      return queryDatabase(checkPhoneNo, [phone]).then((phoneResult) => {
+        if (!phoneResult[0]) {
+          connection.query(sql, values, function (err, result) {
+            if (err) {
+              console.error("Error inserting data:", err);
+              res
+                .status(500)
+                .json({ error: "An error occurred while inserting data" });
+            } else {
+              console.log("Data inserted successfully!");
+              res.json({ message: "Data inserted successfully" });
+            }
+          });
+        } else {
+          res.json(phoneResult);
+        }
+      });
     } else {
-      console.log("Data inserted successfully!");
-      res.json({ message: "Data inserted successfully" });
+      res.json(result);
     }
   });
 });

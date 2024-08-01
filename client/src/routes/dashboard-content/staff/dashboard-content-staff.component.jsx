@@ -362,7 +362,7 @@ const Staff = () => {
     name: z.string().min(1, { message: "နာမည် လိုအပ်ပါသည်" }),
     phone: z
       .string()
-      .regex(new RegExp(/^\+?[1-9]\d{1,14}$/), "ဖုန်းနံပါတ် မှန်ကန်စွာဖြည့်ပါ"),
+      .regex(new RegExp(/^\+?9509\d{9,9}$/), "ဖုန်းနံပါတ် မှန်ကန်စွာဖြည့်ပါ"),
     address: z.string().min(1, { message: "လိပ်စာ လိုအပ်ပါသည်" }),
     age: z
       .string()
@@ -465,7 +465,7 @@ const Staff = () => {
       gender: gender,
       phone: phone,
       address: address,
-      age: age,
+      age: age.toString(),
     });
   };
   //confirm to delete

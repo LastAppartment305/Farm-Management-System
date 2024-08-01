@@ -152,8 +152,8 @@ const DashBoard = () => {
         "http://localhost:5000/noti/getAllNotification"
       );
       if (getNoti) {
-        // window.location.reload();
-        setNotifications(getNoti.data);
+        const reverse = getNoti.data.reverse();
+        setNotifications(reverse);
         console.log(getNoti);
       }
     };
@@ -164,7 +164,8 @@ const DashBoard = () => {
       "http://localhost:5000/noti/changeNotiStatus"
     );
     if (FetchNotiAgain) {
-      setNotifications(FetchNotiAgain.data);
+      const reverse = FetchNotiAgain.data.reverse();
+      setNotifications(reverse);
     }
     console.log("change noti status: ", notifications);
   };
@@ -231,13 +232,14 @@ const DashBoard = () => {
               >
                 <span class='navbar-toggler-icon'></span>
               </button>
-              <input
+              {/* <input
                 type='search'
                 className='form-control me-2'
                 placeholder='search'
-              />
+              /> */}
             </div>
             <div className='right-side-of-nav me-2 d-flex align-items-center'>
+              {/* <div className='noti-wrapper position-relative'> */}
               <a
                 href='#Noti'
                 onClick={handleNoti}
@@ -248,38 +250,47 @@ const DashBoard = () => {
                 aria-controls='offcanvasExample'
               >
                 <Bell />
+                <div
+                  className={
+                    notifications &&
+                    notifications.find((status) => status.noti_status === 0)
+                      ? "red-dot"
+                      : ""
+                  }
+                ></div>
               </a>
-              <div className='profile-icon-wrapper ms-4'>
-                <a
-                  type='button'
-                  className='profile-icon'
-                  id='dropdownMenuButton1'
-                  data-bs-toggle='dropdown'
-                  aria-expanded='false'
-                >
-                  <img src={image} className='profile-image' />
-                </a>
-                <ul class='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
-                  <li>
-                    <a class='dropdown-item fw-bold' href='#'>
-                      {localStorage.getItem("username")}
-                    </a>
-                  </li>
-                  <li>
-                    <hr class='dropdown-divider' />
-                  </li>
-                  <li>
-                    <button class='dropdown-item' onClick={editUserProfile}>
-                      ပြင်ဆင်ရန်
-                    </button>
-                  </li>
-                  <li>
-                    <button class='dropdown-item' onClick={userLogout}>
-                      ထွက်မည်
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              {/* </div> */}
+              {/* <div className='profile-icon-wrapper ms-4'> */}
+              <a
+                type='button'
+                className='profile-icon'
+                id='dropdownMenuButton1'
+                data-bs-toggle='dropdown'
+                aria-expanded='false'
+              >
+                <img src={image} className='profile-image' />
+              </a>
+              <ul class='dropdown-menu' aria-labelledby='dropdownMenuButton1'>
+                <li>
+                  <a class='dropdown-item fw-bold' href='#'>
+                    {localStorage.getItem("username")}
+                  </a>
+                </li>
+                <li>
+                  <hr class='dropdown-divider' />
+                </li>
+                <li>
+                  <button class='dropdown-item' onClick={editUserProfile}>
+                    ပြင်ဆင်ရန်
+                  </button>
+                </li>
+                <li>
+                  <button class='dropdown-item' onClick={userLogout}>
+                    ထွက်မည်
+                  </button>
+                </li>
+              </ul>
+              {/* </div> */}
             </div>
 
             <div

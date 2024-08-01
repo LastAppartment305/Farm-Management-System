@@ -497,7 +497,7 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
           filename,
           uploadResult.data.fileId,
           description,
-          `${workerName[0].Name} send an image for ${farmName[0].Name}`,
+          `${workerName[0].Name} မှ ${farmName[0].Name} အတွက် ဓာတ်ပုံပို့ထားပါသည်`,
           false,
         ];
         //store file name in database

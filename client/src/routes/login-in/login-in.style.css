@@ -18,10 +18,17 @@
   justify-content: center;
   font-size: 2rem;
 }
-.sign-in-as-worker,.create-new-account{
+.sign-in-as-worker,
+.create-new-account {
   display: flex;
   justify-content: center;
-  margin-top:20px;
+  margin-top: 20px;
+}
+input {
+  width: 100%;
+  height: 62px;
+  border-radius: 50px;
+  padding: 0px 10px;
 }
 @media (max-width: 1024px) {
   .form-wrapper {

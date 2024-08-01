@@ -6,8 +6,23 @@
   background-color: #adb5bd40;
   overflow: hidden;
 } */
+.noti-wrapper {
+  width: fit-content;
+  height: inherit;
+}
 .noti-btn {
   color: black;
+  position: relative;
+}
+.red-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border: 1px solid white;
+  top: 0px;
+  right: 0px;
+  border-radius: 5px;
 }
 .side-bar {
   background-color: black;
@@ -20,6 +35,7 @@
 }
 .profile-icon {
   border: none;
+  margin-left: 32px;
 }
 .profile-image {
   width: 45px;

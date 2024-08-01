@@ -1,7 +1,7 @@
 import classes from "./worker-login.module.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import {
   signInWithPhoneNumber,
   RecaptchaVerifier,
@@ -12,11 +12,27 @@ import OTPInput, { ResendOTP } from "otp-input-react";
 import { authContext } from "../../../context/context";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase.config";
+import { z } from "zod";
 
 const WorkerLogin = () => {
+  const validationSchema = z.object({
+    ownerPhone: z
+      .string()
+      .regex(
+        new RegExp(/^\+?9509\d{9,9}$/),
+        "ပိုင်ရှင်ဖုန်းနံပါတ် မှန်ကန်စွာဖြည့်ပါ"
+      ),
+    workerPhone: z
+      .string()
+      .regex(
+        new RegExp(/^\+?9509\d{9,9}$/),
+        "အလုပ်သမားဖုန်းနံပါတ် မှန်ကန်စွာဖြည့်ပါ"
+      ),
+  });
   const [data, setData] = useState({ ownerPhone: "", workerPhone: "" });
   const [showOTP, setShowOTP] = useState(false);
   const [ids, setIds] = useState(null);
+  const validationErrors = useRef("");
   const [OTP, setOTP] = useState("");
   const navigate = useNavigate();
   const { postData } = usePost("http://localhost:5000/worker/check-assign");
@@ -50,35 +66,46 @@ const WorkerLogin = () => {
   };
 
   const onSignup = async (e) => {
-    const response = await postData(data);
-    if (response.farmid !== null) {
-      console.log(response);
-      setIds(response);
+    e.preventDefault();
+    const result = validationSchema.safeParse(data);
+    if (result.success) {
+      const response = await postData(data);
+      if (response.farmid !== null) {
+        console.log(response);
+        setIds(response);
 
-      onCaptchVerify();
+        onCaptchVerify();
 
-      const appVerifier = window.recaptchaVerifier;
-      const formatPh = "+" + data.workerPhone;
-      signInWithPhoneNumber(auth, formatPh, appVerifier)
-        .then((confirmationResult) => {
-          window.confirmationResult = confirmationResult;
-          setShowOTP(true);
-          console.log("OTP sent successfully!");
-          toast.success("ကုဒ်ပေးပို့မှုအောင််မြင်ပါသည်");
-        })
-        .catch((error) => {
-          // if (error.code === "auth/too-many-requests") {
-          //   toast.error("အချိန်အနည်းငယ်ကြာမှပြန်လယ်စတင်ပါ");
-          // } else {
-          //   toast.error("တစ်ခုခုမှားယွင်းနေပါသည်");
-          //   console.error("Error during sign-in:", error);
-          // }
-          console.log(error);
-          // toast.error("too many request.");
-        });
+        const appVerifier = window.recaptchaVerifier;
+        const formatPh = "+" + data.workerPhone;
+        signInWithPhoneNumber(auth, formatPh, appVerifier)
+          .then((confirmationResult) => {
+            window.confirmationResult = confirmationResult;
+            setShowOTP(true);
+            console.log("OTP sent successfully!");
+            toast.success("ကုဒ်ပေးပို့မှုအောင််မြင်ပါသည်");
+          })
+          .catch((error) => {
+            // if (error.code === "auth/too-many-requests") {
+            //   toast.error("အချိန်အနည်းငယ်ကြာမှပြန်လယ်စတင်ပါ");
+            // } else {
+            //   toast.error("တစ်ခုခုမှားယွင်းနေပါသည်");
+            //   console.error("Error during sign-in:", error);
+            // }
+            console.log(error);
+            toast.error("တစ်ခုခုမှားယွင်းနေပါသည်");
+            // toast.error("too many request.");
+          });
+      } else {
+        toast.error("သင့်အတွက်အလုပ်မရှိပါ");
+        // console.log("not an assign worker");
+      }
     } else {
-      toast.error("ဝင်ရောက်ခွင့်မရှိပါ");
-      // console.log("not an assign worker");
+      validationErrors.current = result.error.formErrors.fieldErrors;
+      // console.log(validationErrors.current);
+
+      // console.log("This is validation errors: ", validationErrors.current);
+      toast.error(Object.values(validationErrors.current)[0]);
     }
   };
 
@@ -110,20 +137,24 @@ const WorkerLogin = () => {
   const goToHome = () => {
     navigate("/");
   };
-  console.log("verfyworker from worker-login: ", verifyWorker);
+  // console.log("verfyworker from worker-login: ", verifyWorker);
   return (
     <div>
       <div id='recaptcha-container'></div>
       {/* Add this div for the RecaptchaVerifier */}
       <div className={classes.screen_wrapper}>
-        <Toaster toastOptions={{ duration: 4000 }} />
+        <Toaster toastOptions={{ duration: 3000 }} />
         {!showOTP ? (
-          <div className={classes.form_content}>
+          <form className={classes.form_content} onSubmit={onSignup}>
             <div className={classes.form_title}>
               နိုင်ငံရွေးချယ်၍ ဖုန်းနံပါတ်ဖြည့်သွင်းပါ
             </div>
             <div className='mt-3 w-100'>
+              <div className={classes.phone_title}>
+                ပိုင်ရှင် ဖုန်းနံပါတ်ဖြည့်သွင်းပါ
+              </div>
               <PhoneInput
+                name='ownerPhone'
                 country={"mm"}
                 value={data.ownerPhone}
                 onChange={(phone) =>
@@ -135,7 +166,11 @@ const WorkerLogin = () => {
               />
             </div>
             <div className='mt-3 w-100'>
+              <div className={classes.phone_title}>
+                အလုပ်သမား ဖုန်းနံပါတ်ဖြည့်သွင်းပါ
+              </div>
               <PhoneInput
+                name='workerPhone'
                 country={"mm"}
                 value={data.phone}
                 onChange={(phone) =>
@@ -148,9 +183,8 @@ const WorkerLogin = () => {
             </div>
             <div className='button-wrapper'>
               <button
-                type='button'
+                type='submit'
                 className={`w-100 mt-5 ${classes.submit_btn}`}
-                onClick={onSignup}
               >
                 တစ်ခါသုံးကုဒ် ရယူရန်
               </button>
@@ -160,7 +194,7 @@ const WorkerLogin = () => {
                 မူလစာမျက်နှာသို့သွားရန်
               </a>
             </div>
-          </div>
+          </form>
         ) : (
           <div className={classes.form_content}>
             <div className={classes.form_title}>

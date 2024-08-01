@@ -7,8 +7,25 @@ import { CircleX, EyeOff, Eye } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { z } from "zod";
+import { toast, Toaster } from "react-hot-toast";
 
 const SignUp = () => {
+  const registerSchema = z.object({
+    name: z.string().min(1, { message: "နာမည် လိုအပ်ပါသည်" }),
+    phone: z
+      .string()
+      .regex(new RegExp(/^\+?9509\d{9,9}$/), "ဖုန်းနံပါတ် မှန်ကန်စွာဖြည့်ပါ"),
+    password: z
+      .string()
+      .regex(
+        new RegExp(/^[0-9 A-Z a-z]{6,9}$/),
+        "စကားဝှက်အနည်းဆုံး(၆)လုံးဖြည့်သွင်းပါ"
+      ),
+    confirm_password: z
+      .string()
+      .min(1, { message: "စကားဝှက်ပြန်ရိုက်ရန်လိုအပ်ပါသည်" }),
+  });
   const [data, setdata] = useState({
     name: "",
     phone: "",
@@ -20,6 +37,7 @@ const SignUp = () => {
   const checkConfirmPassword = useRef(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const validationErrors = useRef("");
   const [registered, setRegistered] = useState(false);
   const navigate = useNavigate();
 
@@ -40,18 +58,42 @@ const SignUp = () => {
     navigate("/login", { replace: true });
   }
 
-  const handleClick = async () => {
-    if (data.password === data.confirm_password) {
-      console.log("it is the same password");
-      try {
-        const response = await axios.post("http://localhost:5000/signup", data);
-        console.log("Response from Server", response.data);
-        setRegistered(true);
-      } catch (error) {
-        console.log("Error at sending data", error);
+  const handleClick = async (e) => {
+    e.preventDefault();
+    const result = registerSchema.safeParse(data);
+    if (result.success) {
+      if (data.password === data.confirm_password) {
+        console.log("it is the same password");
+        try {
+          const response = await axios.post(
+            "http://localhost:5000/signup",
+            data
+          );
+          console.log("Response from Server", response.data);
+          if (response.data[0]) {
+            if ("Name" in response.data[0] === false) {
+              if ("Phone_no" in response.data[0] === false) {
+              } else {
+                toast.error("အခြားဖုန်းနံပါတ်တစ်ခုရွေးချယ်ပါ");
+              }
+            } else {
+              toast.error("အခြားနာမည်တစ်ခုရွေးချယ်ပါ");
+            }
+          } else {
+            setRegistered(true);
+          }
+        } catch (error) {
+          console.log("Error at sending data", error);
+        }
+      } else {
+        toast.error("စကားဝှက်တူညီရန်လိုအပ်ပါသည်");
       }
     } else {
-      alert("the password are not the same");
+      validationErrors.current = result.error.formErrors.fieldErrors;
+      // console.log(validationErrors.current);
+
+      // console.log("This is validation errors: ", validationErrors.current);
+      toast.error(Object.values(validationErrors.current)[0]);
     }
   };
 
@@ -71,31 +113,33 @@ const SignUp = () => {
 
   return (
     <div className='main-wrapper'>
+      <Toaster toastOptions={{ duration: 3000 }} />
       <div className='container-fluid p-0'>
         <div className='screen-wrapper'>
-          <div className='form-container border'>
+          <form className='form-container border' onSubmit={handleClick}>
             <div className='w-100'>
               <p className='form-header'>အကောင့်သစ်ပြုလုပ်ရန်</p>
               <div className='row'>
                 <div className='position-relative'>
-                  <InputBox
-                    typeProps={"text"}
-                    name={"name"}
-                    holder={"အမည်"}
-                    InputValue={handleChange}
+                  <input
+                    type='text'
+                    name='name'
+                    placeholder='အမည်'
+                    onChange={handleChange}
                     value={data.name}
                   />
-                  <button
+                  <a
                     className='position-absolute clear-btn'
                     onClick={ClearInputBoxForName}
                   >
                     <CircleX className='circleX' />
-                  </button>
+                  </a>
                 </div>
               </div>
               <div className='row mt-3'>
                 <div className='position-relative'>
                   <PhoneInput
+                    name='phone'
                     country={"mm"}
                     value={data.phone}
                     onChange={(e) =>
@@ -105,25 +149,25 @@ const SignUp = () => {
                       }))
                     }
                   />
-                  <button
+                  <a
                     className='position-absolute clear-btn'
                     onClick={ClearInputBoxForPhone}
                   >
                     <CircleX className='circleX' />
-                  </button>
+                  </a>
                 </div>
               </div>
               <div className='row mt-3'>
                 <div className='position-relative'>
-                  <InputBox
-                    typeProps={passwordVisible ? "text" : "password"}
-                    name={"password"}
+                  <input
+                    type={passwordVisible ? "text" : "password"}
+                    name='password'
                     ref={checkPassword}
-                    holder={"စကားဝှက်"}
-                    InputValue={handleChange}
+                    placeholder='စကားဝှက်'
+                    onChange={handleChange}
                     value={data.password}
                   />
-                  <button className='position-absolute clear-btn'>
+                  <a className='position-absolute clear-btn'>
                     {passwordVisible ? (
                       <Eye
                         onClick={() => {
@@ -139,20 +183,20 @@ const SignUp = () => {
                         className='circleX'
                       />
                     )}
-                  </button>
+                  </a>
                 </div>
               </div>
               <div className='row mt-3'>
                 <div className='position-relative'>
-                  <InputBox
-                    typeProps={confirmPasswordVisible ? "text" : "password"}
-                    name={"confirm_password"}
+                  <input
+                    type={confirmPasswordVisible ? "text" : "password"}
+                    name='confirm_password'
                     ref={checkConfirmPassword}
-                    holder={"စကားဝှက်ထပ်မံရိုက်သွင်းပါ"}
-                    InputValue={handleChange}
+                    placeholder='စကားဝှက်ထပ်မံရိုက်သွင်းပါ'
+                    onChange={handleChange}
                     value={data.confirm_password}
                   />
-                  <button className='position-absolute clear-btn'>
+                  <a className='position-absolute clear-btn'>
                     {confirmPasswordVisible ? (
                       <Eye
                         onClick={() => {
@@ -168,7 +212,7 @@ const SignUp = () => {
                         className='circleX'
                       />
                     )}
-                  </button>
+                  </a>
                 </div>
               </div>
               <div className='row mt-3'>
@@ -176,9 +220,8 @@ const SignUp = () => {
               </div>
               <div className='button-wrapper'>
                 <button
-                  type='button'
+                  type='submit'
                   className='btn btn-primary w-100 mt-5 submit-btn'
-                  onClick={handleClick}
                 >
                   စာရင်းသွင်းရန်
                 </button>
@@ -187,7 +230,7 @@ const SignUp = () => {
                 <Link to='/login'>အကောင့်ရှိပီးသားလား</Link>
               </p>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>
