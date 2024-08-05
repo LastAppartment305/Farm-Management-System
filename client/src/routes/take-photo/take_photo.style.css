@@ -32,6 +32,7 @@ video {
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
+
 .video {
   display: flex;
   justify-content: center;
@@ -132,4 +133,7 @@ video {
   display: flex;
   position: relative;
   justify-content: end;
+}
+.map-container {
+  height: 600px;
 }

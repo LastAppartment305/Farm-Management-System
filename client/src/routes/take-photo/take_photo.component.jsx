@@ -8,11 +8,26 @@ import { authContext } from "../../context/context";
 import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
 import io from "socket.io-client";
+import point from "../../assets/icon/location.svg";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  CircleMarker,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 const TakePhoto = () => {
   const videoref = useRef(null);
   const [removeImage, setRemoveImage] = useState(false);
   const [workerInformation, setWorkerInformation] = useState();
+  const [position, setposition] = useState({
+    latitude: null,
+    longitude: null,
+  });
   const imageDescription = useRef("");
   const [openCamera, setOpenCamera] = useState(false);
   const { postData } = usePost(
@@ -53,6 +68,18 @@ const TakePhoto = () => {
     sessionStorage.setItem("capturedImage", imageUrl);
     setOpenCamera(false);
     setRemoveImage(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setposition({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        console.log("Latitude: ", position.coords.latitude);
+        console.log("Logitude: ", position.coords.longitude);
+      });
+    } else {
+      console.log("Geolocation not supported");
+    }
     // const response = await postData({ url: imageUrl });
   };
 
@@ -119,6 +146,18 @@ const TakePhoto = () => {
     };
     fetchingWorkerInformation();
   }, []);
+  // useEffect(() => {
+  //   if ("geolocation" in navigator) {
+  //     navigator.geolocation.getCurrentPosition(function (position) {
+  //       console.log("Latitude: ", position.coords.latitude);
+  //       console.log("Logitude: ", position.coords.longitude);
+  //     });
+  //   } else {
+  //     console.log("Geolocation not supported");
+  //   }
+
+  //   // const success = (position) => {};
+  // }, []);
 
   const handleUpload = async () => {
     const socket = io.connect("http://localhost:5000", {
@@ -179,6 +218,18 @@ const TakePhoto = () => {
   };
   // console.log("verifyWorker from take-photo: ", response);
 
+  const MapView = () => {
+    let map = useMap();
+    map.setView([position.latitude, position.longitude], map.getZoom());
+    //Sets geographical center and zoom for the view of the map
+    return null;
+  };
+  const customeIcon = L.icon({
+    iconUrl: point,
+    iconSize: [25, 35],
+    iconAnchor: [5, 30],
+  });
+
   return (
     <div className='container-fluid'>
       <div className='logout-btn '>
@@ -191,6 +242,13 @@ const TakePhoto = () => {
       <div className='date-string'>
         {mySQLDateString} ရက်နေ့အတွက် ရီပို့ တင်ရန်
       </div>
+      {position.latitude && position.longitude && (
+        <div className='location'>
+          <div>လယ်ကွက်တည်နေရာ</div>
+          <div>{`Latitude: ${position.latitude}`}</div>
+          <div>{`Logitude: ${position.longitude}`}</div>
+        </div>
+      )}
       {openCamera && (
         <div className='video'>
           <div className='video-wrapper'>
@@ -239,6 +297,34 @@ const TakePhoto = () => {
             </div>
           </>
         )}
+
+        <div>
+          {sessionStorage.getItem("capturedImage") &&
+            removeImage &&
+            position.latitude &&
+            position.longitude && (
+              <MapContainer
+                style={{ height: 600, width: 600 }}
+                classsName='map'
+                center={[position.latitude, position.longitude]}
+                zoom={30}
+                scrollWheelZoom={false}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> 
+        contributors'
+                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                />
+                <Marker
+                  icon={customeIcon}
+                  position={[position.latitude, position.longitude]}
+                >
+                  {/* <Popup>{display_name}</Popup> */}
+                </Marker>
+                <MapView />
+              </MapContainer>
+            )}
+        </div>
       </div>
     </div>
   );
