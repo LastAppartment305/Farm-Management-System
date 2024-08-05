@@ -43,13 +43,19 @@ const Login = () => {
     e.preventDefault();
     const result = loginSchema.safeParse(data);
     if (result.success) {
-      const res = await postData(data);
-      if (res != "") {
-        localStorage.setItem("role", res);
-        localStorage.setItem("username", data.name);
-        setRole(res);
+      const nameRegularExpression = /^[^\d].*$/i;
+      if (nameRegularExpression.test(data.name) == false) {
+        toast.error(`အမည် ကိန်းဂဏာန်းမဖြစ်ရပါ`);
+        // console.log("regulat expression work");
       } else {
-        toast.error("မှားယွင်းနေပါသည်");
+        const res = await postData(data);
+        if (res != "") {
+          localStorage.setItem("role", res);
+          localStorage.setItem("username", data.name);
+          setRole(res);
+        } else {
+          toast.error("မှန်ကန်မှုမရှိပါ");
+        }
       }
     } else {
       validationErrors.current = result.error.formErrors.fieldErrors;

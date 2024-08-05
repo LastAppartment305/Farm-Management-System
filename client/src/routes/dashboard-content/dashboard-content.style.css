@@ -23,3 +23,11 @@
 .add-worker-btn-text {
   font-weight: 600 !important;
 }
+.show-password {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 19px;
+  border: none;
+  background: none;
+  margin-top: 7px;
+}

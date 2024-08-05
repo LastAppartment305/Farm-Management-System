@@ -12,14 +12,14 @@ import { toast, Toaster } from "react-hot-toast";
 
 const SignUp = () => {
   const registerSchema = z.object({
-    name: z.string().min(1, { message: "နာမည် လိုအပ်ပါသည်" }),
+    name: z.string().min(1, { message: "နာမည်လိုအပ်ပါသည်" }),
     phone: z
       .string()
       .regex(new RegExp(/^\+?9509\d{9,9}$/), "ဖုန်းနံပါတ် မှန်ကန်စွာဖြည့်ပါ"),
     password: z
       .string()
       .regex(
-        new RegExp(/^[0-9 A-Z a-z]{6,9}$/),
+        new RegExp(/^[0-9 A-Z a-z]{6,}$/),
         "စကားဝှက်အနည်းဆုံး(၆)လုံးဖြည့်သွင်းပါ"
       ),
     confirm_password: z
@@ -65,22 +65,28 @@ const SignUp = () => {
       if (data.password === data.confirm_password) {
         console.log("it is the same password");
         try {
-          const response = await axios.post(
-            "http://localhost:5000/signup",
-            data
-          );
-          console.log("Response from Server", response.data);
-          if (response.data[0]) {
-            if ("Name" in response.data[0] === false) {
-              if ("Phone_no" in response.data[0] === false) {
+          const nameRegularExpression = /^[^\d].*$/i;
+          if (nameRegularExpression.test(data.name) == false) {
+            toast.error(`အမည် ကိန်းဂဏာန်းမဖြစ်ရပါ`);
+            // console.log("regulat expression work");
+          } else {
+            const response = await axios.post(
+              "http://localhost:5000/signup",
+              data
+            );
+            console.log("Response from Server", response.data);
+            if (response.data[0]) {
+              if ("Name" in response.data[0] === false) {
+                if ("Phone_no" in response.data[0] === false) {
+                } else {
+                  toast.error("အခြားဖုန်းနံပါတ်တစ်ခုရွေးချယ်ပါ");
+                }
               } else {
-                toast.error("အခြားဖုန်းနံပါတ်တစ်ခုရွေးချယ်ပါ");
+                toast.error("အခြားနာမည်တစ်ခုရွေးချယ်ပါ");
               }
             } else {
-              toast.error("အခြားနာမည်တစ်ခုရွေးချယ်ပါ");
+              setRegistered(true);
             }
-          } else {
-            setRegistered(true);
           }
         } catch (error) {
           console.log("Error at sending data", error);

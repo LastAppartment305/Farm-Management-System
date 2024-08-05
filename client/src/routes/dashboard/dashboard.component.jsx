@@ -152,7 +152,9 @@ const DashBoard = () => {
         "http://localhost:5000/noti/getAllNotification"
       );
       if (getNoti) {
+        console.log("No reverse: ", getNoti.data);
         const reverse = getNoti.data.reverse();
+        console.log("reverse: ", reverse);
         setNotifications(reverse);
         console.log(getNoti);
       }
@@ -165,6 +167,7 @@ const DashBoard = () => {
     );
     if (FetchNotiAgain) {
       const reverse = FetchNotiAgain.data.reverse();
+      console.log("reverse: ", reverse);
       setNotifications(reverse);
     }
     console.log("change noti status: ", notifications);

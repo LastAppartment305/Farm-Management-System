@@ -1,5 +1,5 @@
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
-import { Users, UserRoundPlus, X } from "lucide-react";
+import { Users, UserRoundPlus, X, CircleX, Eye, EyeOff } from "lucide-react";
 import { useGet, usePost } from "../../custom-hook/axios-post/axios-post";
 import "./dashboard-content.style.css";
 import { useEffect, useRef, useState } from "react";
@@ -7,12 +7,36 @@ import InputBox from "../../component/InputBox/InputBox.component";
 import SelectBox from "../../component/select-box/selectbox.component";
 import Accordion from "react-bootstrap/Accordion";
 import axios from "axios";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import z from "zod";
+import { toast, Toaster } from "react-hot-toast";
 const DashboardContent = () => {
+  const registerSchema = z.object({
+    name: z.string().min(1, { message: "နာမည်လိုအပ်ပါသည်" }),
+    phone: z
+      .string()
+      .regex(new RegExp(/^\+?9509\d{9,9}$/), "ဖုန်းနံပါတ် မှန်ကန်စွာဖြည့်ပါ"),
+    password: z
+      .string()
+      .regex(
+        new RegExp(/^[0-9 A-Z a-z]{6,}$/),
+        "စကားဝှက်အနည်းဆုံး(၆)လုံးဖြည့်သွင်းပါ"
+      ),
+    confirm_password: z
+      .string()
+      .min(1, { message: "စကားဝှက်ပြန်ရိုက်ရန်လိုအပ်ပါသည်" }),
+  });
+
   const { response, loading } = useGet("http://localhost:5000/dashboard");
   //const userdata = response?.data.user;
   const [userlist, setuserlist] = useState([]);
   //const [isDelete, setisDelete] = useState(null);
   const [registered, setRegistered] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const validationErrors = useRef("");
   const workerdata = response?.data.worker;
   const farmdata = response?.data.farm;
   const { postData } = usePost("http://localhost:5000/dashboard");
@@ -63,22 +87,49 @@ const DashboardContent = () => {
   }, [response]);
 
   //Post user data to Server
-  const handleAdd = async () => {
-    if (data.password === data.confirm_password) {
-      console.log("it is the same password");
-      try {
-        const response = await axios.post("http://localhost:5000/signup", data);
-        console.log("Response from Server", response.data);
-        setRegistered(true);
-      } catch (error) {
-        console.log("Error at sending data", error);
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    const result = registerSchema.safeParse(data);
+    if (result.success) {
+      if (data.password === data.confirm_password) {
+        console.log("it is the same password");
+        try {
+          const nameRegularExpression = /^[^\d].*$/i;
+          if (nameRegularExpression.test(data.name) == false) {
+            toast.error(`အမည် ကိန်းဂဏာန်းမဖြစ်ရပါ`);
+            // console.log("regulat expression work");
+          } else {
+            const response = await axios.post(
+              "http://localhost:5000/signup",
+              data
+            );
+            console.log("Response from Server", response.data);
+            setRegistered(true);
+          }
+        } catch (error) {
+          console.log("Error at sending data", error);
+        }
+      } else {
+        toast.error("စကားဝှက်တူညီရန်လိုအပ်ပါသည်");
       }
     } else {
-      alert("the password are not the same");
+      validationErrors.current = result.error.formErrors.fieldErrors;
+      // console.log(validationErrors.current);
+
+      // console.log("This is validation errors: ", validationErrors.current);
+      toast.error(Object.values(validationErrors.current)[0]);
     }
+  };
+
+  const ClearInputBoxForPhone = () => {
+    setData((prevData) => ({
+      ...prevData,
+      phone: "",
+    }));
   };
   return (
     <div className='m-5 dashboard-body h-100'>
+      <Toaster toastOptions={{ duration: 3000 }} />
       <div className='user-detail-card'>
         <div className='row g-2'>
           <div className='col-lg-4 col-md-6'>
@@ -147,7 +198,7 @@ const DashboardContent = () => {
         ))}
       </Accordion>
 
-      <div className='add-worker-btn-wrapper d-flex align-items-center justify-content-end py-2'>
+      <div className='add-worker-btn-wrapper d-flex align-items-center justify-content-end'>
         <a
           type='button'
           className='add-worker-btn d-flex align-items-center'
@@ -159,53 +210,103 @@ const DashboardContent = () => {
       </div>
       {addUser && (
         <div className='adduser-form-wrapper'>
-          <div className='assign-worker-form position-relative'>
+          <form
+            className='assign-worker-form position-relative'
+            onSubmit={handleAdd}
+          >
             <div className='cancel-btn'>
               <X onClick={cancelAdd} />
             </div>
             <div className='position-relative'>
               <div className='mt-3 w-100'>
-                <InputBox
-                  typeProps={"text"}
-                  name={"name"}
-                  holder={"အမည် ထည့်ရန်"}
-                  InputValue={handleChange}
+                <input
+                  type='text'
+                  name='name'
+                  placeholder={"အမည် ထည့်ရန်"}
+                  onChange={handleChange}
                 />
               </div>
               <div className='mt-3 w-100'>
-                <InputBox
-                  typeProps={"text"}
-                  name={"phone"}
-                  holder={"ဖုန်းနံပါတ် ထည့်ရန်"}
-                  InputValue={handleChange}
-                />
+                <div className='position-relative'>
+                  <PhoneInput
+                    name='phone'
+                    country={"mm"}
+                    value={data.phone}
+                    onChange={(e) =>
+                      setData((prev) => ({
+                        ...prev,
+                        phone: e,
+                      }))
+                    }
+                  />
+                  <a
+                    className='position-absolute clear-btn'
+                    onClick={ClearInputBoxForPhone}
+                  >
+                    <CircleX className='circleX' />
+                  </a>
+                </div>
               </div>
-              <div className='mt-3 w-100'>
-                <InputBox
-                  typeProps={"password"}
-                  name={"password"}
-                  holder={"လျှို့ဝှက်နံပါတ် ထည့်ရန်"}
-                  InputValue={handleChange}
+              <div className='position-relative mt-3 w-100'>
+                <input
+                  type={passwordVisible ? "text" : "password"}
+                  name='password'
+                  placeholder={"လျှို့ဝှက်နံပါတ် ထည့်ရန်"}
+                  onChange={handleChange}
                 />
+                <a className='position-absolute show-password'>
+                  {passwordVisible ? (
+                    <Eye
+                      onClick={() => {
+                        setPasswordVisible(false);
+                      }}
+                      className='circleX'
+                    />
+                  ) : (
+                    <EyeOff
+                      onClick={() => {
+                        setPasswordVisible(true);
+                      }}
+                      className='circleX'
+                    />
+                  )}
+                </a>
               </div>
-              <div className='mt-3 w-100'>
-                <InputBox
-                  typeProps={"password"}
-                  name={"confirm_password"}
-                  holder={"လျှို့ဝှက်နံပါတ် ပြန်ထည့်ရန်"}
-                  InputValue={handleChange}
+              <div className='position-relative mt-3 w-100'>
+                <input
+                  type={confirmPasswordVisible ? "text" : "password"}
+                  name='confirm_password'
+                  placeholder={"လျှို့ဝှက်နံပါတ် ပြန်ထည့်ရန်"}
+                  onChange={handleChange}
                 />
+                <a className='position-absolute show-password'>
+                  {confirmPasswordVisible ? (
+                    <Eye
+                      onClick={() => {
+                        setConfirmPasswordVisible(false);
+                      }}
+                      className='circleX'
+                    />
+                  ) : (
+                    <EyeOff
+                      onClick={() => {
+                        setConfirmPasswordVisible(true);
+                      }}
+                      className='circleX'
+                    />
+                  )}
+                </a>
               </div>
               <div className='mt-3 w-100'>
                 <SelectBox InputValue={handleChange} name={"userRole"} />
               </div>
             </div>
             <div className='d-flex mt-3 justify-content-end'>
-              <button className='btn btn-primary' onClick={handleAdd}>
-                Add
+              <button className='btn btn-primary' type='submit'>
+                စာရင်းသွင်းရန်
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </div>

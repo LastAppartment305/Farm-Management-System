@@ -123,6 +123,7 @@ const WorkerLogin = () => {
       })
       .catch((err) => {
         console.log(err);
+        toast.error("ကုဒ်နံပါတ်မမှန်ပါ");
       });
   };
   // useEffect(() => {

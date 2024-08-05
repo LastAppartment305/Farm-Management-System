@@ -367,7 +367,7 @@ const Staff = () => {
     age: z
       .string()
       .regex(
-        new RegExp(/^[1-6][0-9]$/),
+        new RegExp(/^(1[89]|[2-6][0-9]|70)$/),
         "အသက် ၁၈နှစ် မှ ၇၀နှစ် အတွင်းဖြစ်ရမည်"
       ),
   });
@@ -426,21 +426,27 @@ const Staff = () => {
     const result = userSchema.safeParse(data);
     if (result.success) {
       // console.log("validation success");
-      const x = await postData(data);
-      if (x) {
-        const resAfterInsert = await axios.get(
-          "http://localhost:5000/dashboard/staff"
-        );
-        if (resAfterInsert) {
-          setworkerList(resAfterInsert.data.worker);
+      const nameRegularExpression = /^[^\d].*$/i;
+      if (nameRegularExpression.test(data.name) == false) {
+        toast.error(`အမည် ကိန်းဂဏာန်းမဖြစ်ရပါ`);
+        // console.log("regulat expression work");
+      } else {
+        const x = await postData(data);
+        if (x) {
+          const resAfterInsert = await axios.get(
+            "http://localhost:5000/dashboard/staff"
+          );
+          if (resAfterInsert) {
+            setworkerList(resAfterInsert.data.worker);
+          }
+          setData({
+            name: "",
+            gender: "male",
+            phone: "",
+            address: "",
+            age: "",
+          });
         }
-        setData({
-          name: "",
-          gender: "male",
-          phone: "",
-          address: "",
-          age: "",
-        });
       }
     } else {
       validationErrors.current = result.error.formErrors.fieldErrors;
