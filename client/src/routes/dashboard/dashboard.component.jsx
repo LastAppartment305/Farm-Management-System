@@ -5,6 +5,7 @@ import {
   Bell,
   PieChart,
   Captions,
+  CalendarCheck,
   Pickaxe,
   User,
   Sprout,
@@ -187,6 +188,14 @@ const DashBoard = () => {
             buttonText={"အချက်အလက်များ"}
             isActive={isActive === "admin"}
             onclick={() => handleClick("admin")}
+          />
+        )}
+        {role === "admin" && (
+          <SideBarButton
+            icon={CalendarCheck}
+            buttonText={"Approval"}
+            isActive={isActive === "admin/approval"}
+            onclick={() => handleClick("admin/approval")}
           />
         )}
         {role === "owner" && (

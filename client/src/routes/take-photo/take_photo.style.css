@@ -83,8 +83,9 @@ video {
 }
 .upload-btn {
   position: absolute;
-  right: 37px;
-  bottom: 78px;
+  right: 0px;
+  /* right: 37px;
+  bottom: 78px; */
   left: auto;
   top: auto;
   background: red;
@@ -119,7 +120,7 @@ video {
   margin-bottom: 30px;
 }
 .textarea-wrapper {
-  position: absolute;
+  position: relative;
   padding-left: 20px;
   padding-right: 20px;
   width: 100%;

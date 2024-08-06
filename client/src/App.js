@@ -9,7 +9,7 @@ import Login from "./routes/login-in/login-in.component";
 import reportWebVitals from "./reportWebVitals";
 import DashBoard from "./routes/dashboard/dashboard.component";
 import DashboardContent from "./routes/dashboard-content/dashboard-content.component";
-import DashboardPermission from "./routes/dashboard-content/dashboard-content-permission.component";
+import AdminApproval from "./routes/dashboard-content/dashboard-content-approval.component";
 
 import { authContext } from "./context/context";
 import Staff from "./routes/dashboard-content/staff/dashboard-content-staff.component";
@@ -53,8 +53,8 @@ const App = () => {
                     element: <DashboardContent />,
                   },
                   {
-                    path: "admin/permission",
-                    element: <DashboardPermission />,
+                    path: "admin/approval",
+                    element: <AdminApproval />,
                   },
                 ],
               },

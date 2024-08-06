@@ -186,6 +186,7 @@ const TakePhoto = () => {
   const removeCaptureImage = () => {
     sessionStorage.removeItem("capturedImage");
     setRemoveImage(false);
+    setposition({ latitude: null, longitude: null });
   };
   const logout = () => {
     navigate("/worker-login");
@@ -239,16 +240,18 @@ const TakePhoto = () => {
         </button>
       </div>
       <Toaster toastOptions={{ duration: 3000 }} />
-      <div className='date-string'>
-        {mySQLDateString} ရက်နေ့အတွက် ရီပို့ တင်ရန်
-      </div>
-      {position.latitude && position.longitude && (
-        <div className='location'>
-          <div>လယ်ကွက်တည်နေရာ</div>
-          <div>{`Latitude: ${position.latitude}`}</div>
-          <div>{`Logitude: ${position.longitude}`}</div>
+      <div>
+        <div className='date-string'>
+          {mySQLDateString} ရက်နေ့အတွက် ရီပို့ တင်ရန်
         </div>
-      )}
+        {position.latitude && position.longitude && (
+          <div className='location'>
+            <div>လယ်ကွက်တည်နေရာ</div>
+            <div>{`Latitude: ${position.latitude}`}</div>
+            <div>{`Logitude: ${position.longitude}`}</div>
+          </div>
+        )}
+      </div>
       {openCamera && (
         <div className='video'>
           <div className='video-wrapper'>
@@ -279,9 +282,7 @@ const TakePhoto = () => {
             <button className='image-remove-btn' onClick={removeCaptureImage}>
               <X />
             </button>
-            <button className='upload-btn' onClick={handleUpload}>
-              <SendHorizonal />
-            </button>
+
             <div className='textarea-wrapper'>
               <span id='char-count' className='textarea-char-count'></span>
               <textarea
@@ -294,6 +295,9 @@ const TakePhoto = () => {
                 onChange={countChars}
                 onFocus={countChars}
               />
+              <button className='upload-btn' onClick={handleUpload}>
+                <SendHorizonal />
+              </button>
             </div>
           </>
         )}
