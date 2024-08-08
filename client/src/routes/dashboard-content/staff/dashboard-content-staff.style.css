@@ -83,13 +83,14 @@
 }
 .react-tel-input .form-control {
   width: 100% !important;
-  height: 64px !important;
-  border-radius: 5rem !important;
+  height: 49px !important;
+  /* height: 64px !important;
+  border-radius: 5rem !important; */
 }
-.react-tel-input .flag-dropdown,
+/* .react-tel-input .flag-dropdown,
 .react-tel-input .selected-flag {
   border-radius: 5rem 0 0 5rem !important;
-}
+} */
 .accordion-content {
   background-color: #dcdbdbcc;
 }

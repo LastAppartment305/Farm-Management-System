@@ -87,15 +87,27 @@ const App = () => {
               },
             ]
           : []),
-        {
-          path: "worker",
-          element: <TakePhoto />,
-        },
+        ...(role === "worker"
+          ? [
+              {
+                path: "dashboard",
+                element: <DashBoard />,
+                children: [
+                  // {
+                  //   path: "worker",
+                  //   element: <TakePhoto />,
+                  // },
+                ],
+              },
+            ]
+          : []),
 
         // {
         //   path: "worker",
         //   element: <TakePhoto />,
         // },
+
+        ,
       ],
     },
   ]);

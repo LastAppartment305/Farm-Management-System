@@ -31,6 +31,9 @@ const SignUp = () => {
     phone: "",
     password: "",
     confirm_password: "",
+    NRC: "",
+    Address: "",
+    Age: "",
     userRole: "Owner",
   });
   const checkPassword = useRef(null);
@@ -70,22 +73,35 @@ const SignUp = () => {
             toast.error(`အမည် ကိန်းဂဏာန်းမဖြစ်ရပါ`);
             // console.log("regulat expression work");
           } else {
-            const response = await axios.post(
-              "http://localhost:5000/signup",
-              data
-            );
-            console.log("Response from Server", response.data);
-            if (response.data[0]) {
-              if ("Name" in response.data[0] === false) {
-                if ("Phone_no" in response.data[0] === false) {
-                } else {
-                  toast.error("အခြားဖုန်းနံပါတ်တစ်ခုရွေးချယ်ပါ");
-                }
-              } else {
-                toast.error("အခြားနာမည်တစ်ခုရွေးချယ်ပါ");
+            if (data.userRole === "Worker") {
+              // console.log("Register User: ", data);
+              const response = await axios.post(
+                "http://localhost:5000/worker/createWorker",
+                data
+              );
+
+              console.log("registered User: ", response);
+              if (response.data.insertId) {
+                navigate("/worker-login");
               }
             } else {
-              setRegistered(true);
+              const response = await axios.post(
+                "http://localhost:5000/signup",
+                data
+              );
+              console.log("Response from Server", response.data);
+              if (response.data[0]) {
+                if ("Name" in response.data[0] === false) {
+                  if ("Phone_no" in response.data[0] === false) {
+                  } else {
+                    toast.error("အခြားဖုန်းနံပါတ်တစ်ခုရွေးချယ်ပါ");
+                  }
+                } else {
+                  toast.error("အခြားနာမည်တစ်ခုရွေးချယ်ပါ");
+                }
+              } else {
+                setRegistered(true);
+              }
             }
           }
         } catch (error) {
@@ -116,7 +132,24 @@ const SignUp = () => {
       phone: "",
     }));
   };
-
+  const ClearInputBoxForNRC = () => {
+    setdata((prevData) => ({
+      ...prevData,
+      NRC: "",
+    }));
+  };
+  const ClearInputBoxForAddress = () => {
+    setdata((prevData) => ({
+      ...prevData,
+      Address: "",
+    }));
+  };
+  const ClearInputBoxForAge = () => {
+    setdata((prevData) => ({
+      ...prevData,
+      Age: "",
+    }));
+  };
   return (
     <div className='main-wrapper'>
       <Toaster toastOptions={{ duration: 3000 }} />
@@ -222,12 +255,64 @@ const SignUp = () => {
                 </div>
               </div>
               <div className='row mt-3'>
+                <div className='position-relative'>
+                  <input
+                    type='text'
+                    name='NRC'
+                    placeholder='nrc'
+                    onChange={handleChange}
+                    value={data.NRC}
+                  />
+                  <a
+                    className='position-absolute clear-btn'
+                    onClick={ClearInputBoxForNRC}
+                  >
+                    <CircleX className='circleX' />
+                  </a>
+                </div>
+              </div>
+              <div className='row mt-3'>
+                <div className='position-relative'>
+                  <input
+                    type='text'
+                    name='Address'
+                    placeholder='လိပ်စာ'
+                    onChange={handleChange}
+                    value={data.Address}
+                  />
+                  <a
+                    className='position-absolute clear-btn'
+                    onClick={ClearInputBoxForAddress}
+                  >
+                    <CircleX className='circleX' />
+                  </a>
+                </div>
+              </div>
+              <div className='row mt-3'>
+                <div className='position-relative'>
+                  <input
+                    type='text'
+                    name='Age'
+                    placeholder='အသက်'
+                    onChange={handleChange}
+                    value={data.Age}
+                  />
+                  <a
+                    className='position-absolute clear-btn'
+                    onClick={ClearInputBoxForAge}
+                  >
+                    <CircleX className='circleX' />
+                  </a>
+                </div>
+              </div>
+              <div className='row mt-3'>
                 <SelectBox InputValue={handleChange} name={"userRole"} />
               </div>
+
               <div className='button-wrapper'>
                 <button
                   type='submit'
-                  className='btn btn-primary w-100 mt-5 submit-btn'
+                  className='btn btn-primary w-100 mt-3 submit-btn'
                 >
                   စာရင်းသွင်းရန်
                 </button>

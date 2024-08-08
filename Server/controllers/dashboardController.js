@@ -538,37 +538,6 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     console.error("Error uploading file:", error);
     throw error;
   }
-  // console.log(uploadUrl);
-
-  // fs.writeFile(filePath, buffer, (err) => {
-  //   if (err) {
-  //     return res
-  //       .status(500)
-  //       .json({ message: "File upload failed", error: err.message });
-  //   }
-  //   Promise.resolve(queryDatabase(insertImageIdTo_image, valuesToInsert_image))
-  //     .then(async (response) => {
-  //       if (response) {
-  //         const queryResult = await queryDatabase(connectImageIdWithFarmId, [
-  //           farmid,
-  //           response.insertId,
-  //         ]);
-  //         return {
-  //           queryResult,
-  //           // id: response.insertId,
-  //         };
-  //       }
-
-  //       console.log(`upload ${filename} at ${mySQLDateString}`);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //       res.status(500).send({ message: "unexpected error occur at upload" });
-  //     });
-  //   res
-  //     .status(200)
-  //     .json({ message: "Upload successful", file: `uploads/${filename}` });
-  // });
 });
 //-----------------------------------------------------------------------
 export const assignWorkerToFarm = asyncHandler(async (req, res) => {

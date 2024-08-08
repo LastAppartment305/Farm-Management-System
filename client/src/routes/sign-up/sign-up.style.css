@@ -1,62 +1,60 @@
-.form-container{
-    width: 36%;
-    padding:50px;
-    height: 100vh;
-    background-color: #fff9!important;
-    backdrop-filter: blur(14px);
-    display: flex;
-    align-items: center;
+.form-container {
+  width: 36%;
+  padding: 50px;
+  height: 100vh;
+  background-color: #fff9 !important;
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
 }
-.circleX{
-    color: #28252a7d;
+.circleX {
+  color: #28252a7d;
 }
-.form-header{
+.form-header {
+  display: flex;
+  justify-content: center;
+  font-size: 2rem;
+}
+.screen-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.main-wrapper {
+  background-image: url("../../component/assets/img/ricefield.jpg");
+  background-size: cover;
+  background-position: center center;
+}
+.submit-btn {
+  height: 49px;
+  /* border-radius: 5rem!important; */
+}
+.clear-btn {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 19px;
+  border: none;
+  background: none;
+}
+
+@media (max-width: 1024px) {
+  .screen-wrapper {
     display: flex;
     justify-content: center;
-    font-size: 2rem;
-}
-.screen-wrapper{
-    height: 100vh;
-    display: flex;
-    justify-content: flex-end;
     align-items: center;
-
-    
-}
-.main-wrapper{
-    background-image: url("../../component/assets/img/ricefield.jpg");
-    background-size: cover;
-    background-position: center center;
-}
-.submit-btn{
-    height: 64px;
-    border-radius: 5rem!important;
-}
-.clear-btn{
-    top:50%;
-    transform: translateY(-50%);
-    right: 19px;
-    border: none;
-    background: none;
-}
-
-@media (max-width:1024px){
-    .screen-wrapper{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-left: 12px;
-        margin-right:12px;
-    }
-    .form-container{
-        width: 100%;
-        padding:16px;
-        background-color: #fff9;
-        backdrop-filter: blur(14px);
-        height:fit-content;
-        border-radius:10px;
-    }
-    .form-header{
-        font-size: 18px !important;
-    }
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+  .form-container {
+    width: 100%;
+    padding: 16px;
+    background-color: #fff9;
+    backdrop-filter: blur(14px);
+    height: fit-content;
+    border-radius: 10px;
+  }
+  .form-header {
+    font-size: 18px !important;
+  }
 }

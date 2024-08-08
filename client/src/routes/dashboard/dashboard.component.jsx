@@ -160,7 +160,9 @@ const DashBoard = () => {
         console.log(getNoti);
       }
     };
-    fetchNotication();
+    if (role !== "worker") {
+      fetchNotication();
+    }
   }, []);
   const closeNotificationSideBar = async () => {
     const FetchNotiAgain = await axios.get(
@@ -174,7 +176,7 @@ const DashBoard = () => {
     console.log("change noti status: ", notifications);
   };
 
-  console.log(notifications);
+  // console.log(notifications);
   return (
     <Fragment>
       <div className='side-bar'>
@@ -193,7 +195,7 @@ const DashBoard = () => {
         {role === "admin" && (
           <SideBarButton
             icon={CalendarCheck}
-            buttonText={"Approval"}
+            buttonText={"နှုန်းထားများ"}
             isActive={isActive === "admin/approval"}
             onclick={() => handleClick("admin/approval")}
           />
@@ -407,7 +409,11 @@ const DashBoard = () => {
             </h5>
             <button
               type='button'
-              onClick={closeNotificationSideBar}
+              onClick={() => {
+                if (role !== "worker") {
+                  closeNotificationSideBar();
+                }
+              }}
               class='btn-close text-reset'
               data-bs-dismiss='offcanvas'
               aria-label='Close'

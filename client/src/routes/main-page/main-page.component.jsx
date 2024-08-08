@@ -42,11 +42,21 @@ const MainPage = () => {
           </div>
         </div>
         <div className={`${classes.features}`}>
-          <div className={`${classes.owner}`} onClick={loginAsOwner}>
-            <div>ပိုင်ရှင်အဖြစ်ဝင်ရောက်ပါ</div>
+          <div className={`${classes.owner}`}>
+            <div className={`${classes.register}`} onClick={goToSingUp}>
+              ပိုင်ရှင်အဖြစ်မှတ်ပုံတင်မည်
+            </div>
+            <div className={`${classes.login}`} onClick={loginAsOwner}>
+              ပိုင်ရှင်အဖြစ်ဝင်ရောက်မည်
+            </div>
           </div>
-          <div className={`${classes.worker}`} onClick={loginAsWorker}>
-            <div>အလုပ်သမားအဖြစ်ဝင်ရောက်ပါ</div>
+          <div className={`${classes.worker}`}>
+            <div className={`${classes.register}`} onClick={goToSingUp}>
+              အလုပ်သမားအဖြစ်မှတ်ပုံတင်မည်
+            </div>
+            <div className={`${classes.login}`} onClick={loginAsWorker}>
+              အလုပ်သမားအဖြစ်ဝင်ရောက်ပါ
+            </div>
           </div>
         </div>
       </div>

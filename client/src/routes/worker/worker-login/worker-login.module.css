@@ -16,8 +16,8 @@
 .submit_btn {
   background-color: #8774e1;
   border-color: #8774e1;
-  height: 64px;
-  border-radius: 5rem;
+  height: 49px;
+  border-radius: 5px;
   color: white;
 }
 .submit_btn:hover {
