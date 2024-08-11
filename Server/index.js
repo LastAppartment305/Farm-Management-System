@@ -12,6 +12,7 @@ import { fileURLToPath } from "url";
 import worker from "./routes/worker.js";
 import report from "./routes/report.js";
 import notiServiceRoute from "./routes/noti.js";
+import calculatorServiceRoute from "./routes/calculator.js";
 import http from "http";
 import { Server as SocketIOServer } from "socket.io";
 
@@ -46,6 +47,7 @@ app.use("/farm", farmConcern);
 app.use("/report", report);
 app.use("/worker", worker);
 app.use("/noti", notiServiceRoute);
+app.use("/calculator", calculatorServiceRoute);
 app.use("/logout", (req, res) => {
   console.log("This is from index.js: logout work");
   res.clearCookie("authToken");

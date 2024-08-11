@@ -19,6 +19,7 @@ import Farm from "./routes/dashboard-content/farm/dashboard-content-farm.compone
 import WorkerLogin from "./routes/worker/worker-login/worker-login.component";
 import ReportContent from "./routes/dashboard-content/report-content/dashboard-content-report.component";
 import MainPage from "./routes/main-page/main-page.component";
+import Calculator from "./routes/dashboard-content/cultivation-calculator/cultivation-calculator.component";
 
 const App = () => {
   const [admin, setadmin] = useState(true);
@@ -82,6 +83,10 @@ const App = () => {
                   {
                     path: "owner/farm",
                     element: <Farm />,
+                  },
+                  {
+                    path: "owner/calculator",
+                    element: <Calculator />,
                   },
                 ],
               },

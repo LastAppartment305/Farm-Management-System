@@ -10,6 +10,7 @@ import {
   User,
   Sprout,
   NotepadText,
+  Calculator,
 } from "lucide-react";
 import {
   useLogout,
@@ -230,6 +231,14 @@ const DashBoard = () => {
             buttonText={"လယ် စာရင်း"}
             isActive={isActive === "owner/farm"}
             onclick={() => handleClick("owner/farm")}
+          />
+        )}
+        {role === "owner" && (
+          <SideBarButton
+            icon={Calculator}
+            buttonText={"ကုန်ကျစရိတ်တွက်ခြင်း"}
+            isActive={isActive === "owner/calculator"}
+            onclick={() => handleClick("owner/calculator")}
           />
         )}
       </div>
