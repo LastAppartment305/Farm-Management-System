@@ -1,9 +1,9 @@
 {
   "crop": [
-    { "name": "မိုးစပါး", "value": "fall paddy" },
+    { "name": "မိုးစပါး", "value": "paddy" },
     { "name": "နွေစပါး", "value": "summer paddy" }
   ],
-  "fall paddy": {
+  "paddy": {
     "pesticide": {
       "labor": 2,
       "wage": 4800,
