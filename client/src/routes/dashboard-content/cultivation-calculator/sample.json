@@ -2,37 +2,5 @@
   "crop": [
     { "name": "မိုးစပါး", "value": "paddy" },
     { "name": "နွေစပါး", "value": "summer paddy" }
-  ],
-  "paddy": {
-    "pesticide": {
-      "labor": 2,
-      "wage": 4800,
-      "brand": [
-        { "name": "ဩဘာ", "price": 50000, "value": "awba" },
-        { "name": "ရွေနဂါး", "price": 50000, "value": "shwenagar" }
-      ]
-    },
-    "herbicide": {
-      "labor": 2,
-      "wage": 4800,
-      "brand": [
-        { "name": "ဩဘာ", "price": 50000, "value": "awba" },
-        { "name": "ရွေနဂါး", "price": 50000, "value": "shwenagar" }
-      ]
-    },
-    "fertilizer": {
-      "labor": 1,
-      "wage": 5000,
-      "brand": [
-        { "name": "ဩဘာ", "price": 50000 },
-        { "name": "ရွေနဂါး", "price": 50000 }
-      ]
-    },
-    "field_preparation": {
-      "machinery_cost": 35000
-    },
-    "harvest": {
-      "machinery_cost": 100000
-    }
-  }
+  ]
 }

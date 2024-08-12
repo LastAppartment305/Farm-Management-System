@@ -31,9 +31,17 @@ const PesticideComponent = ({
         </select>
       </div>
       <div className={`mt-2`}>
+        အသုံးပြုမှုအကြိမ်အရေအတွက်:
+        {jobFrequentUsage && acre && (
+          <strong>{jobFrequentUsage.pesticide} ကြိမ်</strong>
+        )}
+      </div>
+      <div className={`mt-2`}>
         လုပ်သားလိုအပ်ချက်:
         {laborNeed.pesticide && acre && (
-          <strong>{laborNeed.pesticide * acre}ယောက်</strong>
+          <strong>
+            {laborNeed.pesticide * acre * jobFrequentUsage.pesticide}ယောက်
+          </strong>
         )}
       </div>
       <div className={`mt-2`}>
@@ -58,12 +66,7 @@ const PesticideComponent = ({
           <strong>{chemicalPrice.pesticide} ကျပ်</strong>
         )}
       </div>
-      <div className={`mt-2`}>
-        အသုံးပြုမှုအကြိမ်အရေအတွက်:
-        {jobFrequentUsage && acre && (
-          <strong>{jobFrequentUsage.pesticide} ကြိမ်</strong>
-        )}
-      </div>
+
       <div className={`mt-2`}>
         ကုန်ကျငွေ:
         {wage.pesticide && acre && chemicalPrice.pesticide && (

@@ -3,9 +3,12 @@ import classes from "./cultivation-calculator.module.css";
 import { usePost } from "../../../custom-hook/axios-post/axios-post.jsx";
 import crops from "./sample.json";
 import PesticideComponent from "../../../component/pesticide/pesticide.component.jsx";
+import PlantingComponent from "../../../component/planting/planting.component.jsx";
+import HerbicideComponent from "../../../component/herbicide/herbicide.component.jsx";
+import FertilizerComponent from "../../../component/fertilizer/fertilizer.component.jsx";
 
 const Calculator = () => {
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState(null);
   const [selectedOptionDetail, setSelectedOptionDetail] = useState(null);
   const [chemical, setChemical] = useState(null);
   const [chemicalPrice, setChemicalPrice] = useState({
@@ -17,21 +20,25 @@ const Calculator = () => {
     seedCost: null,
     totalLaborNeed: null,
     totalLaborWage: null,
+    totalCost: null,
   });
   const [pesticideDetail, setPesticideDetail] = useState({
     totalLaborNeed: null,
     totalLaborWage: null,
     chemicalCost: null,
+    totalCost: null,
   });
   const [herbicideDetail, setHerbicideDetail] = useState({
     totalLaborNeed: null,
     totalLaborWage: null,
     chemicalCost: null,
+    totalCost: null,
   });
   const [fertilizerDetail, setFertilizerDetail] = useState({
     totalLaborNeed: null,
     totalLaborWage: null,
     chemicalCost: null,
+    totalCost: null,
   });
   const [totalLoborCost, setTotalLaborCost] = useState({});
   const [fetchData, setFetchData] = useState(null);
@@ -186,12 +193,32 @@ const Calculator = () => {
   useEffect(() => {
     laborNeed.planting &&
       acre &&
+      selectedOption &&
       setPlantingDetail((prev) => ({
         ...prev,
         totalLaborNeed: laborNeed.planting * acre,
+        totalLaborWage: wage.planting * laborNeed.planting * acre,
+        totalCost:
+          wage.planting * laborNeed.planting * acre +
+          fetchData.cropInfo.SeedCost * acre,
       }));
-  });
-  console.log("fetchDataState", chemicalPrice);
+    setPesticideDetail((prev) => ({
+      ...prev,
+      totalLaborNeed: laborNeed.pesticide * acre,
+      totalLaborWage:
+        wage.pesticide *
+        laborNeed.pesticide *
+        acre *
+        jobFrequentUsage.pesticide,
+      chemicalCost: chemicalPrice.pesticide,
+      totalCost:
+        wage.pesticide *
+        laborNeed.pesticide *
+        acre *
+        jobFrequentUsage.pesticide,
+    }));
+  }, [laborNeed, wage, acre]);
+  console.log("fetchDataState", plantingDetail);
   return (
     <div className={`${classes.calculator_wrapper}`}>
       <div className={`${classes.crop}`}>
@@ -214,134 +241,18 @@ const Calculator = () => {
           />
         </div>
       </div>
-      <div className={`${classes.pesticide} w-100`}>
-        <div className={`${classes.boxes} me-5`}>
-          <div className={`${classes.box_label} mb-2`}>စိုက်ပျိုးစရိတ်</div>
-        </div>
-        <div className={`${classes.radio_btn_wrapper}`}>
-          <div className='d-flex align-items-center'>
-            <input
-              type='radio'
-              id='radio1'
-              name='planting'
-              className={`${classes.radio_btn}`}
-              onChange={clickRadioBtn1}
-              value={fetchData?.cropInfo.TransplantLabor}
-            />
-            <label for='radio1' className='me-5'>
-              ပျိုးပင်ဖြင့်စိုက်ပျိုးခြင်း
-            </label>
-          </div>
-          <div className='d-flex align-items-center'>
-            <input
-              type='radio'
-              id='radio2'
-              name='planting'
-              className={`${classes.radio_btn}`}
-              onChange={clickRadioBtn2}
-              value={fetchData?.cropInfo.SeedingLabor}
-            />
-            <label for='radio2' className='me-5'>
-              မျိုးစေ့ကြဲစိုက်ပျိုးခြင်း
-            </label>
-          </div>
-        </div>
-        <div className={`mt-2`}>
-          မျိုးစရိတ်:
-          {fetchData?.cropInfo.SeedCost && acre && (
-            <strong>{fetchData.cropInfo.SeedCost * acre}ကျပ်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          လုပ်သားလိုအပ်ချက်:
-          {laborNeed.planting && acre && (
-            <strong>{laborNeed.planting * acre}ယောက်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          တစ်ယောက်လုပ်အားခ:
-          {wage.planting && acre && <strong>{wage.planting} ကျပ်</strong>}
-        </div>
-        <div className={`mt-2`}>
-          လုပ်အားခစုစုပေါင်း:
-          {wage.planting && laborNeed.planting && acre && (
-            <strong>{wage.planting * laborNeed.planting * acre}</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          ကုန်ကျငွေ:
-          {<strong></strong>}
-        </div>
-      </div>
-      <div className={`${classes.pesticide} w-100`}>
-        <div className={`${classes.boxes} me-5`}>
-          <div className={`${classes.box_label} mb-2`}>ပိုးသတ်ဆေး</div>
-          <select
-            className={`${classes.inputs} w-100`}
-            onChange={handlePesticidePrice}
-          >
-            <option></option>
-            {chemical?.map((item, index) => {
-              if (item.ChemCategory === "pesticide") {
-                return (
-                  <option key={index} value={item.Price}>
-                    {item.Brand}
-                  </option>
-                );
-                // console.log(item.Brand);
-              }
-            })}
-          </select>
-        </div>
-        <div className={`mt-2`}>
-          လုပ်သားလိုအပ်ချက်:
-          {laborNeed.pesticide && acre && (
-            <strong>{laborNeed.pesticide * acre}ယောက်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          တစ်ယောက်လုပ်အားခ:
-          {wage.pesticide && acre && <strong>{wage.pesticide}ယောက်</strong>}
-        </div>
-        <div className={`mt-2`}>
-          သီးနှံကာလတစ်ခုလုံးအတွက်လုပ်အားခ:
-          {wage.pesticide && acre && (
-            <strong>
-              {wage.pesticide *
-                laborNeed.pesticide *
-                acre *
-                jobFrequentUsage.pesticide}{" "}
-              ကျပ်
-            </strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
-          {chemicalPrice.pesticide && acre && (
-            <strong>{chemicalPrice.pesticide} ကျပ်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          အသုံးပြုမှုအကြိမ်အရေအတွက်:
-          {jobFrequentUsage && acre && (
-            <strong>{jobFrequentUsage.pesticide} ကြိမ်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          ကုန်ကျငွေ:
-          {wage.pesticide && acre && chemicalPrice.pesticide && (
-            <strong>
-              {wage.pesticide *
-                laborNeed.pesticide *
-                acre *
-                jobFrequentUsage.pesticide +
-                chemicalPrice.pesticide}{" "}
-              ကျပ်
-            </strong>
-          )}
-        </div>
-      </div>
-      {acre && (
+      {selectedOption && (
+        <PlantingComponent
+          fetchData={fetchData}
+          clickRadioBtn1={clickRadioBtn1}
+          clickRadioBtn2={clickRadioBtn2}
+          laborNeed={laborNeed}
+          wage={wage}
+          acre={acre}
+          plantingDetail={plantingDetail}
+        />
+      )}
+      {selectedOption && (
         <PesticideComponent
           chemical={chemical}
           laborNeed={laborNeed}
@@ -352,75 +263,18 @@ const Calculator = () => {
           acre={acre}
         />
       )}
-      <div className={`${classes.herbicide} w-100`}>
-        <div className={`${classes.boxes} me-5`}>
-          <div className={`${classes.box_label} mb-2`}>ပေါင်းသတ်ဆေး</div>
-          <select
-            className={`${classes.inputs} w-100`}
-            onChange={handleHerbicidePrice}
-          >
-            <option></option>
-            {chemical?.map((item, index) => {
-              if (item.ChemCategory === "herbicide") {
-                return (
-                  <option key={index} value={item.Price}>
-                    {item.Brand}
-                  </option>
-                );
-                // console.log(item.Brand);
-              }
-            })}
-          </select>
-        </div>
-        <div className={`mt-2`}>
-          လုပ်သားလိုအပ်ချက်:
-          {laborNeed.herbicide && acre && (
-            <strong>{laborNeed.herbicide * acre}ယောက်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          တစ်ယောက်လုပ်အားခ:
-          {wage.herbicide && acre && <strong>{wage.herbicide}ယောက်</strong>}
-        </div>
-        <div className={`mt-2`}>
-          သီးနှံကာလတစ်ခုလုံးအတွက်လုပ်အားခ:
-          {wage.herbicide && acre && (
-            <strong>
-              {wage.herbicide *
-                laborNeed.herbicide *
-                acre *
-                jobFrequentUsage.herbicide}{" "}
-              ကျပ်
-            </strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
-          {chemicalPrice.herbicide && acre && (
-            <strong>{chemicalPrice.herbicide} ကျပ်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          အသုံးပြုမှုအကြိမ်အရေအတွက်:
-          {jobFrequentUsage && acre && (
-            <strong>{jobFrequentUsage.herbicide} ကြိမ်</strong>
-          )}
-        </div>
-        <div className={`mt-2`}>
-          ကုန်ကျငွေ:
-          {wage.herbicide && acre && chemicalPrice.herbicide && (
-            <strong>
-              {wage.herbicide *
-                laborNeed.herbicide *
-                acre *
-                jobFrequentUsage.herbicide +
-                chemicalPrice.herbicide}{" "}
-              ကျပ်
-            </strong>
-          )}
-        </div>
-      </div>
-      <div className={`${classes.fertilizer} w-100`}>
+      {selectedOption && (
+        <HerbicideComponent
+          chemical={chemical}
+          laborNeed={laborNeed}
+          wage={wage}
+          acre={acre}
+          chemicalPrice={chemicalPrice}
+          jobFrequentUsage={jobFrequentUsage}
+          handleHerbicidePrice={handleHerbicidePrice}
+        />
+      )}
+      {/* <div className={`${classes.fertilizer} w-100`}>
         <div className={`${classes.boxes} me-5`}>
           <div className={`${classes.box_label} mb-2`}>ဓါတ်မြေဩဇာ</div>
           <select
@@ -487,7 +341,18 @@ const Calculator = () => {
             </strong>
           )}
         </div>
-      </div>
+      </div> */}
+      {selectedOption && (
+        <FertilizerComponent
+          chemical={chemical}
+          laborNeed={laborNeed}
+          wage={wage}
+          acre={acre}
+          chemicalPrice={chemicalPrice}
+          jobFrequentUsage={jobFrequentUsage}
+          handleFertilizerPrice={handleFertilizerPrice}
+        />
+      )}
       <div className={`${classes.field_preparation} w-100`}>
         <div className={`${classes.boxes} me-5`}>
           <div className={`${classes.box_label} mb-2`}>မြေပြင်ဆင်စရိတ်</div>
