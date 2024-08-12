@@ -18,6 +18,7 @@ export const getOverallData = asyncHandler(async (req, res) => {
   const queryChemicalInfo = "select * from chemical where CropId=?";
   const queryJob =
     "select * from job where JobId in (select JobId from wage where CropId=?)";
+  const queryChemical = "select * from chemical where CropId=?";
   const Jobs = (ids) => {
     const placeholders = ids.map(() => "?").join(", ");
     return `select * from jobcategory where JobId in (${placeholders})`;
@@ -41,6 +42,7 @@ export const getOverallData = asyncHandler(async (req, res) => {
         cropInfo: [], // Assuming cropResult is an array and we need the first element
         overallInfo: [],
         job: [],
+        chemical: [],
       };
       const cropResult = await queryDatabase(cropInfo, [crop]);
 
@@ -57,6 +59,11 @@ export const getOverallData = asyncHandler(async (req, res) => {
           // const generateJobQuery = Jobs(combinedResult.overallInfo);
           const getJobs = await queryDatabase(queryJob, cropResult[0].CropId);
           combinedResult.job = getJobs;
+          const getchemical = await queryDatabase(
+            queryChemical,
+            cropResult[0].CropId
+          );
+          combinedResult.chemical = getchemical;
         }
       }
 
