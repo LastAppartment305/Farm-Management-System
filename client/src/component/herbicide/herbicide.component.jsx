@@ -15,8 +15,9 @@ const HerbicideComponent = ({
         <select
           className={`${classes.inputs} w-100`}
           onChange={handleHerbicidePrice}
+          value={chemicalPrice.herbicide}
         >
-          <option></option>
+          <option value={0}></option>
           {chemical?.map((item, index) => {
             if (item.ChemCategory === "herbicide") {
               return (
@@ -28,6 +29,12 @@ const HerbicideComponent = ({
             }
           })}
         </select>
+      </div>
+      <div className={`mt-2`}>
+        အသုံးပြုရမည့်ခန့်မှန်းအကြိမ်အရေအတွက်:
+        {jobFrequentUsage && acre && (
+          <strong>{jobFrequentUsage.herbicide} ကြိမ်</strong>
+        )}
       </div>
       <div className={`mt-2`}>
         လုပ်သားလိုအပ်ချက်:
@@ -53,19 +60,14 @@ const HerbicideComponent = ({
       </div>
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
-        {chemicalPrice.herbicide && acre && (
+        {chemicalPrice.herbicide !== null && acre && (
           <strong>{chemicalPrice.herbicide} ကျပ်</strong>
         )}
       </div>
-      <div className={`mt-2`}>
-        အသုံးပြုမှုအကြိမ်အရေအတွက်:
-        {jobFrequentUsage && acre && (
-          <strong>{jobFrequentUsage.herbicide} ကြိမ်</strong>
-        )}
-      </div>
+
       <div className={`mt-2`}>
         ကုန်ကျငွေ:
-        {wage.herbicide && acre && chemicalPrice.herbicide && (
+        {wage.herbicide && acre && chemicalPrice.herbicide !== null && (
           <strong>
             {wage.herbicide *
               laborNeed.herbicide *

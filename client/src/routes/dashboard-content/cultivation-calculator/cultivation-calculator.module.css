@@ -44,3 +44,17 @@
   display: flex;
   align-items: center;
 }
+.column2 {
+  padding: 40px 40px !important;
+}
+.decision_wrapper {
+  width: 100%;
+  border-radius: 5px;
+  background-color: #dcdad76e;
+  box-shadow: -3px 4px 10px -8px;
+  padding: 10px;
+}
+.row {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}

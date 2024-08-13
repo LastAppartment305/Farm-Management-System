@@ -65,7 +65,7 @@ const PlantingComponent = ({
       </div>
       <div className={`mt-2`}>
         ကုန်ကျငွေ:
-        {plantingDetail.totalCost && (
+        {plantingDetail.totalCost && acre && (
           <strong>{plantingDetail.totalCost}</strong>
         )}
       </div>

@@ -16,8 +16,9 @@ const PesticideComponent = ({
         <select
           className={`${classes.inputs} w-100`}
           onChange={handlePesticidePrice}
+          value={chemicalPrice.pesticide}
         >
-          <option></option>
+          <option value={null}></option>
           {chemical?.map((item, index) => {
             if (item.ChemCategory === "pesticide") {
               return (
@@ -31,7 +32,7 @@ const PesticideComponent = ({
         </select>
       </div>
       <div className={`mt-2`}>
-        အသုံးပြုမှုအကြိမ်အရေအတွက်:
+        အသုံးပြုရမည့်ခန့်မှန်းအကြိမ်အရေအတွက်:
         {jobFrequentUsage && acre && (
           <strong>{jobFrequentUsage.pesticide} ကြိမ်</strong>
         )}
@@ -39,9 +40,7 @@ const PesticideComponent = ({
       <div className={`mt-2`}>
         လုပ်သားလိုအပ်ချက်:
         {laborNeed.pesticide && acre && (
-          <strong>
-            {laborNeed.pesticide * acre * jobFrequentUsage.pesticide}ယောက်
-          </strong>
+          <strong>{laborNeed.pesticide * acre}ယောက်</strong>
         )}
       </div>
       <div className={`mt-2`}>
@@ -62,20 +61,20 @@ const PesticideComponent = ({
       </div>
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
-        {chemicalPrice.pesticide && acre && (
+        {chemicalPrice.pesticide !== null && acre && (
           <strong>{chemicalPrice.pesticide} ကျပ်</strong>
         )}
       </div>
 
       <div className={`mt-2`}>
         ကုန်ကျငွေ:
-        {wage.pesticide && acre && chemicalPrice.pesticide && (
+        {acre && chemicalPrice.pesticide !== null && (
           <strong>
             {wage.pesticide *
               laborNeed.pesticide *
               acre *
               jobFrequentUsage.pesticide +
-              chemicalPrice.pesticide}{" "}
+              parseInt(chemicalPrice.pesticide)}{" "}
             ကျပ်
           </strong>
         )}
