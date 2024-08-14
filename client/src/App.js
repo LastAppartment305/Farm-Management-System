@@ -20,6 +20,8 @@ import WorkerLogin from "./routes/worker/worker-login/worker-login.component";
 import ReportContent from "./routes/dashboard-content/report-content/dashboard-content-report.component";
 import MainPage from "./routes/main-page/main-page.component";
 import Calculator from "./routes/dashboard-content/cultivation-calculator/cultivation-calculator.component";
+import WorkerMain from "./routes/worker/worker-dashboard/main/worker-main";
+import WorkerHome from "./routes/worker/worker-dashboard/worker-home/worker-home";
 
 const App = () => {
   const [admin, setadmin] = useState(true);
@@ -96,12 +98,12 @@ const App = () => {
           ? [
               {
                 path: "dashboard",
-                element: <DashBoard />,
+                element: <WorkerMain />,
                 children: [
-                  // {
-                  //   path: "worker",
-                  //   element: <TakePhoto />,
-                  // },
+                  {
+                    path: "worker/home",
+                    element: <WorkerHome />,
+                  },
                 ],
               },
             ]

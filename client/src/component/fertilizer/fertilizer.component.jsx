@@ -18,7 +18,7 @@ const FertilizerComponent = ({
           onChange={handleFertilizerPrice}
           value={chemicalPrice.fertilizer}
         >
-          <option value={0}></option>
+          <option value={null}></option>
           {chemical?.map((item, index) => {
             if (item.ChemCategory === "fertilizer") {
               return (
