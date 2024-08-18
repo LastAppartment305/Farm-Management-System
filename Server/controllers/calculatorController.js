@@ -24,17 +24,6 @@ export const getOverallData = asyncHandler(async (req, res) => {
     return `select * from jobcategory where JobId in (${placeholders})`;
   };
 
-  //   Promise.resolve(queryDatabase(cropInfo, [crop])).then((result) => {
-  //     console.log("overall information", result);
-  //     if (result[0]) {
-  //       return queryDatabase(overallInformation, [result[0].CropId]).then(
-  //         (overallinfo) => {
-  //           console.log(overallinfo);
-  //         }
-  //       );
-  //     }
-  //   });
-
   const getCropAndOverallInfo = async (crop) => {
     try {
       // First query to get crop information
@@ -66,9 +55,6 @@ export const getOverallData = asyncHandler(async (req, res) => {
           combinedResult.chemical = getchemical;
         }
       }
-
-      // Return or send the combined result
-      // console.log(combinedResult);
       return combinedResult;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -78,4 +64,121 @@ export const getOverallData = asyncHandler(async (req, res) => {
   const result = await getCropAndOverallInfo(crop);
   res.send(result);
   console.log(result);
+});
+//------------------------------------------------------
+export const storePostData = asyncHandler(async (req, res) => {
+  // console.log(req.body);
+  // console.log("ownerId", req.user.id);
+
+  const insertIntoPostGeneralInfo =
+    "INSERT INTO post_general_info(UserId, Date, Acre, CropName) VALUES (?, ?, ?, ?)";
+
+  const localDate = new Date();
+
+  const year = localDate.getFullYear();
+  const month = String(localDate.getMonth() + 1).padStart(2, "0");
+  const day = String(localDate.getDate()).padStart(2, "0");
+  const hours = String(localDate.getHours()).padStart(2, "0");
+  const minutes = String(localDate.getMinutes()).padStart(2, "0");
+  const seconds = String(localDate.getSeconds()).padStart(2, "0");
+  const mySQLDateString = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+  const queryDatabase = (sql, values) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, values, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const insertJobDetails = async (postId, cropDetails) => {
+    const jobCategories = [
+      "pesticide",
+      "herbicide",
+      "fertilizer",
+      "harvesting",
+      "irrigation",
+      "fungicide",
+      "plowing",
+      "transplanting",
+      "seeding",
+    ];
+
+    for (const category of jobCategories) {
+      if (cropDetails[category]) {
+        const values = [
+          postId,
+          getJobIdByCategory(category),
+          cropDetails[category].WagePerLabor,
+          cropDetails[category].ChemicalPrice,
+          cropDetails[category].TotalWagePerJob,
+          cropDetails[category].LaborNeed,
+          cropDetails[category].TotalLaborPerJob,
+          cropDetails[category].TotalCostPerJob,
+        ];
+
+        const sql = `
+          INSERT INTO post_job_info (PostId, JobId, WagePerLabor, ChemicalPrice, TotalWagePerJob, LaborNeed, TotalLaborPerJob, TotalCostPerJob)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        try {
+          await queryDatabase(sql, values);
+          console.log("Inserted row for job category:", category);
+        } catch (err) {
+          console.error("Error inserting job details:", err);
+        }
+      }
+    }
+  };
+  const insertTotalCosts = async (postId) => {
+    const sql =
+      "insert into post_total_cost(PostId,TotalChemicalPrice,TotalWage,TotalMachineryCost,TotalExpense) values(?,?,?,?,?)";
+    try {
+      await queryDatabase(sql, [
+        postId,
+        req.body.TotalChemicalPrice,
+        req.body.TotalWage,
+        req.body.TotalMachineryCost,
+        req.body.TotalExpense,
+      ]);
+      console.log("inserting total costs success");
+    } catch (err) {
+      console.error("Error inserting total costs", err);
+    }
+  };
+  const getJobIdByCategory = (category) => {
+    const jobIdMap = {
+      pesticide: 1,
+      herbicide: 2,
+      fertilizer: 3,
+      harvesting: 4,
+      irrigation: 5,
+      fungicide: 6,
+      plowing: 7,
+      transplanting: 8,
+      seeding: 9,
+    };
+    return jobIdMap[category];
+  };
+
+  try {
+    const result = await queryDatabase(insertIntoPostGeneralInfo, [
+      req.user.id,
+      mySQLDateString,
+      req.body.Acre,
+      req.body.Cropname,
+    ]);
+
+    if (result.insertId) {
+      await insertJobDetails(result.insertId, req.body);
+      await insertTotalCosts(result.insertId);
+    }
+
+    res.status(200).json({ message: "Data inserted successfully" });
+  } catch (error) {
+    console.error("Error storing post data:", error);
+    res.status(500).json({ message: "Failed to insert data" });
+  }
 });

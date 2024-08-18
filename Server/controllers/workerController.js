@@ -145,3 +145,9 @@ export const createWorker = asyncHandler(async (req, res) => {
     res.send(result);
   });
 });
+//-----------------------------------------------
+export const workerLogout = asyncHandler(async (req, res) => {
+  console.log("worker logout");
+  res.clearCookie("workerAuth");
+  res.send(true);
+});

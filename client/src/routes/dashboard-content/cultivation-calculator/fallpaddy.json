@@ -1,0 +1,47 @@
+{
+  "Cropname": null,
+  "Acre": null,
+  "Latitude": null,
+  "Longitude": null,
+  "planting": {
+    "SeedCost": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null
+  },
+  "pesticide": {
+    "ChemicalPrice": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null
+  },
+  "herbicide": {
+    "ChemicalPrice": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null
+  },
+  "fertilizer": {
+    "ChemicalPrice": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null
+  },
+  "plowing": {
+    "TotalCostPerJob": null
+  },
+  "harvesting": {
+    "TotalCostPerJob": null
+  },
+  "TotalChemicalPrice": null,
+  "TotalWage": null,
+  "TotalMachineryCost": null,
+  "TotalExpense": null
+}

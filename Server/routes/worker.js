@@ -4,11 +4,13 @@ import {
   checkAssign,
   sendCookie,
   createWorker,
+  workerLogout,
 } from "../controllers/workerController.js";
 
 const router = express.Router();
 router.post("/check-assign", checkAssign);
 router.post("/send-auth", sendCookie);
 router.post("/createWorker", createWorker);
+router.post("/worker-logout", workerLogout);
 
 export default router;
