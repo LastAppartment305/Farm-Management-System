@@ -1,0 +1,32 @@
+.component_wrapper {
+  display: flex;
+}
+.left_side {
+  width: 350px;
+  height: 100vh;
+  background-color: red;
+}
+.post_button {
+  border: 1px solid black;
+}
+.expense_wrapper {
+  padding: 30px;
+  width: 799px;
+}
+.owner_info {
+  display: flex;
+  justify-content: end;
+}
+.owner_info_wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 20px;
+}
+.farm_info {
+  display: flex;
+  justify-content: start;
+}
+.expense_table_header {
+  font-weight: 600;
+  font-size: 17px;
+}

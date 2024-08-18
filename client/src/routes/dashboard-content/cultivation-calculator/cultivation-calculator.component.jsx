@@ -524,19 +524,6 @@ const Calculator = () => {
                     </strong>
                   )}
                 </div>
-                {/* <div className={`mt-2`}>
-          အလုပ်သမားစုစုပေါင်း:{" "}
-          {acre && (
-            <strong>
-              {(laborNeed.sowing +
-                laborNeed.pesticide +
-                laborNeed.herbicide +
-                laborNeed.fertilizer) *
-                acre}{" "}
-              ယောက်
-            </strong>
-          )}
-        </div> */}
                 <div className={`mt-2`}>
                   စက်ပစ္စည်းငှားရမ်းခစုစုပေါင်း:{" "}
                   {acre && (

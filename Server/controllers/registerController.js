@@ -155,3 +155,81 @@ export const editUserInformation = asyncHandler(async (req, res) => {
     })
   );
 });
+//--------------------------------------------------
+export const getPosts = asyncHandler(async (req, res) => {
+  const { id } = req.user;
+  console.log("userId", id);
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const retrievePosts = async () => {
+    const sql = "select * from post_general_info where UserId=?";
+    try {
+      const postLists = await queryDatabase(sql, [id]);
+      if (postLists) {
+        // console.log("post for specific owner", postLists);
+        res.send(postLists);
+      }
+    } catch (err) {
+      console.error("Error at retrieving posts", err);
+    }
+  };
+
+  try {
+    await retrievePosts();
+  } catch (err) {
+    console.error("Error at retrieving posts");
+  }
+});
+//---------------------------------------------------
+export const getSpecificPost = asyncHandler(async (req, res) => {
+  const { postid } = req.body;
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const getGeneralInfo = "select * from post_general_info where PostId=?";
+  const getJobInfo = "select * from post_job_info where PostId=?";
+  const getTotalCost = "select * from post_total_cost where PostId=?";
+  // console.log("specific post id", postid);
+  const getPostDetails = async (id) => {
+    try {
+      let combinedResult = {
+        postGeneralInfo: null,
+        postJobInfo: null,
+        postTotalCost: null,
+      };
+
+      const generalResult = await queryDatabase(getGeneralInfo, [id]);
+      if (generalResult[0]) {
+        combinedResult.postGeneralInfo = generalResult[0];
+        const jobResult = await queryDatabase(getJobInfo, [id]);
+        if (jobResult) {
+          combinedResult.postJobInfo = jobResult;
+          const costResult = await queryDatabase(getTotalCost, [id]);
+          if (costResult) {
+            combinedResult.postTotalCost = costResult;
+            // console.log(combinedResult);
+          }
+        }
+      }
+      return combinedResult;
+    } catch (error) {
+      console.error("Error retrieving data:", error);
+      throw error;
+    }
+  };
+  const result = await getPostDetails(postid);
+  res.send(result);
+});

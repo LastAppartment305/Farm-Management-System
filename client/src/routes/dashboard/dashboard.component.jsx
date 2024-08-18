@@ -11,6 +11,7 @@ import {
   Sprout,
   NotepadText,
   Calculator,
+  HandCoins,
 } from "lucide-react";
 import {
   useLogout,
@@ -231,6 +232,14 @@ const DashBoard = () => {
             buttonText={"လယ် စာရင်း"}
             isActive={isActive === "owner/farm"}
             onclick={() => handleClick("owner/farm")}
+          />
+        )}
+        {role === "owner" && (
+          <SideBarButton
+            icon={HandCoins}
+            buttonText={"propose"}
+            isActive={isActive === "owner/propose"}
+            onclick={() => handleClick("owner/propose")}
           />
         )}
         {role === "owner" && (

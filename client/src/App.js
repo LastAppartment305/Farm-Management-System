@@ -22,6 +22,7 @@ import MainPage from "./routes/main-page/main-page.component";
 import Calculator from "./routes/dashboard-content/cultivation-calculator/cultivation-calculator.component";
 import WorkerMain from "./routes/worker/worker-dashboard/main/worker-main";
 import WorkerHome from "./routes/worker/worker-dashboard/worker-home/worker-home";
+import OwnerPropose from "./routes/dashboard-content/owner-proposes/owner-proposes.component";
 
 const App = () => {
   const [admin, setadmin] = useState(true);
@@ -89,6 +90,10 @@ const App = () => {
                   {
                     path: "owner/calculator",
                     element: <Calculator />,
+                  },
+                  {
+                    path: "owner/propose",
+                    element: <OwnerPropose />,
                   },
                 ],
               },
