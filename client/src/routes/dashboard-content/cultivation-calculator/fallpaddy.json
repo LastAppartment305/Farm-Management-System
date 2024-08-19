@@ -8,7 +8,8 @@
     "LaborNeed": null,
     "WagePerLabor": null,
     "TotalWagePerJob": null,
-    "TotalCostPerJob": null
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
   },
   "pesticide": {
     "ChemicalPrice": null,
@@ -16,7 +17,8 @@
     "WagePerLabor": null,
     "TotalLaborPerJob": null,
     "TotalWagePerJob": null,
-    "TotalCostPerJob": null
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
   },
   "herbicide": {
     "ChemicalPrice": null,
@@ -24,7 +26,8 @@
     "WagePerLabor": null,
     "TotalLaborPerJob": null,
     "TotalWagePerJob": null,
-    "TotalCostPerJob": null
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
   },
   "fertilizer": {
     "ChemicalPrice": null,
@@ -32,7 +35,8 @@
     "WagePerLabor": null,
     "TotalLaborPerJob": null,
     "TotalWagePerJob": null,
-    "TotalCostPerJob": null
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
   },
   "plowing": {
     "TotalCostPerJob": null

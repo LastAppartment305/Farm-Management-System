@@ -23,6 +23,7 @@ import Calculator from "./routes/dashboard-content/cultivation-calculator/cultiv
 import WorkerMain from "./routes/worker/worker-dashboard/main/worker-main";
 import WorkerHome from "./routes/worker/worker-dashboard/worker-home/worker-home";
 import OwnerPropose from "./routes/dashboard-content/owner-proposes/owner-proposes.component";
+import ApprovedPosts from "./routes/dashboard-content/admin-approved-posts/admin-approved-posts.component";
 
 const App = () => {
   const [admin, setadmin] = useState(true);
@@ -59,6 +60,10 @@ const App = () => {
                   {
                     path: "admin/approval",
                     element: <AdminApproval />,
+                  },
+                  {
+                    path: "admin/approved",
+                    element: <ApprovedPosts />,
                   },
                 ],
               },

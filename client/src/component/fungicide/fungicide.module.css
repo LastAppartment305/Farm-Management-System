@@ -1,0 +1,18 @@
+.fungicide {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #dcdad76e;
+  box-shadow: -3px 4px 10px -8px;
+  margin-top: 20px;
+}
+.boxes {
+  width: 16rem;
+}
+.box_label {
+  font-weight: 600;
+}
+.inputs {
+  border-radius: 5px;
+  background-color: white;
+  height: 33px !important;
+}

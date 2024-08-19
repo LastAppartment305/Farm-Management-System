@@ -1,24 +1,17 @@
-import classes from "./owner-proposes.module.css";
-import Accordion from "react-bootstrap/Accordion";
+import classes from "./admin-approved-posts.module.css";
 import { useGet } from "../../../custom-hook/axios-post/axios-post.jsx";
 import { useEffect, useRef, useState } from "react";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-import axios from "axios";
 import croptype from "../cultivation-calculator/sample.json";
-const OwnerPropose = () => {
+import approve from "../../../assets/icon/success.png";
+import axios from "axios";
+
+const ApprovedPosts = () => {
+  const { response } = useGet("http://localhost:5000/getAllPost");
   const [postList, setPostList] = useState(null);
-  const [selectedPostId, setSelectedPostId] = useState(null);
   const [postId, setPostId] = useState(null);
+  const [selectedPostId, setSelectedPostId] = useState(null);
   const [postInfo, setPostInfo] = useState(null);
-  const reportRef = useRef();
-  const { response } = useGet("http://localhost:5000/getPosts");
-  useEffect(() => {
-    if (response) {
-      setPostList(response);
-    }
-  });
-  console.log(postInfo);
+
   const getPostDetail = async (id) => {
     // console.log("post Id", id);
     setPostId(id);
@@ -31,17 +24,18 @@ const OwnerPropose = () => {
       setPostInfo(result.data);
     }
   };
-  const handlePrint = () => {
-    const input = reportRef.current;
 
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/jpeg", 0.8); // Use JPEG format with compression
-      const pdf = new jsPDF("p", "mm", "a4"); // Adjust page size and orientation
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
-
-      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
-      pdf.save("expense-report.pdf");
+  useEffect(() => {
+    if (response) {
+      const approvedPosts = response.data.filter(
+        (post) => post.ApproveStatus === 1
+      );
+      setPostList(approvedPosts);
+    }
+  }, [response]);
+  const approveCancel = (id) => {
+    const result = axios.post("http://localhost:5000/cancelApprove", {
+      postid: id,
     });
   };
   const jobLabels = {
@@ -52,12 +46,12 @@ const OwnerPropose = () => {
     7: "ရိတ်သိမ်းစရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
   };
-  // console.log("postInfo", postInfo);
+  console.log(postList);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
-        {postList &&
-          postList.data.map((post, index) => (
+        {postList && postList.length > 0 ? (
+          postList.map((post, index) => (
             <div
               type='div'
               key={index}
@@ -69,19 +63,33 @@ const OwnerPropose = () => {
               }}
             >
               {/* {post.CropName} */}
-              <div className='me-3'>
-                {
-                  croptype.crop.find((crop) => crop.value === post.CropName)
-                    .name
-                }
+              <div className={`${classes.mini_post_header}`}>
+                <strong>{post.Name}</strong>
+                {post.ApproveStatus === 1 && (
+                  <img
+                    src={approve}
+                    className={`${classes.success_icon} ms-3`}
+                  />
+                )}
               </div>
-              <div>{post.Acre} ဧက</div>
+              <div className={`${classes.mini_post_body}`}>
+                <div className='me-3'>
+                  {
+                    croptype.crop.find((crop) => crop.value === post.CropName)
+                      .name
+                  }
+                </div>
+                <div>{post.Acre} ဧက</div>
+              </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <div className={`${classes.no_post}`}>no post</div>
+        )}
       </div>
       <div className={`${classes.right_side}`}>
         {postId && (
-          <div className={`${classes.expense_wrapper}`} ref={reportRef}>
+          <div className={`${classes.expense_wrapper}`}>
             {postInfo &&
               postInfo.postGeneralInfo &&
               // Destructure postGeneralInfo
@@ -194,11 +202,16 @@ const OwnerPropose = () => {
                   </>
                 );
               })()}
+            <button
+              className={`${classes.approve_btn} btn btn-primary`}
+              onClick={() => approveCancel(postId)}
+            >
+              မမှန်ကန်ပါ
+            </button>
           </div>
         )}
-        <button onClick={handlePrint}>Print as PDF</button>
       </div>
     </div>
   );
 };
-export default OwnerPropose;
+export default ApprovedPosts;

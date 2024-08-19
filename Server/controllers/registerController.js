@@ -206,6 +206,7 @@ export const getSpecificPost = asyncHandler(async (req, res) => {
   const getPostDetails = async (id) => {
     try {
       let combinedResult = {
+        username: req.user.username,
         postGeneralInfo: null,
         postJobInfo: null,
         postTotalCost: null,
@@ -232,4 +233,95 @@ export const getSpecificPost = asyncHandler(async (req, res) => {
   };
   const result = await getPostDetails(postid);
   res.send(result);
+});
+//-------------------------------------------------
+export const getAllPost = asyncHandler(async (req, res) => {
+  // console.log("post for admin work");
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const retrievePosts = async () => {
+    // const sql = "select * from post_general_info";
+    const sql =
+      "select p.*,u.* from post_general_info p join user u on p.UserId=u.UserId";
+    try {
+      const postLists = await queryDatabase(sql);
+      if (postLists) {
+        // console.log("post for admin", postLists);
+        res.send(postLists);
+      }
+    } catch (err) {
+      console.error("Error at retrieving posts", err);
+    }
+  };
+  try {
+    await retrievePosts();
+  } catch (err) {
+    console.error("Error at retrieving posts");
+  }
+});
+//--------------------------------------------------
+export const approvePost = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { postid } = req.body;
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const sql = "update post_general_info set ApproveStatus=? where PostId=?";
+  const updatePostStatus = async () => {
+    try {
+      const updateResult = await queryDatabase(sql, [true, postid]);
+      if (updateResult) {
+        // console.log("post for admin", postLists);
+        res.send(updateResult);
+      }
+    } catch (err) {
+      console.error("Error at updating posts", err);
+    }
+  };
+  try {
+    await updatePostStatus();
+  } catch (err) {
+    console.error("Error at retrieving posts");
+  }
+});
+//----------------------------------------------
+export const unapprovePost = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { postid } = req.body;
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const sql = "update post_general_info set ApproveStatus=? where PostId=?";
+  const updatePostStatus = async () => {
+    try {
+      const updateResult = await queryDatabase(sql, [false, postid]);
+      if (updateResult) {
+        // console.log("post for admin", postLists);
+        res.send(updateResult);
+      }
+    } catch (err) {
+      console.error("Error at updating posts", err);
+    }
+  };
+  try {
+    await updatePostStatus();
+  } catch (err) {
+    console.error("Error at retrieving posts");
+  }
 });

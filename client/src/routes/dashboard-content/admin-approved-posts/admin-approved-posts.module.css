@@ -17,9 +17,6 @@
   /* background-color: #dcdad76e; */
   /* border-radius: 5px; */
   /* margin-bottom: 10px; */
-  height: 4rem;
-  display: flex;
-  align-items: center;
   padding: 5px;
   border-bottom: 1px solid;
 }
@@ -49,4 +46,26 @@
 }
 .expense_table {
   border: 1px solid;
+}
+.mini_post_header {
+  margin-bottom: 10px;
+}
+.mini_post_body {
+  display: flex;
+  align-items: center;
+}
+.success_icon {
+  height: 16px;
+  width: 16px;
+  object-fit: cover;
+}
+.approve_btn {
+  margin-top: 25px;
+}
+.no_post {
+  display: flex;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 600;
+  color: #0000004d;
 }

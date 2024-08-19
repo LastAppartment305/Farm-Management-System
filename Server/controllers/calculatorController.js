@@ -55,6 +55,7 @@ export const getOverallData = asyncHandler(async (req, res) => {
           combinedResult.chemical = getchemical;
         }
       }
+      console.log("crop information", combinedResult);
       return combinedResult;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -101,8 +102,7 @@ export const storePostData = asyncHandler(async (req, res) => {
       "irrigation",
       "fungicide",
       "plowing",
-      "transplanting",
-      "seeding",
+      "planting",
     ];
 
     for (const category of jobCategories) {
@@ -116,11 +116,12 @@ export const storePostData = asyncHandler(async (req, res) => {
           cropDetails[category].LaborNeed,
           cropDetails[category].TotalLaborPerJob,
           cropDetails[category].TotalCostPerJob,
+          cropDetails[category].FrequentUsage,
         ];
 
         const sql = `
-          INSERT INTO post_job_info (PostId, JobId, WagePerLabor, ChemicalPrice, TotalWagePerJob, LaborNeed, TotalLaborPerJob, TotalCostPerJob)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO post_job_info (PostId, JobId, WagePerLabor, ChemicalPrice, TotalWagePerJob, LaborNeed, TotalLaborPerJob, TotalCostPerJob,FrequentUsage)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)
         `;
 
         try {
@@ -157,8 +158,7 @@ export const storePostData = asyncHandler(async (req, res) => {
       irrigation: 5,
       fungicide: 6,
       plowing: 7,
-      transplanting: 8,
-      seeding: 9,
+      planting: 8,
     };
     return jobIdMap[category];
   };

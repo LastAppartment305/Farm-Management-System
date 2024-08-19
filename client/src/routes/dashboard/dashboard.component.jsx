@@ -12,6 +12,7 @@ import {
   NotepadText,
   Calculator,
   HandCoins,
+  CalendarClock,
 } from "lucide-react";
 import {
   useLogout,
@@ -196,10 +197,18 @@ const DashBoard = () => {
         )}
         {role === "admin" && (
           <SideBarButton
-            icon={CalendarCheck}
-            buttonText={"နှုန်းထားများ"}
+            icon={CalendarClock}
+            buttonText={"pending"}
             isActive={isActive === "admin/approval"}
             onclick={() => handleClick("admin/approval")}
+          />
+        )}
+        {role === "admin" && (
+          <SideBarButton
+            icon={CalendarCheck}
+            buttonText={"approved"}
+            isActive={isActive === "admin/approved"}
+            onclick={() => handleClick("admin/approved")}
           />
         )}
         {role === "owner" && (
