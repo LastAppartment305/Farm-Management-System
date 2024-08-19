@@ -8,7 +8,7 @@ dotenv.config();
 
 //put new user information into database
 export const registerController = asyncHandler(async (req, res) => {
-  const { name, phone, password, userRole } = req.body;
+  const { name, phone, password, NRC, Address, Age, userRole } = req.body;
 
   const isoDate = new Date();
   const mySQLDateString = isoDate.toJSON().slice(0, 19).replace("T", " ");
@@ -22,12 +22,21 @@ export const registerController = asyncHandler(async (req, res) => {
 
   const encodedPassword = await storePassword(password);
   const sql =
-    "INSERT INTO user (Name, Phone_no, User_role, Created_at, Password) VALUES (?,?,?,?,?)";
+    "INSERT INTO user (Name, Phone_no, User_role, Created_at, Password,NRC,Address,Age) VALUES (?,?,?,?,?,?,?,?)";
   const checkPhoneNo = "select Phone_no from user where Phone_no=?";
   const checkName = "select Name from user where Name=?";
   const checkPassword = "select Password from user where Password=?";
 
-  const values = [name, phone, userRole, mySQLDateString, encodedPassword];
+  const values = [
+    name,
+    phone,
+    userRole,
+    mySQLDateString,
+    encodedPassword,
+    NRC,
+    Address,
+    Age,
+  ];
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
       connection.query(sql, value, (error, result) => {

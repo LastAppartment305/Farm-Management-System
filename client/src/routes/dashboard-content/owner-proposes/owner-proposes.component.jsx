@@ -6,6 +6,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import axios from "axios";
 import croptype from "../cultivation-calculator/sample.json";
+import approve from "../../../assets/icon/success.png";
 const OwnerPropose = () => {
   const [postList, setPostList] = useState(null);
   const [selectedPostId, setSelectedPostId] = useState(null);
@@ -15,9 +16,9 @@ const OwnerPropose = () => {
   const { response } = useGet("http://localhost:5000/getPosts");
   useEffect(() => {
     if (response) {
-      setPostList(response);
+      setPostList(response.data);
     }
-  });
+  }, [response]);
   console.log(postInfo);
   const getPostDetail = async (id) => {
     // console.log("post Id", id);
@@ -52,12 +53,12 @@ const OwnerPropose = () => {
     7: "ရိတ်သိမ်းစရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
   };
-  // console.log("postInfo", postInfo);
+  console.log("postInfo", postList);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
         {postList &&
-          postList.data.map((post, index) => (
+          postList.map((post, index) => (
             <div
               type='div'
               key={index}
@@ -69,13 +70,23 @@ const OwnerPropose = () => {
               }}
             >
               {/* {post.CropName} */}
-              <div className='me-3'>
-                {
-                  croptype.crop.find((crop) => crop.value === post.CropName)
-                    .name
-                }
+              <div className={`${classes.btn_info_wrapper}`}>
+                <div className='me-3'>
+                  {
+                    croptype.crop.find((crop) => crop.value === post.CropName)
+                      .name
+                  }
+                </div>
+                <div>{post.Acre} ဧက</div>
               </div>
-              <div>{post.Acre} ဧက</div>
+              <div>
+                {post.ApproveStatus === 1 && (
+                  <img
+                    src={approve}
+                    className={`${classes.success_icon} ms-3`}
+                  />
+                )}
+              </div>
             </div>
           ))}
       </div>
@@ -89,7 +100,7 @@ const OwnerPropose = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
-                const { Acre } = postInfo.postGeneralInfo;
+                const { Acre, Latitude, Longitude } = postInfo.postGeneralInfo;
                 const { username } = postInfo;
                 return (
                   <>
@@ -101,7 +112,9 @@ const OwnerPropose = () => {
                         <div>
                           ပိုင်ရှင်အမည် : <strong>{username}</strong>
                         </div>
-                        <div>ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :</div>
+                        <div>
+                          ပိုင်ရှင်မှတ်ပုံတင်အမှတ် : <strong>{username}</strong>
+                        </div>
                       </div>
                     </div>
                     <div className={`${classes.farm_info}`}>
@@ -120,6 +133,12 @@ const OwnerPropose = () => {
                               ).name
                             }
                           </strong>
+                        </div>
+                        <div>
+                          လတ္တီကျု:<strong>{Latitude}</strong>
+                        </div>
+                        <div>
+                          လောင်ဂျီကျု:<strong>{Longitude}</strong>
                         </div>
                       </div>
                     </div>

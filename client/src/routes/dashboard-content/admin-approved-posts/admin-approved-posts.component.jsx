@@ -4,6 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import croptype from "../cultivation-calculator/sample.json";
 import approve from "../../../assets/icon/success.png";
 import axios from "axios";
+import point from "../../../assets/icon/location.svg";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  CircleMarker,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 const ApprovedPosts = () => {
   const { response } = useGet("http://localhost:5000/getAllPost");
@@ -33,10 +44,20 @@ const ApprovedPosts = () => {
       setPostList(approvedPosts);
     }
   }, [response]);
-  const approveCancel = (id) => {
-    const result = axios.post("http://localhost:5000/cancelApprove", {
+  const approveCancel = async (id) => {
+    const result = await axios.post("http://localhost:5000/cancelApprove", {
       postid: id,
     });
+    if (result) {
+      const getList = await axios.get("http://localhost:5000/getAllPost");
+      if (getList) {
+        const approvedPosts = getList.data.filter(
+          (post) => post.ApproveStatus === 1
+        );
+        setPostList(approvedPosts);
+        setPostId(null);
+      }
+    }
   };
   const jobLabels = {
     1: "ပေါင်းသတ်ခြင်း",
@@ -47,6 +68,20 @@ const ApprovedPosts = () => {
     8: "စိုက်ပျိုးစရိတ်",
   };
   console.log(postList);
+  const MapView = () => {
+    let map = useMap();
+    map.setView(
+      [postInfo.postGeneralInfo.Latitude, postInfo.postGeneralInfo.Longitude],
+      map.getZoom()
+    );
+    //Sets geographical center and zoom for the view of the map
+    return null;
+  };
+  const customeIcon = L.icon({
+    iconUrl: point,
+    iconSize: [25, 35],
+    iconAnchor: [5, 30],
+  });
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -97,7 +132,7 @@ const ApprovedPosts = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
-                const { Acre } = postInfo.postGeneralInfo;
+                const { Acre, Latitude, Longitude } = postInfo.postGeneralInfo;
                 const { username } = postInfo;
                 return (
                   <>
@@ -128,6 +163,12 @@ const ApprovedPosts = () => {
                               ).name
                             }
                           </strong>
+                        </div>
+                        <div>
+                          လတ္တီကျု:<strong>{Latitude}</strong>
+                        </div>
+                        <div>
+                          လောင်ဂျီကျု:<strong>{Longitude}</strong>
                         </div>
                       </div>
                     </div>
@@ -208,6 +249,38 @@ const ApprovedPosts = () => {
             >
               မမှန်ကန်ပါ
             </button>
+            <div>
+              {postInfo &&
+                postInfo.postGeneralInfo.Latitude &&
+                postInfo.postGeneralInfo.Longitude && (
+                  <MapContainer
+                    style={{ height: 600, width: 600 }}
+                    classsName='map'
+                    center={[
+                      postInfo.postGeneralInfo.Latitude,
+                      postInfo.postGeneralInfo.Longitude,
+                    ]}
+                    zoom={30}
+                    scrollWheelZoom={false}
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> 
+        contributors'
+                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    />
+                    <Marker
+                      icon={customeIcon}
+                      position={[
+                        postInfo.postGeneralInfo.Latitude,
+                        postInfo.postGeneralInfo.Longitude,
+                      ]}
+                    >
+                      {/* <Popup>{display_name}</Popup> */}
+                    </Marker>
+                    <MapView />
+                  </MapContainer>
+                )}
+            </div>
           </div>
         )}
       </div>

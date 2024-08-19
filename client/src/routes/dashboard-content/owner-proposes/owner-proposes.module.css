@@ -22,6 +22,7 @@
   align-items: center;
   padding: 5px;
   border-bottom: 1px solid;
+  justify-content: space-between;
 }
 .post_button:hover {
   background-color: #dcdad794;
@@ -49,4 +50,12 @@
 }
 .expense_table {
   border: 1px solid;
+}
+.success_icon {
+  height: 16px;
+  width: 16px;
+  object-fit: cover;
+}
+.btn_info_wrapper {
+  display: flex;
 }

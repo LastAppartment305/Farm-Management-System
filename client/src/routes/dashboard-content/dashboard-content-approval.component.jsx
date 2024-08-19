@@ -6,6 +6,17 @@ import classes from "./dashboard-content-approval.module.css";
 import croptype from "../dashboard-content/cultivation-calculator/sample.json";
 import { useEffect, useRef, useState } from "react";
 import approve from "../../assets/icon/success.png";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  CircleMarker,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import point from "../../assets/icon/location.svg";
 
 const AdminApproval = () => {
   const { response } = useGet("http://localhost:5000/getAllPost");
@@ -44,11 +55,36 @@ const AdminApproval = () => {
     8: "စိုက်ပျိုးစရိတ်",
   };
   console.log(postList);
-  const approvePurpose = (id) => {
-    const result = axios.post("http://localhost:5000/approvePropose", {
+  const approvePurpose = async (id) => {
+    const result = await axios.post("http://localhost:5000/approvePropose", {
       postid: id,
     });
+    if (result) {
+      const getList = await axios.get("http://localhost:5000/getAllPost");
+      if (getList) {
+        const approvedPosts = getList.data.filter(
+          (post) => post.ApproveStatus === 0
+        );
+        setPostList(approvedPosts);
+        setPostId(null);
+      }
+    }
   };
+  const MapView = () => {
+    let map = useMap();
+    map.setView(
+      [postInfo.postGeneralInfo.Latitude, postInfo.postGeneralInfo.Longitude],
+      map.getZoom()
+    );
+    //Sets geographical center and zoom for the view of the map
+    return null;
+  };
+  const customeIcon = L.icon({
+    iconUrl: point,
+    iconSize: [25, 35],
+    iconAnchor: [5, 30],
+  });
+  // console.log(postList);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -99,7 +135,7 @@ const AdminApproval = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
-                const { Acre } = postInfo.postGeneralInfo;
+                const { Acre, Latitude, Longitude } = postInfo.postGeneralInfo;
                 const { username } = postInfo;
                 return (
                   <>
@@ -130,6 +166,12 @@ const AdminApproval = () => {
                               ).name
                             }
                           </strong>
+                        </div>
+                        <div>
+                          လတ္တီကျု:<strong>{Latitude}</strong>
+                        </div>
+                        <div>
+                          လောင်ဂျီကျု:<strong>{Longitude}</strong>
                         </div>
                       </div>
                     </div>
@@ -210,6 +252,38 @@ const AdminApproval = () => {
             >
               မှန်ကန်ပါသည်
             </button>
+            <div>
+              {postInfo &&
+                postInfo.postGeneralInfo.Latitude &&
+                postInfo.postGeneralInfo.Longitude && (
+                  <MapContainer
+                    style={{ height: 600, width: 600 }}
+                    classsName='map'
+                    center={[
+                      postInfo.postGeneralInfo.Latitude,
+                      postInfo.postGeneralInfo.Longitude,
+                    ]}
+                    zoom={30}
+                    scrollWheelZoom={false}
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> 
+        contributors'
+                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    />
+                    <Marker
+                      icon={customeIcon}
+                      position={[
+                        postInfo.postGeneralInfo.Latitude,
+                        postInfo.postGeneralInfo.Longitude,
+                      ]}
+                    >
+                      {/* <Popup>{display_name}</Popup> */}
+                    </Marker>
+                    <MapView />
+                  </MapContainer>
+                )}
+            </div>
           </div>
         )}
       </div>

@@ -10,13 +10,29 @@ import FertilizerComponent from "../../../component/fertilizer/fertilizer.compon
 import PlowingComponent from "../../../component/plowing/plowing.component.jsx";
 import HarvestingComponent from "../../../component/harvesting/harvesting.component.jsx";
 import FungicideComponent from "../../../component/fungicide/fungicide.component.jsx";
+import point from "../../../assets/icon/location.svg";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  CircleMarker,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
 const Calculator = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isPost, setIsPost] = useState(false);
   const [selectedOptionDetail, setSelectedOptionDetail] = useState(null);
+
   const [postPaddy, setPostPaddy] = useState(fallpaddy);
   const [chemical, setChemical] = useState(null);
+  const [position, setposition] = useState({
+    latitude: null,
+    longitude: null,
+  });
   const [chemicalPrice, setChemicalPrice] = useState({
     pesticide: null,
     herbicide: null,
@@ -233,113 +249,121 @@ const Calculator = () => {
     }));
   };
   const propose = () => {
-    if (selectedOption === "paddy") {
-      setPostPaddy((prev) => {
-        const updateState = {
-          ...prev,
-          Cropname: selectedOption,
-          Acre: acre,
-          Latitude: null,
-          Longitude: null,
-          planting: {
-            SeedCost: fetchData.cropInfo.SeedCost * acre,
-            LaborNeed: laborNeed.planting * acre,
-            WagePerLabor: wage.planting,
-            TotalWagePerJob: wage.planting * laborNeed.planting * acre,
-            TotalCostPerJob: plantingDetail.totalCost,
-            FrequentUsage: null,
-          },
-          pesticide: {
-            ChemicalPrice: chemicalPrice.pesticide,
-            LaborNeed: laborNeed.pesticide * acre,
-            WagePerLabor: wage.pesticide,
-            TotalLaborPerJob: null,
-            TotalWagePerJob:
-              wage.pesticide *
-              laborNeed.pesticide *
-              acre *
-              jobFrequentUsage.pesticide,
-            TotalCostPerJob:
-              wage.pesticide *
-                laborNeed.pesticide *
-                acre *
-                jobFrequentUsage.pesticide +
-              parseInt(chemicalPrice.pesticide),
-            FrequentUsage: jobFrequentUsage.pesticide,
-          },
-          herbicide: {
-            ChemicalPrice: chemicalPrice.herbicide,
-            LaborNeed: laborNeed.herbicide * acre,
-            WagePerLabor: wage.herbicide,
-            TotalLaborPerJob: null,
-            TotalWagePerJob:
-              wage.herbicide *
-              laborNeed.herbicide *
-              acre *
-              jobFrequentUsage.herbicide,
-            TotalCostPerJob:
-              wage.herbicide *
-                laborNeed.herbicide *
-                acre *
-                jobFrequentUsage.herbicide +
-              chemicalPrice.herbicide,
-            FrequentUsage: jobFrequentUsage.herbicide,
-          },
-          fertilizer: {
-            ChemicalPrice: chemicalPrice.fertilizer,
-            LaborNeed: laborNeed.fertilizer * acre,
-            WagePerLabor: wage.fertilizer,
-            TotalLaborPerJob: null,
-            TotalWagePerJob:
-              wage.fertilizer *
-              laborNeed.fertilizer *
-              acre *
-              jobFrequentUsage.fertilizer,
-            TotalCostPerJob:
-              wage.fertilizer *
-                laborNeed.fertilizer *
-                acre *
-                jobFrequentUsage.fertilizer +
-              chemicalPrice.fertilizer,
-            FrequentUsage: jobFrequentUsage.fertilizer,
-          },
-          plowing: {
-            ChemicalPrice: null,
-            LaborNeed: null,
-            WagePerLabor: null,
-            TotalLaborPerJob: null,
-            TotalWagePerJob: null,
-            TotalCostPerJob: wage.plowing * acre,
-          },
-          harvesting: {
-            ChemicalPrice: null,
-            LaborNeed: null,
-            WagePerLabor: null,
-            TotalLaborPerJob: null,
-            TotalWagePerJob: null,
-            TotalCostPerJob: wage.harvesting * acre,
-          },
-          TotalChemicalPrice:
-            chemicalPrice.pesticide +
-            chemicalPrice.herbicide +
-            chemicalPrice.fertilizer,
-          TotalWage:
-            plantingDetail.totalLaborWage +
-            pesticideDetail.totalLaborWage +
-            herbicideDetail.totalLaborWage +
-            fertilizerDetail.totalLaborWage,
-          TotalMachineryCost: wage.plowing * acre + wage.harvesting * acre,
-          TotalExpense:
-            plantingDetail.totalCost +
-            pesticideDetail.totalCost +
-            herbicideDetail.totalCost +
-            fertilizerDetail.totalCost +
-            (wage.plowing * acre + wage.harvesting * acre),
-        };
-        console.log(updateState);
-        return updateState;
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        if (selectedOption === "paddy") {
+          setPostPaddy((prev) => {
+            const updateState = {
+              ...prev,
+              Cropname: selectedOption,
+              Acre: acre,
+              Latitude: position.coords.latitude,
+              Longitude: position.coords.longitude,
+              planting: {
+                SeedCost: fetchData.cropInfo.SeedCost * acre,
+                LaborNeed: laborNeed.planting * acre,
+                WagePerLabor: wage.planting,
+                TotalWagePerJob: wage.planting * laborNeed.planting * acre,
+                TotalCostPerJob: plantingDetail.totalCost,
+                FrequentUsage: null,
+              },
+              pesticide: {
+                ChemicalPrice: chemicalPrice.pesticide,
+                LaborNeed: laborNeed.pesticide * acre,
+                WagePerLabor: wage.pesticide,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.pesticide *
+                  laborNeed.pesticide *
+                  acre *
+                  jobFrequentUsage.pesticide,
+                TotalCostPerJob:
+                  wage.pesticide *
+                    laborNeed.pesticide *
+                    acre *
+                    jobFrequentUsage.pesticide +
+                  parseInt(chemicalPrice.pesticide),
+                FrequentUsage: jobFrequentUsage.pesticide,
+              },
+              herbicide: {
+                ChemicalPrice: chemicalPrice.herbicide,
+                LaborNeed: laborNeed.herbicide * acre,
+                WagePerLabor: wage.herbicide,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.herbicide *
+                  laborNeed.herbicide *
+                  acre *
+                  jobFrequentUsage.herbicide,
+                TotalCostPerJob:
+                  wage.herbicide *
+                    laborNeed.herbicide *
+                    acre *
+                    jobFrequentUsage.herbicide +
+                  chemicalPrice.herbicide,
+                FrequentUsage: jobFrequentUsage.herbicide,
+              },
+              fertilizer: {
+                ChemicalPrice: chemicalPrice.fertilizer,
+                LaborNeed: laborNeed.fertilizer * acre,
+                WagePerLabor: wage.fertilizer,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.fertilizer *
+                  laborNeed.fertilizer *
+                  acre *
+                  jobFrequentUsage.fertilizer,
+                TotalCostPerJob:
+                  wage.fertilizer *
+                    laborNeed.fertilizer *
+                    acre *
+                    jobFrequentUsage.fertilizer +
+                  chemicalPrice.fertilizer,
+                FrequentUsage: jobFrequentUsage.fertilizer,
+              },
+              plowing: {
+                ChemicalPrice: null,
+                LaborNeed: null,
+                WagePerLabor: null,
+                TotalLaborPerJob: null,
+                TotalWagePerJob: null,
+                TotalCostPerJob: wage.plowing * acre,
+              },
+              harvesting: {
+                ChemicalPrice: null,
+                LaborNeed: null,
+                WagePerLabor: null,
+                TotalLaborPerJob: null,
+                TotalWagePerJob: null,
+                TotalCostPerJob: wage.harvesting * acre,
+              },
+              TotalChemicalPrice:
+                chemicalPrice.pesticide +
+                chemicalPrice.herbicide +
+                chemicalPrice.fertilizer,
+              TotalWage:
+                plantingDetail.totalLaborWage +
+                pesticideDetail.totalLaborWage +
+                herbicideDetail.totalLaborWage +
+                fertilizerDetail.totalLaborWage,
+              TotalMachineryCost: wage.plowing * acre + wage.harvesting * acre,
+              TotalExpense:
+                plantingDetail.totalCost +
+                pesticideDetail.totalCost +
+                herbicideDetail.totalCost +
+                fertilizerDetail.totalCost +
+                (wage.plowing * acre + wage.harvesting * acre),
+            };
+            console.log(updateState);
+            return updateState;
+          });
+          setIsPost(true);
+        }
+        console.log("Latitude: ", position.coords.latitude);
+        console.log("Logitude: ", position.coords.longitude);
       });
-      setIsPost(true);
+    } else {
+      console.log("Geolocation not supported");
     }
   };
   useEffect(() => {
@@ -436,13 +460,33 @@ const Calculator = () => {
     herbicideDetail.totalCost,
     acre,
   ]);
-  // useEffect(()=>{
-  //   setPesticideDetail((prev)=>({
-  //     ...prev,
-  //     to
-  //   }))
-  // },[])
+  useEffect(() => {
+    if (acre && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        setposition({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
+        console.log("Latitude: ", position.coords.latitude);
+        console.log("Logitude: ", position.coords.longitude);
+      });
+    } else {
+      console.log("Geolocation not supported");
+    }
+  }, [acre]);
   // console.log("fetchDataState", chemicalPrice.pesticide);
+
+  const MapView = () => {
+    let map = useMap();
+    map.setView([position.latitude, position.longitude], map.getZoom());
+    //Sets geographical center and zoom for the view of the map
+    return null;
+  };
+  const customeIcon = L.icon({
+    iconUrl: point,
+    iconSize: [25, 35],
+    iconAnchor: [5, 30],
+  });
   return (
     <div className={`${classes.row} row`}>
       <div className={`${classes.column1} col-md-6`}>
@@ -609,18 +653,40 @@ const Calculator = () => {
         </div>
       </div>
       <div className={`${classes.column2} col-md-6`}>
-        {
-          <div className={`${classes.decision_wrapper} bg-red`}>
-            <div className={`mt-2`}>
-              ခန့်မှန်းသီးနှံအထွက်နှုန်း:<strong>{acre * 100} တင်း</strong>
-            </div>
-            <div className={`mt-2`}>ယနေ့သီးနှံပေါက်ဈေး: </div>
-            <div className={`mt-2`}>အသားတင်အမြတ်ငွေ:</div>
-            <button className={`mt-2 btn btn-primary `} onClick={propose}>
-              တင်မည်
-            </button>
+        <div className={`${classes.decision_wrapper} bg-red`}>
+          <div className={`mt-2`}>
+            ခန့်မှန်းသီးနှံအထွက်နှုန်း:<strong>{acre * 100} တင်း</strong>
           </div>
-        }
+          <div className={`mt-2`}>ယနေ့သီးနှံပေါက်ဈေး: </div>
+          <div className={`mt-2`}>အသားတင်အမြတ်ငွေ:</div>
+          <button className={`mt-2 btn btn-primary `} onClick={propose}>
+            တင်မည်
+          </button>
+        </div>
+        <div>
+          {acre && position.latitude && position.longitude && (
+            <MapContainer
+              style={{ height: 600, width: 600 }}
+              classsName='map'
+              center={[position.latitude, position.longitude]}
+              zoom={30}
+              scrollWheelZoom={false}
+            >
+              <TileLayer
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> 
+        contributors'
+                url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+              />
+              <Marker
+                icon={customeIcon}
+                position={[position.latitude, position.longitude]}
+              >
+                {/* <Popup>{display_name}</Popup> */}
+              </Marker>
+              <MapView />
+            </MapContainer>
+          )}
+        </div>
       </div>
     </div>
   );
