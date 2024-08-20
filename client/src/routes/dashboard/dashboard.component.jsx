@@ -198,7 +198,7 @@ const DashBoard = () => {
         {role === "admin" && (
           <SideBarButton
             icon={CalendarClock}
-            buttonText={"pending"}
+            buttonText={"စောင့်ဆိုင်းပို့စ်များ"}
             isActive={isActive === "admin/approval"}
             onclick={() => handleClick("admin/approval")}
           />
@@ -206,7 +206,7 @@ const DashBoard = () => {
         {role === "admin" && (
           <SideBarButton
             icon={CalendarCheck}
-            buttonText={"approved"}
+            buttonText={"အတည်ပြုပြီးပို့စ်များ"}
             isActive={isActive === "admin/approved"}
             onclick={() => handleClick("admin/approved")}
           />

@@ -208,7 +208,8 @@ export const getSpecificPost = asyncHandler(async (req, res) => {
     });
   };
 
-  const getGeneralInfo = "select * from post_general_info where PostId=?";
+  const getGeneralInfo =
+    "select p.*,u.* from post_general_info p join user u on p.UserId=u.UserId where PostId=?";
   const getJobInfo = "select * from post_job_info where PostId=?";
   const getTotalCost = "select * from post_total_cost where PostId=?";
   // console.log("specific post id", postid);

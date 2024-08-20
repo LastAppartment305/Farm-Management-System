@@ -663,7 +663,7 @@ const Calculator = () => {
             တင်မည်
           </button>
         </div>
-        <div>
+        <div className='mt-3'>
           {acre && position.latitude && position.longitude && (
             <MapContainer
               style={{ height: 600, width: 600 }}

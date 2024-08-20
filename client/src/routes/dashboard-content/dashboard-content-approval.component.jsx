@@ -147,7 +147,12 @@ const AdminApproval = () => {
                         <div>
                           ပိုင်ရှင်အမည် : <strong>{username}</strong>
                         </div>
-                        <div>ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :</div>
+                        <div>
+                          ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :
+                          <strong>
+                            {postInfo && postInfo.postGeneralInfo.NRC}
+                          </strong>
+                        </div>
                       </div>
                     </div>
                     <div className={`${classes.farm_info}`}>

@@ -53,7 +53,7 @@ const OwnerPropose = () => {
     7: "ရိတ်သိမ်းစရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
   };
-  console.log("postInfo", postList);
+  // console.log("postInfo", postList);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -113,7 +113,10 @@ const OwnerPropose = () => {
                           ပိုင်ရှင်အမည် : <strong>{username}</strong>
                         </div>
                         <div>
-                          ပိုင်ရှင်မှတ်ပုံတင်အမှတ် : <strong>{username}</strong>
+                          ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :{" "}
+                          <strong>
+                            {postInfo && postInfo.postGeneralInfo.NRC}
+                          </strong>
                         </div>
                       </div>
                     </div>
