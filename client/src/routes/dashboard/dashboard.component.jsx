@@ -281,7 +281,7 @@ const DashBoard = () => {
             </div>
             <div className='right-side-of-nav me-2 d-flex align-items-center'>
               {/* <div className='noti-wrapper position-relative'> */}
-              <a
+              {/* <a
                 href='#Noti'
                 onClick={handleNoti}
                 className='noti-btn'
@@ -299,7 +299,7 @@ const DashBoard = () => {
                       : ""
                   }
                 ></div>
-              </a>
+              </a> */}
               {/* </div> */}
               {/* <div className='profile-icon-wrapper ms-4'> */}
               <a

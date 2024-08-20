@@ -663,7 +663,7 @@ const Calculator = () => {
             တင်မည်
           </button>
         </div>
-        <div className='mt-3'>
+        {/* <div className='mt-3'>
           {acre && position.latitude && position.longitude && (
             <MapContainer
               style={{ height: 600, width: 600 }}
@@ -681,10 +681,23 @@ const Calculator = () => {
                 icon={customeIcon}
                 position={[position.latitude, position.longitude]}
               >
-                {/* <Popup>{display_name}</Popup> */}
               </Marker>
               <MapView />
             </MapContainer>
+          )}
+        </div> */}
+        <div className='mt-3'>
+          {acre && (
+            <iframe
+              width='550'
+              height='350'
+              frameborder='0'
+              style={{ border: 0 }}
+              referrerpolicy='no-referrer-when-downgrade'
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDSegWYCf5Tzfc73v-s5KDm-OUIfn9UWME &q=${position.latitude},${position.longitude}&zoom=18
+  &maptype=satellite`}
+              allowfullscreen
+            ></iframe>
           )}
         </div>
       </div>

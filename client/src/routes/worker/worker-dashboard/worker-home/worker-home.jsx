@@ -257,36 +257,20 @@ const WorkerHome = () => {
             >
               မမှန်ကန်ပါ
             </button>
-            <div>
+            <div className='mt-3'>
               {postInfo &&
                 postInfo.postGeneralInfo.Latitude &&
                 postInfo.postGeneralInfo.Longitude && (
-                  <MapContainer
-                    style={{ height: 600, width: 600 }}
-                    classsName='map'
-                    center={[
-                      postInfo.postGeneralInfo.Latitude,
-                      postInfo.postGeneralInfo.Longitude,
-                    ]}
-                    zoom={30}
-                    scrollWheelZoom={false}
-                  >
-                    <TileLayer
-                      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> 
-        contributors'
-                      url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                    />
-                    <Marker
-                      icon={customeIcon}
-                      position={[
-                        postInfo.postGeneralInfo.Latitude,
-                        postInfo.postGeneralInfo.Longitude,
-                      ]}
-                    >
-                      {/* <Popup>{display_name}</Popup> */}
-                    </Marker>
-                    <MapView />
-                  </MapContainer>
+                  <iframe
+                    width='550'
+                    height='350'
+                    frameborder='0'
+                    style={{ border: 0 }}
+                    referrerpolicy='no-referrer-when-downgrade'
+                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDSegWYCf5Tzfc73v-s5KDm-OUIfn9UWME &q=${postInfo.postGeneralInfo.Latitude},${postInfo.postGeneralInfo.Longitude}&zoom=18
+  &maptype=satellite`}
+                    allowfullscreen
+                  ></iframe>
                 )}
             </div>
           </div>
