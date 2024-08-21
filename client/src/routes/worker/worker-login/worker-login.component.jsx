@@ -28,7 +28,7 @@ const WorkerLogin = () => {
   const [OTP, setOTP] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
-  const { postData } = usePost("http://localhost:5000/worker/check-assign");
+  const { postData } = usePost("http://localhost:5000/worker/send-token");
   const { postData: sendFarmIdAndWorkerId } = usePost(
     "http://localhost:5000/worker/send-auth"
   );

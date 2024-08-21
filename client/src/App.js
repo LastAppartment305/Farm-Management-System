@@ -24,6 +24,7 @@ import WorkerMain from "./routes/worker/worker-dashboard/main/worker-main";
 import WorkerHome from "./routes/worker/worker-dashboard/worker-home/worker-home";
 import OwnerPropose from "./routes/dashboard-content/owner-proposes/owner-proposes.component";
 import ApprovedPosts from "./routes/dashboard-content/admin-approved-posts/admin-approved-posts.component";
+import WorkerAgreement from "./routes/worker/worker-dashboard/worker-agreement/worker-agreement";
 
 const App = () => {
   const [admin, setadmin] = useState(true);
@@ -113,6 +114,14 @@ const App = () => {
                   {
                     path: "worker/home",
                     element: <WorkerHome />,
+                  },
+                  {
+                    path: "worker/agreement",
+                    element: <WorkerAgreement />,
+                  },
+                  {
+                    path: "worker/report",
+                    element: <TakePhoto />,
                   },
                 ],
               },

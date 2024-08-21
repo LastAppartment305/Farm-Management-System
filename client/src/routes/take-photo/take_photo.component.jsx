@@ -24,6 +24,7 @@ const TakePhoto = () => {
   const videoref = useRef(null);
   const [removeImage, setRemoveImage] = useState(false);
   const [workerInformation, setWorkerInformation] = useState();
+  const [selectedOption, setSelectedOption] = useState(null);
   const [position, setposition] = useState({
     latitude: null,
     longitude: null,
@@ -102,7 +103,10 @@ const TakePhoto = () => {
   const cancelVideoStream = () => {
     setOpenCamera(false);
   };
-
+  const handleChange = (e) => {
+    const value = e.target.value === "" ? null : e.target.value;
+    setSelectedOption(value);
+  };
   const stopVideo = async () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
@@ -233,13 +237,18 @@ const TakePhoto = () => {
 
   return (
     <div className='container-fluid'>
-      <div className='logout-btn '>
+      {/* <div className='logout-btn '>
         <div className='worker-name'>{workerInformation}</div>
         <button className='btn btn-primary fs-5' onClick={logout}>
           ထွက်ရန်
         </button>
-      </div>
+      </div> */}
       <Toaster toastOptions={{ duration: 3000 }} />
+      <div className='select-box'>
+        <select onChange={handleChange}>
+          <option>something</option>
+        </select>
+      </div>
       <div>
         <div className='date-string'>
           {mySQLDateString} ရက်နေ့အတွက် ရီပို့ တင်ရန်

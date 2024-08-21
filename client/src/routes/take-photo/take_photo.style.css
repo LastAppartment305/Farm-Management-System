@@ -32,7 +32,10 @@ video {
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
-
+.select-box select {
+  width: 500px;
+  height: 3rem;
+}
 .video {
   display: flex;
   justify-content: center;

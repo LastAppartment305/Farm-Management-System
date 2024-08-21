@@ -30,11 +30,18 @@ const WorkerMain = () => {
         <div className={`${classes.nav_group1}`}>
           <div className={`${classes.nav_item}`}>
             <a type='button' onClick={() => handleClick("worker/home")}>
-              home
+              အလုပ်များ
             </a>
           </div>
           <div className={`${classes.nav_item}`}>
-            <a href='#'>agreement</a>
+            <a type='button' onClick={() => handleClick("worker/agreement")}>
+              လက်ခံထားရှိမှု
+            </a>
+          </div>
+          <div className={`${classes.nav_item}`}>
+            <a type='button' onClick={() => handleClick("worker/report")}>
+              ရီပို့တင်ရန်
+            </a>
           </div>
           <div>
             <a

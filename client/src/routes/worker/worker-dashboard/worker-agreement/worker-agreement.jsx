@@ -1,10 +1,12 @@
-import classes from "./worker-home.module.css";
+import classes from "./worker-agreement.module.css";
 import { useGet } from "../../../../custom-hook/axios-post/axios-post";
 import { useEffect, useRef, useState } from "react";
 import croptype from "../../../dashboard-content/cultivation-calculator/sample.json";
 import approve from "../../../../assets/icon/success.png";
+import print from "../../../../assets/icon/print.png";
 import axios from "axios";
-import point from "../../../../assets/icon/location.svg";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import {
   MapContainer,
   TileLayer,
@@ -13,15 +15,11 @@ import {
   Popup,
   useMap,
 } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-
-const WorkerHome = () => {
-  const { response } = useGet(
-    "http://localhost:5000/worker/get-approve-post-for-worker"
-  );
+const WorkerAgreement = () => {
+  const { response } = useGet("http://localhost:5000/worker/getAgreedPosts");
   const [postList, setPostList] = useState(null);
   const [postId, setPostId] = useState(null);
+  const reportRef = useRef();
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [postInfo, setPostInfo] = useState(null);
 
@@ -30,7 +28,7 @@ const WorkerHome = () => {
     setPostId(id);
     setSelectedPostId(id);
     const result = await axios.post(
-      "http://localhost:5000/worker/getSpecificPostForWorker",
+      "http://localhost:5000/worker/makeContract",
       {
         postid: id,
       }
@@ -44,28 +42,23 @@ const WorkerHome = () => {
   useEffect(() => {
     if (response) {
       const approvedPosts = response.data.filter(
-        (post) => post.ApproveStatus === 1 && post.WorkerId === null
+        (post) => post.ApproveStatus === 1
       );
       setPostList(approvedPosts);
     }
   }, [response]);
-  const agreePropose = async (id) => {
-    const result = await axios.post(
-      "http://localhost:5000/worker/agreePropose",
-      {
-        postid: id,
-      }
-    );
-    // if (result) {
-    //   const getList = await axios.get("http://localhost:5000/getAllPost");
-    //   if (getList) {
-    //     const approvedPosts = getList.data.filter(
-    //       (post) => post.ApproveStatus === 1
-    //     );
-    //     setPostList(approvedPosts);
-    //     setPostId(null);
-    //   }
-    // }
+  const handlePrint = () => {
+    const input = reportRef.current;
+
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/jpeg", 0.8); // Use JPEG format with compression
+      const pdf = new jsPDF("p", "mm", "a4"); // Adjust page size and orientation
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+
+      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
+      pdf.save("expense-report.pdf");
+    });
   };
   const jobLabels = {
     1: "ပေါင်းသတ်ခြင်း",
@@ -75,7 +68,7 @@ const WorkerHome = () => {
     7: "ရိတ်သိမ်းစရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
   };
-  console.log(postList);
+  console.log(postInfo);
   const MapView = () => {
     let map = useMap();
     map.setView(
@@ -85,14 +78,17 @@ const WorkerHome = () => {
     //Sets geographical center and zoom for the view of the map
     return null;
   };
-  const customeIcon = L.icon({
-    iconUrl: point,
-    iconSize: [25, 35],
-    iconAnchor: [5, 30],
-  });
+  //   const customeIcon = L.icon({
+  //     iconUrl: point,
+  //     iconSize: [25, 35],
+  //     iconAnchor: [5, 30],
+  //   });
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
+        <div className={`${classes.left_side_header}`}>
+          လက်ခံထားသည့်အလုပ်များ
+        </div>
         {postList && postList.length > 0 ? (
           postList.map((post, index) => (
             <div
@@ -107,7 +103,7 @@ const WorkerHome = () => {
             >
               {/* {post.CropName} */}
               <div className={`${classes.mini_post_header}`}>
-                <strong>{post.Name}</strong>
+                <strong>{post.UName}</strong>
                 {post.ApproveStatus === 1 && (
                   <img
                     src={approve}
@@ -132,7 +128,7 @@ const WorkerHome = () => {
       </div>
       <div className={`${classes.right_side}`}>
         {postId && (
-          <div className={`${classes.expense_wrapper}`}>
+          <div className={`${classes.expense_wrapper}`} ref={reportRef}>
             {postInfo &&
               postInfo.postGeneralInfo &&
               // Destructure postGeneralInfo
@@ -140,21 +136,33 @@ const WorkerHome = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
-                const { Acre, Latitude, Longitude, Name, NRC } =
+                const { Acre, Latitude, Longitude, UName, UNRC, WName, WNRC } =
                   postInfo.postGeneralInfo;
                 // const { username } = postInfo;
                 return (
                   <>
                     <div className={`${classes.owner_info}`}>
                       <div className={`${classes.owner_info_wrapper} `}>
+                        <div className='fw-bold fs-6 mb-2'>
+                          လယ်ပိုင်ရှင်အချက်အလက်
+                        </div>
                         <div>
                           ရက်စွဲ : <strong>{localDate}</strong>
                         </div>
                         <div>
-                          ပိုင်ရှင်အမည် : <strong>{Name}</strong>
+                          ပိုင်ရှင်အမည် : <strong>{UName}</strong>
                         </div>
                         <div>
-                          ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :<strong>{NRC}</strong>
+                          ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :<strong>{UNRC}</strong>
+                        </div>
+                        <div className='fw-bold fs-6 mb-2 mt-2'>
+                          အလုပ်သမားအချက်အလက်
+                        </div>
+                        <div>
+                          အလုပ်သမားအမည် : <strong>{WName}</strong>
+                        </div>
+                        <div>
+                          အလုပ်သမားမှတ်ပုံတင်အမှတ် :<strong>{WNRC}</strong>
                         </div>
                       </div>
                     </div>
@@ -254,33 +262,32 @@ const WorkerHome = () => {
                   </>
                 );
               })()}
-            <button
-              className={`${classes.approve_btn} btn btn-primary`}
-              onClick={() => agreePropose(postId)}
-            >
-              လက်ခံမည်
-            </button>
-            <div className='mt-3'>
-              {postInfo &&
-                postInfo.postGeneralInfo.Latitude &&
-                postInfo.postGeneralInfo.Longitude && (
-                  <iframe
-                    width='550'
-                    height='350'
-                    frameborder='0'
-                    style={{ border: 0 }}
-                    referrerpolicy='no-referrer-when-downgrade'
-                    src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDSegWYCf5Tzfc73v-s5KDm-OUIfn9UWME &q=${postInfo.postGeneralInfo.Latitude},${postInfo.postGeneralInfo.Longitude}&zoom=18
-  &maptype=satellite`}
-                    allowfullscreen
-                  ></iframe>
-                )}
-            </div>
+            {/* <div className={`${classes.approved}`}>လက်ခံပြီး</div> */}
           </div>
         )}
+        {postInfo && (
+          <button className={`${classes.approve_btn}`} onClick={handlePrint}>
+            <img src={print} /> printထုတ်မည်
+          </button>
+        )}
+        <div className={`${classes.embed_map}`}>
+          {postInfo &&
+            postInfo.postGeneralInfo.Latitude &&
+            postInfo.postGeneralInfo.Longitude && (
+              <iframe
+                width='550'
+                height='350'
+                frameborder='0'
+                style={{ border: 0 }}
+                referrerpolicy='no-referrer-when-downgrade'
+                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDSegWYCf5Tzfc73v-s5KDm-OUIfn9UWME &q=${postInfo.postGeneralInfo.Latitude},${postInfo.postGeneralInfo.Longitude}&zoom=18
+  &maptype=satellite`}
+                allowfullscreen
+              ></iframe>
+            )}
+        </div>
       </div>
     </div>
   );
 };
-
-export default WorkerHome;
+export default WorkerAgreement;
