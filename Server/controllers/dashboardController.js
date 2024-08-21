@@ -287,18 +287,20 @@ export const editWorker = asyncHandler(async (req, res) => {
 export const receiveUploadPhoto = asyncHandler(async (req, res) => {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const { url, description } = req.body;
-  const { farmid, workerid, userid } = req.worker;
-  console.log("farmid", farmid);
+  const { url, description, postid } = req.body;
+  const { username, workerid } = req.worker;
+  console.log("postid", postid);
   const accountAuthTokenFileName = "./b2-accountAuth.json";
   const defaultExpirationTime = 24 * 60 * 60 * 1000;
   // console.log("dashboardController", farmid, workerid);
   const insertImageIdTo_image =
-    "insert into image (Report_date,Image_path,upload_fileId,Image_description,noti_message,noti_status) values (?,?,?,?,?,?)";
+    "insert into image (Report_date,Image_path,upload_fileId,Image_description,noti_message,noti_status,PostId) values (?,?,?,?,?,?,?)";
   const connectImageIdWithFarmId =
     "insert into report (FarmId,ImageId) values (?,?)";
-  const getWorkerName = "select Name from worker where WorkerId=?";
-  const getFarmName = "select Name from farm where FarmId=?";
+  const getUserName =
+    "select Name from user where UserId in (select UserId from post_general_info where PostId=?)";
+  const getCropInfo =
+    "select CropName,Acre from post_general_info where PostId=?";
 
   let b2AccountAuthToken = {
     token: null,
@@ -484,47 +486,45 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
     );
     // console.log(uploadResult.data.fileId);
     Promise.all([
-      queryDatabase(getWorkerName, [workerid]),
-      queryDatabase(getFarmName, [farmid]),
+      queryDatabase(getUserName, [postid]),
+      queryDatabase(getCropInfo, [postid]),
     ])
-      .then(([workerName, farmName]) => {
-        // if (workerName && farmName) {
-        //   console.log(workerName);
-        //   console.log(farmName);
-        // }
+      .then(([userName, cropInfo]) => {
+        if (userName && cropInfo) {
+          console.log(userName);
+          console.log(cropInfo);
+        }
         const valuesToInsert_image = [
           mySQLDateString,
           filename,
           uploadResult.data.fileId,
           description,
-          `${workerName[0].Name} မှ ${farmName[0].Name} အတွက် ဓာတ်ပုံပို့ထားပါသည်`,
+          `${username} မှ ${userName[0].Name}၏ ${cropInfo[0].CropName} ${cropInfo[0].Acre} အတွက် ဓာတ်ပုံပို့ထားပါသည်`,
           false,
+          postid,
         ];
         //store file name in database
         Promise.resolve(
           queryDatabase(insertImageIdTo_image, valuesToInsert_image)
         ).then(async (response) => {
-          // console.log(response);
-          if (response) {
-            // const workerName = await queryDatabase(getWorkerName, [workerid]);
-            // if (workerName) {
-            //   console.log("workerName: ", workerName[0].Name);
-            // }
-            // const farmName = await queryDatabase(getFarmName, [farmid]);
-            // if (farmName) {
-            //   console.log("farm name: ", farmName);
-            // }
-            const queryResult = await queryDatabase(connectImageIdWithFarmId, [
-              farmid,
-              response.insertId,
-            ]);
-            return {
-              queryResult,
-              // id: response.insertId,
-            };
-          }
-
-          // console.log(`upload ${filename} at ${mySQLDateString}`);
+          console.log("inserted data to image table : ", response);
+          // if (response) {
+          //   const workerName = await queryDatabase(getWorkerName, [workerid]);
+          //   if (workerName) {
+          //     console.log("workerName: ", workerName[0].Name);
+          //   }
+          //   const farmName = await queryDatabase(getFarmName, [farmid]);
+          //   if (farmName) {
+          //     console.log("farm name: ", farmName);
+          //   }
+          //   const queryResult = await queryDatabase(connectImageIdWithFarmId, [
+          //     farmid,
+          //     response.insertId,
+          //   ]);
+          //   return {
+          //     queryResult,
+          //   };
+          // }
         });
       })
       .catch((err) => {

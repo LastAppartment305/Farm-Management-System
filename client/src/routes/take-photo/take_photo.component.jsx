@@ -9,6 +9,7 @@ import { Toaster, toast } from "react-hot-toast";
 import axios from "axios";
 import io from "socket.io-client";
 import point from "../../assets/icon/location.svg";
+import croptype from "../dashboard-content/cultivation-calculator/sample.json";
 import {
   MapContainer,
   TileLayer,
@@ -25,6 +26,7 @@ const TakePhoto = () => {
   const [removeImage, setRemoveImage] = useState(false);
   const [workerInformation, setWorkerInformation] = useState();
   const [selectedOption, setSelectedOption] = useState(null);
+  const [postList, setPostList] = useState(null);
   const [position, setposition] = useState({
     latitude: null,
     longitude: null,
@@ -34,7 +36,7 @@ const TakePhoto = () => {
   const { postData } = usePost(
     "http://localhost:5000/dashboard/uploadbase64image"
   );
-  const { response } = useGet("http://localhost:5000");
+  const { response } = useGet("http://localhost:5000/worker/getAgreedPosts");
   const [stream, setStream] = useState(null);
   const navigate = useNavigate();
 
@@ -140,16 +142,25 @@ const TakePhoto = () => {
     };
   }, [openCamera]);
   useEffect(() => {
-    const fetchingWorkerInformation = async () => {
-      const x = await axios.get(
-        "http://localhost:5000/dashboard/getWorkerInfo"
+    if (response) {
+      const approvedPosts = response.data.filter(
+        (post) => post.ApproveStatus === 1
       );
-      if (x) {
-        setWorkerInformation(x.data.Name);
-      }
-    };
-    fetchingWorkerInformation();
-  }, []);
+      setPostList(approvedPosts);
+    }
+  }, [response]);
+  //To Do ---------------commented to avoid temporar error ?need to fix ?---------------
+  // useEffect(() => {
+  //   const fetchingWorkerInformation = async () => {
+  //     const x = await axios.get(
+  //       "http://localhost:5000/dashboard/getWorkerInfo"
+  //     );
+  //     if (x) {
+  //       setWorkerInformation(x.data.Name);
+  //     }
+  //   };
+  //   fetchingWorkerInformation();
+  // }, []);
   // useEffect(() => {
   //   if ("geolocation" in navigator) {
   //     navigator.geolocation.getCurrentPosition(function (position) {
@@ -171,13 +182,14 @@ const TakePhoto = () => {
     const imageUrl = sessionStorage.getItem("capturedImage");
     if (imageUrl) {
       const response = await postData({
+        postid: selectedOption,
         url: imageUrl,
         description: imageDescription.current,
       });
       console.log("take photo", response);
       if (response === undefined) {
         // setVerifyWorker(false);
-        navigate("/worker-login");
+        // navigate("/worker-login");
         sessionStorage.removeItem("capturedImage");
       } else {
         toast.success("အောင်မြင်ပါသည်");
@@ -234,7 +246,8 @@ const TakePhoto = () => {
     iconSize: [25, 35],
     iconAnchor: [5, 30],
   });
-
+  console.log(postList);
+  console.log(selectedOption);
   return (
     <div className='container-fluid'>
       {/* <div className='logout-btn '>
@@ -246,7 +259,17 @@ const TakePhoto = () => {
       <Toaster toastOptions={{ duration: 3000 }} />
       <div className='select-box'>
         <select onChange={handleChange}>
-          <option>something</option>
+          <option value={null}></option>
+          {postList &&
+            postList.length > 0 &&
+            postList.map((i, index) => (
+              <option key={index} value={i.PostId}>
+                <div>{i.UName}</div>
+                <div>
+                  {croptype.crop.find((crop) => crop.value === i.CropName).name}
+                </div>
+              </option>
+            ))}
         </select>
       </div>
       <div>
