@@ -9,3 +9,16 @@
   height: auto;
   display: block;
 }
+.confirm_buttons {
+  margin-top: 20px;
+  display: flex;
+}
+.correct_btn {
+  margin-right: 20px;
+}
+.mark {
+  width: 21px;
+  height: 30px;
+  left: auto;
+  right: 16px;
+}

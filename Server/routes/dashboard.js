@@ -10,6 +10,8 @@ import {
   editWorker,
   receiveUploadPhoto,
   retrieveWorkerInfo,
+  postListsForAdmin,
+  confirmToImages,
 } from "../controllers/dashboardController.js";
 import {
   authenticateToken,
@@ -32,4 +34,17 @@ router.delete(
 );
 router.post("/uploadbase64image", workerAuthToken, receiveUploadPhoto);
 router.get("/getWorkerInfo", workerAuthToken, retrieveWorkerInfo);
+router.get(
+  "/getPostListsToApprove",
+  authenticateToken,
+  authRole("admin"),
+  postListsForAdmin
+);
+router.post(
+  "/confirmReportImages",
+  authenticateToken,
+  authRole("admin"),
+  confirmToImages
+);
+
 export default router;

@@ -1,20 +1,25 @@
 import classes from "./image-downloader.module.css";
-
+import success from "../../assets/icon/success.png";
+import redCross from "../../assets/icon/red-cross.png";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 const imageCache = {};
 const ImageDownloader = ({
+  imageId,
   downloadUrl,
   downloadToken,
   bucketName,
   fileName,
   date,
   description,
+  confirmStatus,
 }) => {
   const [imageSrc, setImageSrc] = useState(null);
   // const [imageCache, setImageCache] = useState({});
   const [error, setError] = useState(null);
   let imageElement = document.querySelector("img");
+  const utcDate = new Date(date);
+  const localDate = utcDate.toLocaleString();
   useEffect(() => {
     const cachedImage = imageCache[fileName];
     if (cachedImage) {
@@ -68,13 +73,61 @@ const ImageDownloader = ({
     return <div>Error loading image</div>;
   }
 
+  const confirmCorrect = async (imageId) => {
+    console.log(imageId);
+    const result = await axios.post(
+      "http://localhost:5000/dashboard/confirmReportImages",
+      {
+        imageId: imageId,
+        confirmStatus: true,
+      }
+    );
+  };
+  const confirmIncorrect = async (imageId) => {
+    console.log(imageId);
+    const result = await axios.post(
+      "http://localhost:5000/dashboard/confirmReportImages",
+      {
+        imageId: imageId,
+        confirmStatus: false,
+      }
+    );
+  };
+
   return (
     <div className={`${classes.image_wrapper}`}>
       {imageSrc ? (
-        <div>
-          <div>{date}</div>
+        <div
+          className={`${classes.individual_image_wrapper} position-relative`}
+        >
+          {confirmStatus ? (
+            <div className={`${classes.mark} position-absolute`}>
+              <img src={success} />
+            </div>
+          ) : (
+            <div className={`${classes.mark} position-absolute`}>
+              <img src={redCross} />
+            </div>
+          )}
+          <div>{localDate}</div>
           <img src={imageSrc} alt='Downloaded from B2' />
           <div className='mt-3'>အကြောင်းအရာ- {description}</div>
+          {confirmStatus === null && (
+            <div className={`${classes.confirm_buttons}`}>
+              <button
+                className={`${classes.correct_btn} btn btn-primary`}
+                onClick={() => confirmCorrect(imageId)}
+              >
+                မှန်ကန်ပါသည်
+              </button>
+              <button
+                className={`${classes.incorrect_btn} btn btn-danger`}
+                onClick={() => confirmIncorrect(imageId)}
+              >
+                မမှန်ကန်ပါ
+              </button>
+            </div>
+          )}
           <hr></hr>
         </div>
       ) : (

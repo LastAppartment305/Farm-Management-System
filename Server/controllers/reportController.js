@@ -9,7 +9,7 @@ dotenv.config();
 
 export const getReportPhoto = asyncHandler(async (req, res) => {
   // console.log(req.user.id);
-  const { farmid } = req.body;
+  const { postid } = req.body;
   const { id } = req.user;
 
   const batchSize = 50; // Adjust the batch size based on your database capacity
@@ -19,7 +19,9 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
   let hasMore = true;
 
   // const getNotiMessageAndStatus='select noti_message,noti_status from report where FarmId in(select FarmId from worker_detail where UserId=?)'
-  const getImageIdFrom_worker_detail = `select ImageId from report where FarmId=? and exists (select * from report where FarmId=?) limit ? offset ?`;
+  // const getImageIdFrom_worker_detail = `select ImageId from report where FarmId=? and exists (select * from report where FarmId=?) limit ? offset ?`;
+
+  const getImageIdFrom_worker_detail = `select ImageId from image where postid=? limit ? offset ?`;
 
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
@@ -39,8 +41,7 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
   let isFirstBatch = true;
   while (hasMore) {
     const result = await queryDatabase(getImageIdFrom_worker_detail, [
-      farmid,
-      farmid,
+      postid,
       batchSize,
       offset,
     ]);
@@ -50,18 +51,20 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
       });
       offset += batchSize;
       const placeHolder = ids.map(() => "?").join(", ");
-      const getImagePath = `select Image_path,Report_date,Image_description,noti_message,noti_status from image where ImageId in (${placeHolder})`;
+      const getImagePath = `select ImageId,Image_path,Report_date,Image_description,noti_message,noti_status,ConfirmStatus from image where ImageId in (${placeHolder})`;
       const imagePath = await queryDatabase(getImagePath, ids);
       imagePath.map((path) => {
         paths.push(
           // path
           // path.Image_path
           {
+            ImageId: path.ImageId,
             filename: path.Image_path,
             date: path.Report_date,
             description: path.Image_description,
             noti_message: path.noti_message,
             noti_status: path.noti_status,
+            ConfirmStatus: path.ConfirmStatus,
           }
         );
       });
@@ -234,7 +237,7 @@ export const getDownloadAuth = asyncHandler(async (req, res) => {
       authToken.authorizationToken
     );
 
-    console.log("download Token :", downloadToken.data);
+    // console.log("download Token :", downloadToken.data);
 
     res.send({
       downloadUrl: authToken.apiInfo.storageApi.downloadUrl,

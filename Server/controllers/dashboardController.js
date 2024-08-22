@@ -683,3 +683,66 @@ export const retrieveWorkerInfo = asyncHandler(async (req, res) => {
       console.log(err);
     });
 });
+//-----------------------------------------------
+export const postListsForAdmin = asyncHandler(async (req, res) => {
+  // console.log("postListforAdmin approve report");
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const sql =
+    "select p.*,u.Name,i.ConfirmStatus from post_general_info p join user u on p.UserId=u.UserId join image i on p.PostId=i.PostId where ApproveStatus=? and WorkerId is not null";
+  const retrievePosts = async () => {
+    try {
+      const postLists = await queryDatabase(sql, [1]);
+      if (postLists) {
+        console.log(postLists);
+        // postDetail.postInfo = console.log("post for admin", postLists);
+        res.send(postLists);
+      }
+    } catch (err) {
+      console.error("Error at retrieving posts", err);
+    }
+  };
+  try {
+    await retrievePosts();
+  } catch (err) {
+    console.error("Error at retrieving posts");
+  }
+});
+//----------------------------------------------
+export const confirmToImages = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { imageId, confirmStatus } = req.body;
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const sql = "update image set ConfirmStatus=? where ImageId=?";
+
+  const changeConfirmStatus = async () => {
+    try {
+      const changeResult = await queryDatabase(sql, [confirmStatus, imageId]);
+      res.send(changeResult);
+    } catch (err) {
+      console.error("Error at changing status: ", err);
+    }
+  };
+
+  try {
+    await changeConfirmStatus();
+  } catch (err) {
+    console.error("error at calling function", err);
+  }
+});

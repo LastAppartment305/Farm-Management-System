@@ -13,6 +13,7 @@ import {
   Calculator,
   HandCoins,
   CalendarClock,
+  Image,
 } from "lucide-react";
 import {
   useLogout,
@@ -209,6 +210,14 @@ const DashBoard = () => {
             buttonText={"အတည်ပြုပြီးပို့စ်များ"}
             isActive={isActive === "admin/approved"}
             onclick={() => handleClick("admin/approved")}
+          />
+        )}
+        {role === "admin" && (
+          <SideBarButton
+            icon={Image}
+            buttonText={"ရီပို့ဓာတ်ပုံများ"}
+            isActive={isActive === "admin/approve-reports"}
+            onclick={() => handleClick("admin/approve-reports")}
           />
         )}
         {role === "owner" && (

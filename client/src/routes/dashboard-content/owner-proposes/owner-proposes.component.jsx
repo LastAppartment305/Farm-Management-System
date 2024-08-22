@@ -19,7 +19,7 @@ const OwnerPropose = () => {
       setPostList(response.data);
     }
   }, [response]);
-  console.log(postInfo);
+  console.log("postInfo: ", postInfo);
   const getPostDetail = async (id) => {
     // console.log("post Id", id);
     setPostId(id);

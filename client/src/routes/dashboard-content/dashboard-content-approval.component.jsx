@@ -54,7 +54,7 @@ const AdminApproval = () => {
     7: "ရိတ်သိမ်းစရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
   };
-  console.log(postList);
+  console.log("postInfo; ", postInfo);
   const approvePurpose = async (id) => {
     const result = await axios.post("http://localhost:5000/approvePropose", {
       postid: id,
@@ -135,7 +135,8 @@ const AdminApproval = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
-                const { Acre, Latitude, Longitude } = postInfo.postGeneralInfo;
+                const { Acre, Latitude, Longitude, Name } =
+                  postInfo.postGeneralInfo;
                 const { username } = postInfo;
                 return (
                   <>
@@ -145,7 +146,7 @@ const AdminApproval = () => {
                           ရက်စွဲ : <strong>{localDate}</strong>
                         </div>
                         <div>
-                          ပိုင်ရှင်အမည် : <strong>{username}</strong>
+                          ပိုင်ရှင်အမည် : <strong>{Name}</strong>
                         </div>
                         <div>
                           ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :
