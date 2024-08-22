@@ -1,26 +1,25 @@
-import classes from "./fungicide.module.css";
-
-const FungicideComponent = ({
+import classes from "./foliar-fertilizer.module.css";
+const FoliarFertilizer = ({
   chemical,
   laborNeed,
   wage,
   chemicalPrice,
   jobFrequentUsage,
-  handleFungicidePrice,
+  handleFoliarFertilizerPrice,
   acre,
 }) => {
   return (
-    <div className={`${classes.fungicide} w-100`}>
+    <div className={`${classes.foliar_fertilizer} w-100`}>
       <div className={`${classes.boxes} me-5`}>
-        <div className={`${classes.box_label} mb-2`}>မှိုသတ်ဆေး</div>
+        <div className={`${classes.box_label} mb-2`}>ရွက်ဖြန်းအားဆေး</div>
         <select
           className={`${classes.inputs} w-100`}
-          onChange={handleFungicidePrice}
-          value={chemicalPrice.fungicide}
+          onChange={handleFoliarFertilizerPrice}
+          value={chemicalPrice.foliar_fertilizer}
         >
           <option value={null}></option>
           {chemical?.map((item, index) => {
-            if (item.ChemCategory === "fungicide") {
+            if (item.ChemCategory === "foliar_fertilizer") {
               return (
                 <option key={index} value={item.Price}>
                   {item.Brand}
@@ -34,47 +33,49 @@ const FungicideComponent = ({
       <div className={`mt-2`}>
         အသုံးပြုရမည့်ခန့်မှန်းအကြိမ်အရေအတွက်:
         {jobFrequentUsage && acre && (
-          <strong>{jobFrequentUsage.fungicide} ကြိမ်</strong>
+          <strong>{jobFrequentUsage.foliar_fertilizer} ကြိမ်</strong>
         )}
       </div>
       <div className={`mt-2`}>
         လုပ်သားလိုအပ်ချက်:
-        {laborNeed.fungicide && acre && (
-          <strong>{laborNeed.fungicide * acre}ယောက်</strong>
+        {laborNeed.foliar_fertilizer && acre && (
+          <strong>{laborNeed.foliar_fertilizer * acre}ယောက်</strong>
         )}
       </div>
       <div className={`mt-2`}>
         တစ်ယောက်လုပ်အားခ:
-        {wage.fungicide && acre && <strong>{wage.fungicide}ယောက်</strong>}
+        {wage.foliar_fertilizer && acre && (
+          <strong>{wage.foliar_fertilizer}ယောက်</strong>
+        )}
       </div>
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်လုပ်အားခ:
-        {wage.fungicide && acre && (
+        {wage.foliar_fertilizer && acre && (
           <strong>
-            {wage.fungicide *
-              laborNeed.fungicide *
+            {wage.foliar_fertilizer *
+              laborNeed.foliar_fertilizer *
               acre *
-              jobFrequentUsage.fungicide}{" "}
+              jobFrequentUsage.foliar_fertilizer}{" "}
             ကျပ်
           </strong>
         )}
       </div>
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
-        {chemicalPrice.fungicide !== null && acre && (
-          <strong>{chemicalPrice.fungicide} ကျပ်</strong>
+        {chemicalPrice.foliar_fertilizer !== null && acre && (
+          <strong>{chemicalPrice.foliar_fertilizer} ကျပ်</strong>
         )}
       </div>
 
       <div className={`mt-2`}>
         ကုန်ကျငွေ:
-        {acre && chemicalPrice.fungicide !== null && (
+        {acre && chemicalPrice.foliar_fertilizer !== null && (
           <strong>
-            {wage.fungicide *
-              laborNeed.fungicide *
+            {wage.foliar_fertilizer *
+              laborNeed.foliar_fertilizer *
               acre *
-              jobFrequentUsage.fungicide +
-              parseInt(chemicalPrice.fungicide)}{" "}
+              jobFrequentUsage.foliar_fertilizer +
+              parseInt(chemicalPrice.foliar_fertilizer)}{" "}
             ကျပ်
           </strong>
         )}
@@ -82,4 +83,4 @@ const FungicideComponent = ({
     </div>
   );
 };
-export default FungicideComponent;
+export default FoliarFertilizer;
