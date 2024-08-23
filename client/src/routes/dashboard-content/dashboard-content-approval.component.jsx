@@ -50,9 +50,11 @@ const AdminApproval = () => {
     1: "ပေါင်းသတ်ခြင်း",
     2: "ပိုးသတ်ခြင်း",
     3: "ဓါတ်မြေဩဇာ",
-    4: "မြေပြင်စရိတ်",
-    7: "ရိတ်သိမ်းစရိတ်",
+    4: "ရိတ်သိမ်းစရိတ်",
+    6: "မှိုသတ်ခြင်း",
+    7: "မြေပြင်စရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
+    10: "ရွက်ဖြန်းမြေဩဇာ",
   };
   console.log("postInfo; ", postInfo);
   const approvePurpose = async (id) => {
@@ -79,11 +81,6 @@ const AdminApproval = () => {
     //Sets geographical center and zoom for the view of the map
     return null;
   };
-  const customeIcon = L.icon({
-    iconUrl: point,
-    iconSize: [25, 35],
-    iconAnchor: [5, 30],
-  });
   // console.log(postList);
   return (
     <div className={`${classes.component_wrapper}`}>

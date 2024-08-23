@@ -68,7 +68,7 @@ export const getOverallData = asyncHandler(async (req, res) => {
 });
 //------------------------------------------------------
 export const storePostData = asyncHandler(async (req, res) => {
-  // console.log(req.body);
+  console.log(req.body);
   // console.log("ownerId", req.user.id);
 
   const insertIntoPostGeneralInfo =
@@ -103,6 +103,7 @@ export const storePostData = asyncHandler(async (req, res) => {
       "fungicide",
       "plowing",
       "planting",
+      "foliar_fertilizer",
     ];
 
     for (const category of jobCategories) {
@@ -159,6 +160,7 @@ export const storePostData = asyncHandler(async (req, res) => {
       fungicide: 6,
       plowing: 7,
       planting: 8,
+      foliar_fertilizer: 10,
     };
     return jobIdMap[category];
   };

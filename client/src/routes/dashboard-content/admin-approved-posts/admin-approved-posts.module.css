@@ -49,15 +49,17 @@
 }
 .mini_post_header {
   margin-bottom: 10px;
+  display: flex;
 }
 .mini_post_body {
   display: flex;
   align-items: center;
 }
 .success_icon {
-  height: 16px;
-  width: 16px;
-  object-fit: cover;
+  border: 1px solid green;
+  padding: 0px 7px;
+  border-radius: 22px;
+  width: fit-content;
 }
 .approve_btn {
   margin-top: 25px;

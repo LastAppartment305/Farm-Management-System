@@ -1,0 +1,65 @@
+{
+  "Cropname": null,
+  "Acre": null,
+  "Latitude": null,
+  "Longitude": null,
+  "planting": {
+    "SeedCost": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
+  },
+  "pesticide": {
+    "ChemicalPrice": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
+  },
+  "fungicide": {
+    "ChemicalPrice": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
+  },
+  "fertilizer": {
+    "ChemicalPrice": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
+  },
+  "foliar_fertilizer": {
+    "ChemicalPrice": null,
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
+  },
+  "plowing": {
+    "TotalCostPerJob": null
+  },
+  "harvesting": {
+    "LaborNeed": null,
+    "WagePerLabor": null,
+    "TotalLaborPerJob": null,
+    "TotalWagePerJob": null,
+    "TotalCostPerJob": null,
+    "FrequentUsage": null
+  },
+  "TotalChemicalPrice": null,
+  "TotalWage": null,
+  "TotalMachineryCost": null,
+  "TotalExpense": null
+}

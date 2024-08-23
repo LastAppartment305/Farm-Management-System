@@ -49,11 +49,13 @@ const OwnerPropose = () => {
     1: "ပေါင်းသတ်ခြင်း",
     2: "ပိုးသတ်ခြင်း",
     3: "ဓါတ်မြေဩဇာ",
-    4: "မြေပြင်စရိတ်",
-    7: "ရိတ်သိမ်းစရိတ်",
+    4: "ရိတ်သိမ်းစရိတ်",
+    6: "မှိုသတ်ခြင်း",
+    7: "မြေပြင်စရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
+    10: "ရွက်ဖြန်းမြေဩဇာ",
   };
-  // console.log("postInfo", postList);
+  console.log("postInfo", postInfo);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -81,10 +83,13 @@ const OwnerPropose = () => {
               </div>
               <div>
                 {post.ApproveStatus === 1 && (
-                  <img
-                    src={approve}
-                    className={`${classes.success_icon} ms-3`}
-                  />
+                  // <img
+                  //   src={approve}
+                  //   className={`${classes.success_icon} ms-3`}
+                  // />
+                  <div className={`${classes.success_icon} text-success ms-3`}>
+                    approved
+                  </div>
                 )}
               </div>
             </div>
@@ -218,7 +223,9 @@ const OwnerPropose = () => {
               })()}
           </div>
         )}
-        <button onClick={handlePrint}>Print as PDF</button>
+        <button onClick={handlePrint} className={`${classes.print_btn}`}>
+          Print as PDF
+        </button>
       </div>
     </div>
   );

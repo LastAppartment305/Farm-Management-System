@@ -3,6 +3,7 @@ import classes from "./cultivation-calculator.module.css";
 import { usePost } from "../../../custom-hook/axios-post/axios-post.jsx";
 import crops from "./sample.json";
 import fallpaddy from "./fallpaddy.json";
+import bean from "./bean.json";
 import PesticideComponent from "../../../component/pesticide/pesticide.component.jsx";
 import PlantingComponent from "../../../component/planting/planting.component.jsx";
 import HerbicideComponent from "../../../component/herbicide/herbicide.component.jsx";
@@ -30,6 +31,7 @@ const Calculator = () => {
   const [selectedOptionDetail, setSelectedOptionDetail] = useState(null);
 
   const [postPaddy, setPostPaddy] = useState(fallpaddy);
+  const [postBean, setPostBean] = useState(bean);
   const [chemical, setChemical] = useState(null);
   const [position, setposition] = useState({
     latitude: null,
@@ -61,6 +63,18 @@ const Calculator = () => {
     totalCost: null,
   });
   const [fertilizerDetail, setFertilizerDetail] = useState({
+    totalLaborNeed: null,
+    totalLaborWage: null,
+    chemicalCost: null,
+    totalCost: null,
+  });
+  const [fungicideDetail, setFungicideDetail] = useState({
+    totalLaborNeed: null,
+    totalLaborWage: null,
+    chemicalCost: null,
+    totalCost: null,
+  });
+  const [foliar_fertilizerDetail, setFoliar_FertilizerDetail] = useState({
     totalLaborNeed: null,
     totalLaborWage: null,
     chemicalCost: null,
@@ -117,19 +131,24 @@ const Calculator = () => {
     setSelectedOption(value);
     const response = await postData({ crop: value });
     if (response) {
-      // console.log(response);
+      console.log("response", response);
+      const seedingJobId = response.job.find(
+        (data) => data.JobCategory === "seeding"
+      )?.JobId;
+      const plantingWage = response.overallInfo.find(
+        (i) => i.JobId === seedingJobId
+      )?.Wage;
+
+      console.log("Seeding JobId:", seedingJobId);
+      console.log("Planting Wage:", plantingWage);
       if (response.cropInfo.Name === "bean") {
         setLaborNeed((prev) => ({
           ...prev,
-          planting: response.cropInfo.HarvestLabor,
+          planting: response.cropInfo.SeedingLabor,
         }));
         setWage((prev) => ({
           ...prev,
-          planting: response.overallInfo.find(
-            (i) =>
-              i.JobId ===
-              response.job.find((data) => data.JobCategory === "seeding")?.JobId
-          )?.Wage,
+          planting: response.overallInfo.find((i) => i.JobId === 9)?.Wage,
         }));
       }
       setFetchData(response);
@@ -181,7 +200,8 @@ const Calculator = () => {
             )?.JobId
         )?.FrequentUsage,
       });
-      setWage({
+      setWage((prev) => ({
+        ...prev,
         pesticide: response.overallInfo.find(
           (i) =>
             i.JobId ===
@@ -225,7 +245,7 @@ const Calculator = () => {
               (data) => data.JobCategory === "foliar_fertilizer"
             )?.JobId
         )?.Wage,
-      });
+      }));
     }
     console.log("initaial result", response);
     setInitialResult(response);
@@ -400,6 +420,145 @@ const Calculator = () => {
             return updateState;
           });
           setIsPost(true);
+        } else if (selectedOption === "bean") {
+          setPostBean((prev) => {
+            const updateState = {
+              ...prev,
+              Cropname: selectedOption,
+              Acre: acre,
+              Latitude: position.coords.latitude,
+              Longitude: position.coords.longitude,
+              planting: {
+                SeedCost: fetchData.cropInfo.SeedCost * acre,
+                LaborNeed: laborNeed.planting * acre,
+                WagePerLabor: wage.planting,
+                TotalWagePerJob: wage.planting * laborNeed.planting * acre,
+                TotalCostPerJob: plantingDetail.totalCost,
+                FrequentUsage: null,
+              },
+              pesticide: {
+                ChemicalPrice: chemicalPrice.pesticide,
+                LaborNeed: laborNeed.pesticide * acre,
+                WagePerLabor: wage.pesticide,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.pesticide *
+                  laborNeed.pesticide *
+                  acre *
+                  jobFrequentUsage.pesticide,
+                TotalCostPerJob:
+                  wage.pesticide *
+                    laborNeed.pesticide *
+                    acre *
+                    jobFrequentUsage.pesticide +
+                  parseInt(chemicalPrice.pesticide),
+                FrequentUsage: jobFrequentUsage.pesticide,
+              },
+              fertilizer: {
+                ChemicalPrice: chemicalPrice.fertilizer,
+                LaborNeed: laborNeed.fertilizer * acre,
+                WagePerLabor: wage.fertilizer,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.fertilizer *
+                  laborNeed.fertilizer *
+                  acre *
+                  jobFrequentUsage.fertilizer,
+                TotalCostPerJob:
+                  wage.fertilizer *
+                    laborNeed.fertilizer *
+                    acre *
+                    jobFrequentUsage.fertilizer +
+                  chemicalPrice.fertilizer,
+                FrequentUsage: jobFrequentUsage.fertilizer,
+              },
+              foliar_fertilizer: {
+                ChemicalPrice: chemicalPrice.foliar_fertilizer,
+                LaborNeed: laborNeed.foliar_fertilizer * acre,
+                WagePerLabor: wage.foliar_fertilizer,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.foliar_fertilizer *
+                  laborNeed.foliar_fertilizer *
+                  acre *
+                  jobFrequentUsage.foliar_fertilizer,
+                TotalCostPerJob:
+                  wage.foliar_fertilizer *
+                    laborNeed.foliar_fertilizer *
+                    acre *
+                    jobFrequentUsage.foliar_fertilizer +
+                  chemicalPrice.foliar_fertilizer,
+                FrequentUsage: jobFrequentUsage.foliar_fertilizer,
+              },
+              fungicide: {
+                ChemicalPrice: chemicalPrice.fungicide,
+                LaborNeed: laborNeed.fungicide * acre,
+                WagePerLabor: wage.fungicide,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.fungicide *
+                  laborNeed.fungicide *
+                  acre *
+                  jobFrequentUsage.fungicide,
+                TotalCostPerJob:
+                  wage.fungicide *
+                    laborNeed.fungicide *
+                    acre *
+                    jobFrequentUsage.fungicide +
+                  chemicalPrice.fungicide,
+                FrequentUsage: jobFrequentUsage.fungicide,
+              },
+              plowing: {
+                ChemicalPrice: null,
+                LaborNeed: null,
+                WagePerLabor: null,
+                TotalLaborPerJob: null,
+                TotalWagePerJob: null,
+                TotalCostPerJob: wage.plowing * acre,
+              },
+              harvesting: {
+                LaborNeed: laborNeed.harvesting * acre,
+                WagePerLabor: wage.harvesting,
+                TotalLaborPerJob: null,
+                TotalWagePerJob:
+                  wage.harvesting *
+                  laborNeed.harvesting *
+                  acre *
+                  jobFrequentUsage.harvesting,
+                TotalCostPerJob: wage.harvesting * acre,
+              },
+              TotalChemicalPrice:
+                chemicalPrice.pesticide +
+                chemicalPrice.fungicide +
+                chemicalPrice.fertilizer +
+                chemicalPrice.foliar_fertilizer,
+              TotalWage:
+                plantingDetail.totalLaborWage +
+                pesticideDetail.totalLaborWage +
+                fungicideDetail.totalLaborWage +
+                foliar_fertilizerDetail.totalLaborWage +
+                wage.harvesting *
+                  laborNeed.harvesting *
+                  acre *
+                  jobFrequentUsage.harvesting +
+                fertilizerDetail.totalLaborWage,
+              TotalMachineryCost: wage.plowing * acre,
+              TotalExpense:
+                plantingDetail.totalCost +
+                pesticideDetail.totalCost +
+                fungicideDetail.totalCost +
+                fertilizerDetail.totalCost +
+                foliar_fertilizerDetail.totalCost +
+                wage.plowing * acre +
+                wage.harvesting *
+                  laborNeed.harvesting *
+                  acre *
+                  jobFrequentUsage.harvesting,
+            };
+            console.log(updateState);
+            return updateState;
+          });
+          setIsPost(true);
         }
         console.log("Latitude: ", position.coords.latitude);
         console.log("Logitude: ", position.coords.longitude);
@@ -412,7 +571,11 @@ const Calculator = () => {
     console.log(postPaddy);
     const sendData = async () => {
       try {
-        const response = await storePropose(postPaddy);
+        if (selectedOption === "paddy") {
+          const response = await storePropose(postPaddy);
+        } else if (selectedOption === "bean") {
+          const response = await storePropose(postBean);
+        }
       } catch (error) {
         console.error("Error sending data:", error); // Handle any errors
       }
@@ -481,6 +644,40 @@ const Calculator = () => {
           jobFrequentUsage.fertilizer +
         chemicalPrice.fertilizer,
     }));
+
+    setFungicideDetail((prev) => ({
+      ...prev,
+      totalLaborNeed: laborNeed.fungicide * acre,
+      totalLaborWage:
+        wage.fungicide *
+        laborNeed.fungicide *
+        acre *
+        jobFrequentUsage.fungicide,
+      chemicalCost: chemicalPrice.fungicide,
+      totalCost:
+        wage.fungicide *
+          laborNeed.fungicide *
+          acre *
+          jobFrequentUsage.fungicide +
+        chemicalPrice.fungicide,
+    }));
+
+    setFoliar_FertilizerDetail((prev) => ({
+      ...prev,
+      totalLaborNeed: laborNeed.foliar_fertilizer * acre,
+      totalLaborWage:
+        wage.foliar_fertilizer *
+        laborNeed.foliar_fertilizer *
+        acre *
+        jobFrequentUsage.foliar_fertilizer,
+      chemicalCost: chemicalPrice.foliar_fertilizer,
+      totalCost:
+        wage.foliar_fertilizer *
+          laborNeed.foliar_fertilizer *
+          acre *
+          jobFrequentUsage.foliar_fertilizer +
+        chemicalPrice.foliar_fertilizer,
+    }));
   }, [laborNeed, wage, acre, chemicalPrice]);
   useEffect(() => {
     acre &&
@@ -516,7 +713,7 @@ const Calculator = () => {
       console.log("Geolocation not supported");
     }
   }, [acre]);
-  // console.log("chemicalPrice", chemicalPrice.foliar_fertilizer);
+  console.log("wage", wage);
 
   return (
     <div className={`${classes.row} row`}>
@@ -549,17 +746,19 @@ const Calculator = () => {
               />
             </div>
           </div>
-          {selectedOption === "paddy" && acre && (
-            <PlantingComponent
-              fetchData={fetchData}
-              clickRadioBtn1={clickRadioBtn1}
-              clickRadioBtn2={clickRadioBtn2}
-              laborNeed={laborNeed}
-              wage={wage}
-              acre={acre}
-              plantingDetail={plantingDetail}
-            />
-          )}
+          {(selectedOption === "paddy" || selectedOption === "bean") &&
+            acre && (
+              <PlantingComponent
+                selectedOption={selectedOption}
+                fetchData={fetchData}
+                clickRadioBtn1={clickRadioBtn1}
+                clickRadioBtn2={clickRadioBtn2}
+                laborNeed={laborNeed}
+                wage={wage}
+                acre={acre}
+                plantingDetail={plantingDetail}
+              />
+            )}
           {(selectedOption === "paddy" || selectedOption === "bean") &&
             acre && (
               <PesticideComponent
@@ -583,7 +782,7 @@ const Calculator = () => {
               handleHerbicidePrice={handleHerbicidePrice}
             />
           )}
-          {selectedOption === "bean" && (
+          {selectedOption === "bean" && acre && (
             <FungicideComponent
               chemical={chemical}
               laborNeed={laborNeed}
@@ -594,7 +793,7 @@ const Calculator = () => {
               handleFungicidePrice={handleFungicidePrice}
             />
           )}
-          {selectedOption === "bean" && (
+          {selectedOption === "bean" && acre && (
             <FoliarFertilizer
               chemical={chemical}
               laborNeed={laborNeed}
@@ -619,7 +818,7 @@ const Calculator = () => {
             )}
           {(selectedOption === "paddy" || selectedOption === "bean") &&
             acre && <PlowingComponent wage={wage} acre={acre} />}
-          {selectedOption === "bean" && (
+          {selectedOption === "bean" && acre && (
             <HarvestingBean
               laborNeed={laborNeed}
               wage={wage}
@@ -630,7 +829,7 @@ const Calculator = () => {
           {selectedOption === "paddy" && acre && (
             <HarvestingComponent wage={wage} acre={acre} />
           )}
-          {selectedOption !== null &&
+          {selectedOption === "paddy" &&
             chemicalPrice.pesticide !== null &&
             chemicalPrice.herbicide !== null &&
             chemicalPrice.fertilizer !== null && (
@@ -701,6 +900,86 @@ const Calculator = () => {
                 </div>
               </div>
             )}
+          {selectedOption === "bean" &&
+            chemicalPrice.pesticide !== null &&
+            chemicalPrice.fungicide !== null &&
+            chemicalPrice.foliar_fertilizer !== null &&
+            chemicalPrice.fertilizer !== null && (
+              <div className={`${classes.total_expense} w-100`}>
+                <div className={`${classes.boxes} me-5`}>
+                  <div className={`${classes.box_label} mb-2`}>
+                    စုစုပေါင်းကုန်ကျစရိတ်
+                  </div>
+                </div>
+                <div className={`mt-2`}>
+                  မျိုးစရိတ်:
+                  {fetchData?.cropInfo.SeedCost && acre && (
+                    <strong>{fetchData.cropInfo.SeedCost * acre}ကျပ်</strong>
+                  )}
+                </div>
+                <div className={`mt-2`}>
+                  ဆေးတန်ဖိုးစုစုပေါင်း:{" "}
+                  {acre &&
+                    chemicalPrice.pesticide &&
+                    chemicalPrice.fungicide &&
+                    chemicalPrice.foliar_fertilizer &&
+                    chemicalPrice.fertilizer && (
+                      <strong>
+                        {chemicalPrice.pesticide +
+                          chemicalPrice.fungicide +
+                          chemicalPrice.foliar_fertilizer +
+                          chemicalPrice.fertilizer}{" "}
+                        ယောက်
+                      </strong>
+                    )}{" "}
+                </div>
+                <div className={`mt-2`}>
+                  လုပ်အားခစုစုပေါင်း:{" "}
+                  {acre && (
+                    <strong>
+                      {plantingDetail.totalLaborWage +
+                        pesticideDetail.totalLaborWage +
+                        fungicideDetail.totalLaborWage +
+                        foliar_fertilizerDetail.totalLaborWage +
+                        wage.harvesting *
+                          laborNeed.harvesting *
+                          acre *
+                          jobFrequentUsage.harvesting +
+                        fertilizerDetail.totalLaborWage}{" "}
+                      ယောက်
+                    </strong>
+                  )}
+                </div>
+                <div className={`mt-2`}>
+                  စက်ပစ္စည်းငှားရမ်းခစုစုပေါင်း:{" "}
+                  {acre && <strong>{wage.plowing * acre} ကျပ်</strong>}
+                </div>
+                <div className={`mt-2`}>
+                  စုစုပေါင်းကုန်ကျစရိတ်:{" "}
+                  {acre &&
+                    selectedOption &&
+                    plantingDetail.totalCost &&
+                    fertilizerDetail.totalCost &&
+                    pesticideDetail.totalCost &&
+                    fungicideDetail.totalCost &&
+                    foliar_fertilizerDetail.totalCost && (
+                      <strong>
+                        {plantingDetail.totalCost +
+                          pesticideDetail.totalCost +
+                          fungicideDetail.totalCost +
+                          fertilizerDetail.totalCost +
+                          foliar_fertilizerDetail.totalCost +
+                          wage.plowing * acre +
+                          wage.harvesting *
+                            laborNeed.harvesting *
+                            acre *
+                            jobFrequentUsage.harvesting}{" "}
+                        ကျပ်
+                      </strong>
+                    )}
+                </div>
+              </div>
+            )}
         </div>
       </div>
       <div className={`${classes.column2} col-md-6`}>
@@ -714,29 +993,6 @@ const Calculator = () => {
             တင်မည်
           </button>
         </div>
-        {/* <div className='mt-3'>
-          {acre && position.latitude && position.longitude && (
-            <MapContainer
-              style={{ height: 600, width: 600 }}
-              classsName='map'
-              center={[position.latitude, position.longitude]}
-              zoom={30}
-              scrollWheelZoom={false}
-            >
-              <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> 
-        contributors'
-                url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-              />
-              <Marker
-                icon={customeIcon}
-                position={[position.latitude, position.longitude]}
-              >
-              </Marker>
-              <MapView />
-            </MapContainer>
-          )}
-        </div> */}
         <div className='mt-3'>
           {acre && (
             <iframe

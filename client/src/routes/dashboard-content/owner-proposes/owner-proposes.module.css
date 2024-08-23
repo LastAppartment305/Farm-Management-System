@@ -48,10 +48,20 @@
   border: 1px solid;
 }
 .success_icon {
-  height: 16px;
-  width: 16px;
-  object-fit: cover;
+  border: 1px solid green;
+  padding: 0px 7px;
+  border-radius: 22px;
 }
 .btn_info_wrapper {
   display: flex;
+}
+.right_side {
+  height: 100vh;
+  overflow: scroll;
+}
+.right_side::-webkit-scrollbar {
+  display: none;
+}
+.print_btn {
+  margin: 30px;
 }

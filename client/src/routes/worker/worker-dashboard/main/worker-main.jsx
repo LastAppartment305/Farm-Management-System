@@ -23,23 +23,40 @@ const WorkerMain = () => {
 
     navigate("/worker-login");
   };
+  console.log(isActive);
   return (
     <Fragment>
       <div className={`${classes.nav_section}`}>
         <div className={`${classes.nav_group2}`}>FieldFinance</div>
         <div className={`${classes.nav_group1}`}>
           <div className={`${classes.nav_item}`}>
-            <a type='button' onClick={() => handleClick("worker/home")}>
+            <a
+              type='button'
+              onClick={() => handleClick("worker/home")}
+              className={`${isActive === "worker/home" ? classes.active : ""} `}
+            >
               အလုပ်များ
             </a>
           </div>
           <div className={`${classes.nav_item}`}>
-            <a type='button' onClick={() => handleClick("worker/agreement")}>
+            <a
+              type='button'
+              onClick={() => handleClick("worker/agreement")}
+              className={`${
+                isActive === "worker/agreement" ? classes.active : ""
+              } `}
+            >
               လက်ခံထားရှိမှု
             </a>
           </div>
           <div className={`${classes.nav_item}`}>
-            <a type='button' onClick={() => handleClick("worker/report")}>
+            <a
+              type='button'
+              onClick={() => handleClick("worker/report")}
+              className={`${
+                isActive === "worker/report" ? classes.active : ""
+              } `}
+            >
               ရီပို့တင်ရန်
             </a>
           </div>
