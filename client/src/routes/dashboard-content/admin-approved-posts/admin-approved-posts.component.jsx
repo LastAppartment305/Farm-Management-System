@@ -2,19 +2,9 @@ import classes from "./admin-approved-posts.module.css";
 import { useGet } from "../../../custom-hook/axios-post/axios-post.jsx";
 import { useEffect, useRef, useState } from "react";
 import croptype from "../cultivation-calculator/sample.json";
-import approve from "../../../assets/icon/success.png";
 import axios from "axios";
-import point from "../../../assets/icon/location.svg";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  CircleMarker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 
 const ApprovedPosts = () => {
   const { response } = useGet("http://localhost:5000/getAllPost");
@@ -64,26 +54,13 @@ const ApprovedPosts = () => {
     2: "ပိုးသတ်ခြင်း",
     3: "ဓါတ်မြေဩဇာ",
     4: "ရိတ်သိမ်းစရိတ်",
+    5: "ရေသွင်းခြင်း",
     6: "မှိုသတ်ခြင်း",
     7: "မြေပြင်စရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
   console.log(postList);
-  const MapView = () => {
-    let map = useMap();
-    map.setView(
-      [postInfo.postGeneralInfo.Latitude, postInfo.postGeneralInfo.Longitude],
-      map.getZoom()
-    );
-    //Sets geographical center and zoom for the view of the map
-    return null;
-  };
-  const customeIcon = L.icon({
-    iconUrl: point,
-    iconSize: [25, 35],
-    iconAnchor: [5, 30],
-  });
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -103,10 +80,6 @@ const ApprovedPosts = () => {
               <div className={`${classes.mini_post_header}`}>
                 <strong>{post.Name}</strong>
                 {post.ApproveStatus === 1 && (
-                  // <img
-                  //   src={approve}
-                  //   className={`${classes.success_icon} ms-3`}
-                  // />
                   <div className={`${classes.success_icon} text-success ms-3`}>
                     approved
                   </div>
@@ -137,9 +110,11 @@ const ApprovedPosts = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
+                const startDate = new Date(
+                  postInfo.postGeneralInfo.StartDate
+                ).toLocaleDateString();
                 const { Acre, Latitude, Longitude, Name } =
                   postInfo.postGeneralInfo;
-                const { username } = postInfo;
                 return (
                   <>
                     <div className={`${classes.owner_info}`}>
@@ -180,6 +155,9 @@ const ApprovedPosts = () => {
                         </div>
                         <div>
                           လောင်ဂျီကျု:<strong>{Longitude}</strong>
+                        </div>
+                        <div>
+                          စတင်စိုက်ပျိုးမည့်နေ့ရက်:<strong>{startDate}</strong>
                         </div>
                       </div>
                     </div>

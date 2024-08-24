@@ -2,19 +2,9 @@ import classes from "./worker-home.module.css";
 import { useGet } from "../../../../custom-hook/axios-post/axios-post";
 import { useEffect, useRef, useState } from "react";
 import croptype from "../../../dashboard-content/cultivation-calculator/sample.json";
-import approve from "../../../../assets/icon/success.png";
 import axios from "axios";
-import point from "../../../../assets/icon/location.svg";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  CircleMarker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 
 const WorkerHome = () => {
   const { response } = useGet(
@@ -56,16 +46,6 @@ const WorkerHome = () => {
         postid: id,
       }
     );
-    // if (result) {
-    //   const getList = await axios.get("http://localhost:5000/getAllPost");
-    //   if (getList) {
-    //     const approvedPosts = getList.data.filter(
-    //       (post) => post.ApproveStatus === 1
-    //     );
-    //     setPostList(approvedPosts);
-    //     setPostId(null);
-    //   }
-    // }
   };
   const jobLabels = {
     1: "ပေါင်းသတ်ခြင်း",
@@ -78,20 +58,6 @@ const WorkerHome = () => {
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
   console.log(postList);
-  const MapView = () => {
-    let map = useMap();
-    map.setView(
-      [postInfo.postGeneralInfo.Latitude, postInfo.postGeneralInfo.Longitude],
-      map.getZoom()
-    );
-    //Sets geographical center and zoom for the view of the map
-    return null;
-  };
-  const customeIcon = L.icon({
-    iconUrl: point,
-    iconSize: [25, 35],
-    iconAnchor: [5, 30],
-  });
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>

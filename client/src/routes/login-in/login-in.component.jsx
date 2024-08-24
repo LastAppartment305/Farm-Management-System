@@ -1,6 +1,5 @@
 import "./login-in.style.css";
 import { useState, useContext, useEffect, useRef } from "react";
-import InputBox from "../../component/InputBox/InputBox.component";
 import { CircleX, Eye, EyeOff } from "lucide-react";
 import { usePost } from "../../custom-hook/axios-post/axios-post";
 import { useNavigate, Link } from "react-router-dom";
@@ -44,12 +43,12 @@ const Login = () => {
     const result = loginSchema.safeParse(data);
     if (result.success) {
       const nameRegularExpression = /^[^\d].*$/i;
-      if (nameRegularExpression.test(data.name) == false) {
+      if (nameRegularExpression.test(data.name) === false) {
         toast.error(`အမည် ကိန်းဂဏာန်းမဖြစ်ရပါ`);
         // console.log("regulat expression work");
       } else {
         const res = await postData(data);
-        if (res != "") {
+        if (res !== "") {
           localStorage.setItem("role", res);
           localStorage.setItem("username", data.name);
           setRole(res);

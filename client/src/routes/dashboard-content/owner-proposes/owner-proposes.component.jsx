@@ -50,6 +50,7 @@ const OwnerPropose = () => {
     2: "ပိုးသတ်ခြင်း",
     3: "ဓါတ်မြေဩဇာ",
     4: "ရိတ်သိမ်းစရိတ်",
+    5: "ရေသွင်းခြင်း",
     6: "မှိုသတ်ခြင်း",
     7: "မြေပြင်စရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
@@ -105,6 +106,9 @@ const OwnerPropose = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
+                const startDate = new Date(
+                  postInfo.postGeneralInfo.StartDate
+                ).toLocaleDateString();
                 const { Acre, Latitude, Longitude } = postInfo.postGeneralInfo;
                 const { username } = postInfo;
                 return (
@@ -148,6 +152,9 @@ const OwnerPropose = () => {
                         <div>
                           လောင်ဂျီကျု:<strong>{Longitude}</strong>
                         </div>
+                        <div>
+                          စတင်စိုက်ပျိုးမည့်နေ့ရက်:<strong>{startDate}</strong>
+                        </div>
                       </div>
                     </div>
                   </>
@@ -167,7 +174,7 @@ const OwnerPropose = () => {
                     <th scope='col'>ဆေးတန်ဖိုး</th>
                     <th scope='col'>လူဉီးရေ</th>
                     <th scope='col'>တစ်ယောက်လုပ်အားခ</th>
-                    <th scope='col'>ဆေးဖြန်းနှုန်း(ကြိမ်)</th>
+                    <th scope='col'>အကြိမ်အရေအတွက်</th>
                     <th scope='col'>စုစုပေါင်း</th>
                   </tr>
                 </thead>

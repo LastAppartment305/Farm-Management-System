@@ -33,75 +33,6 @@ const WorkerLogin = () => {
     "http://localhost:5000/worker/send-auth"
   );
   const { verifyWorker, setVerifyWorker } = useContext(authContext);
-
-  // if (window.recaptchaVerifier) {
-  //   window.recaptchaVerifier.render().then(function (widgetId) {
-  //     window.grecaptcha.reset(widgetId);
-  //   });
-  // }
-  const onCaptchVerify = () => {
-    if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        "recaptcha-container",
-        {
-          size: "invisible",
-          callback: (response) => {
-            // ReCAPTCHA solved, allow signInWithPhoneNumber.
-          },
-          "expired-callback": () => {
-            // Response expired. Ask user to solve reCAPTCHA again.
-            console.log("Captcha expired, please try again.");
-          },
-        }
-      );
-    }
-  };
-
-  // const onSignup = async (e) => {
-  //   e.preventDefault();
-  //   const result = validationSchema.safeParse(data);
-  //   if (result.success) {
-  //     const response = await postData(data);
-  //     if (response.farmid !== null) {
-  //       console.log(response);
-  //       setIds(response);
-
-  //       onCaptchVerify();
-
-  //       const appVerifier = window.recaptchaVerifier;
-  //       const formatPh = "+" + data.workerPhone;
-  //       signInWithPhoneNumber(auth, formatPh, appVerifier)
-  //         .then((confirmationResult) => {
-  //           window.confirmationResult = confirmationResult;
-  //           setShowOTP(true);
-  //           console.log("OTP sent successfully!");
-  //           toast.success("ကုဒ်ပေးပို့မှုအောင််မြင်ပါသည်");
-  //         })
-  //         .catch((error) => {
-  //           // if (error.code === "auth/too-many-requests") {
-  //           //   toast.error("အချိန်အနည်းငယ်ကြာမှပြန်လယ်စတင်ပါ");
-  //           // } else {
-  //           //   toast.error("တစ်ခုခုမှားယွင်းနေပါသည်");
-  //           //   console.error("Error during sign-in:", error);
-  //           // }
-  //           console.log(error);
-  //           toast.error("တစ်ခုခုမှားယွင်းနေပါသည်");
-  //           // toast.error("too many request.");
-  //         });
-  //     } else {
-  //       toast.error("သင့်အတွက်အလုပ်မရှိပါ");
-  //       // console.log("not an assign worker");
-  //     }
-  //   } else {
-  //     validationErrors.current = result.error.formErrors.fieldErrors;
-  //     // console.log(validationErrors.current);
-
-  //     // console.log("This is validation errors: ", validationErrors.current);
-  //     toast.error(Object.values(validationErrors.current)[0]);
-  //   }
-  // };
-
   const loginSubmit = async (e) => {
     e.preventDefault();
     const result = validationSchema.safeParse(data);
@@ -154,14 +85,6 @@ const WorkerLogin = () => {
       name: "",
     }));
   };
-  // useEffect(() => {
-  //   if (verifyWorker) {
-  //     navigate("/worker");
-  //   }
-  //   // return () => {
-  //   //   setVerifyWorker(false);
-  //   // };
-  // }, [verifyWorker]);
 
   const goToHome = () => {
     navigate("/");
@@ -173,7 +96,6 @@ const WorkerLogin = () => {
       navigate("/dashboard");
     }
   });
-  // console.log("verfyworker from worker-login: ", verifyWorker);
   return (
     <div>
       <div id='recaptcha-container'></div>

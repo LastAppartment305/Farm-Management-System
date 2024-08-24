@@ -26,7 +26,10 @@ import OwnerPropose from "./routes/dashboard-content/owner-proposes/owner-propos
 import ApprovedPosts from "./routes/dashboard-content/admin-approved-posts/admin-approved-posts.component";
 import WorkerAgreement from "./routes/worker/worker-dashboard/worker-agreement/worker-agreement";
 import ApproveReports from "./routes/dashboard-content/admin-approve-report-image/approve-report-image";
-
+import AnalystRegister from "./routes/price analyst/analyst register/analyst-register";
+import RainfedPaddy from "./routes/price analyst/rainfed-paddy-pricing/rainfed-paddy-pricing";
+import IrrigatedPaddy from "./routes/price analyst/irrigated-paddy-pricing/irrigated-paddy-pricing";
+import Bean from "./routes/price analyst/bean-pricing/bean-pricing";
 const App = () => {
   const [admin, setadmin] = useState(true);
   const { role, verifyWorker } = useContext(authContext);
@@ -42,6 +45,10 @@ const App = () => {
         {
           path: "worker-login",
           element: <WorkerLogin />,
+        },
+        {
+          path: "analyst",
+          element: <AnalystRegister />,
         },
         { path: "signup", index: true, element: <SignUp /> },
         {
@@ -132,13 +139,33 @@ const App = () => {
               },
             ]
           : []),
+        ...(role === "analyst"
+          ? [
+              {
+                path: "dashboard",
+                element: <DashBoard />,
+                children: [
+                  {
+                    path: "price-analyst/rainfed-paddy",
+                    element: <RainfedPaddy />,
+                  },
+                  {
+                    path: "price-analyst/irrigated-paddy",
+                    element: <IrrigatedPaddy />,
+                  },
+                  {
+                    path: "price-analyst/bean",
+                    element: <Bean />,
+                  },
+                ],
+              },
+            ]
+          : []),
 
         // {
         //   path: "worker",
         //   element: <TakePhoto />,
         // },
-
-        ,
       ],
     },
   ]);

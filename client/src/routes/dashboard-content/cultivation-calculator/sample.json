@@ -1,6 +1,7 @@
 {
   "crop": [
     { "name": "မိုးစပါး", "value": "paddy" },
-    { "name": "ပဲ", "value": "bean" }
+    { "name": "ပဲ", "value": "bean" },
+    { "name": "နွေစပါး", "value": "drypaddy" }
   ]
 }

@@ -14,6 +14,9 @@ import {
   HandCoins,
   CalendarClock,
   Image,
+  CloudHail,
+  SunSnow,
+  Bean,
 } from "lucide-react";
 import {
   useLogout,
@@ -151,23 +154,23 @@ const DashBoard = () => {
       socket.off("receivingEvent", listenToEvent);
     };
   }, []);
-  useEffect(() => {
-    const fetchNotication = async () => {
-      const getNoti = await axios.get(
-        "http://localhost:5000/noti/getAllNotification"
-      );
-      if (getNoti) {
-        console.log("No reverse: ", getNoti.data);
-        const reverse = getNoti.data.reverse();
-        console.log("reverse: ", reverse);
-        setNotifications(reverse);
-        console.log(getNoti);
-      }
-    };
-    if (role !== "worker") {
-      fetchNotication();
-    }
-  }, []);
+  // useEffect(() => {
+  //   const fetchNotication = async () => {
+  //     const getNoti = await axios.get(
+  //       "http://localhost:5000/noti/getAllNotification"
+  //     );
+  //     if (getNoti) {
+  //       console.log("No reverse: ", getNoti.data);
+  //       const reverse = getNoti.data.reverse();
+  //       console.log("reverse: ", reverse);
+  //       setNotifications(reverse);
+  //       console.log(getNoti);
+  //     }
+  //   };
+  //   if (role !== "worker") {
+  //     fetchNotication();
+  //   }
+  // }, []);
   const closeNotificationSideBar = async () => {
     const FetchNotiAgain = await axios.get(
       "http://localhost:5000/noti/changeNotiStatus"
@@ -218,6 +221,30 @@ const DashBoard = () => {
             buttonText={"ရီပို့ဓာတ်ပုံများ"}
             isActive={isActive === "admin/approve-reports"}
             onclick={() => handleClick("admin/approve-reports")}
+          />
+        )}
+        {role === "analyst" && (
+          <SideBarButton
+            icon={CloudHail}
+            buttonText={"မိုးစပါး"}
+            isActive={isActive === "price-analyst/rainfed-paddy"}
+            onclick={() => handleClick("price-analyst/rainfed-paddy")}
+          />
+        )}
+        {role === "analyst" && (
+          <SideBarButton
+            icon={SunSnow}
+            buttonText={"နွေစပါး"}
+            isActive={isActive === "price-analyst/irrigated-paddy"}
+            onclick={() => handleClick("price-analyst/irrigated-paddy")}
+          />
+        )}
+        {role === "analyst" && (
+          <SideBarButton
+            icon={Bean}
+            buttonText={"ပဲ"}
+            isActive={isActive === "price-analyst/bean"}
+            onclick={() => handleClick("price-analyst/bean")}
           />
         )}
         {role === "owner" && (

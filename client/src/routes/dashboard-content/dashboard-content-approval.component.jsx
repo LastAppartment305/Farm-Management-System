@@ -1,22 +1,12 @@
 // import classes from "./dashboard-content-approval.module.css";
 import { useGet } from "../../custom-hook/axios-post/axios-post.jsx";
 import axios from "axios";
-import TotalExpenseSlip from "../../component/total-expense-slip/total-expense.component";
 import classes from "./dashboard-content-approval.module.css";
 import croptype from "../dashboard-content/cultivation-calculator/sample.json";
 import { useEffect, useRef, useState } from "react";
 import approve from "../../assets/icon/success.png";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  CircleMarker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import point from "../../assets/icon/location.svg";
 
 const AdminApproval = () => {
   const { response } = useGet("http://localhost:5000/getAllPost");
@@ -51,6 +41,7 @@ const AdminApproval = () => {
     2: "ပိုးသတ်ခြင်း",
     3: "ဓါတ်မြေဩဇာ",
     4: "ရိတ်သိမ်းစရိတ်",
+    5: "ရေသွင်းခြင်း",
     6: "မှိုသတ်ခြင်း",
     7: "မြေပြင်စရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
@@ -72,15 +63,7 @@ const AdminApproval = () => {
       }
     }
   };
-  const MapView = () => {
-    let map = useMap();
-    map.setView(
-      [postInfo.postGeneralInfo.Latitude, postInfo.postGeneralInfo.Longitude],
-      map.getZoom()
-    );
-    //Sets geographical center and zoom for the view of the map
-    return null;
-  };
+
   // console.log(postList);
   return (
     <div className={`${classes.component_wrapper}`}>
@@ -132,6 +115,9 @@ const AdminApproval = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
+                const startDate = new Date(
+                  postInfo.postGeneralInfo.StartDate
+                ).toLocaleDateString();
                 const { Acre, Latitude, Longitude, Name } =
                   postInfo.postGeneralInfo;
                 const { username } = postInfo;
@@ -175,6 +161,9 @@ const AdminApproval = () => {
                         </div>
                         <div>
                           လောင်ဂျီကျု:<strong>{Longitude}</strong>
+                        </div>
+                        <div>
+                          စတင်စိုက်ပျိုးမည့်နေ့ရက်:<strong>{startDate}</strong>
                         </div>
                       </div>
                     </div>

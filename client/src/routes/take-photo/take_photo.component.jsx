@@ -246,16 +246,10 @@ const TakePhoto = () => {
     iconSize: [25, 35],
     iconAnchor: [5, 30],
   });
-  console.log(postList);
-  console.log(selectedOption);
+  // console.log(postList);
+  // console.log(selectedOption);
   return (
     <div className='container-fluid'>
-      {/* <div className='logout-btn '>
-        <div className='worker-name'>{workerInformation}</div>
-        <button className='btn btn-primary fs-5' onClick={logout}>
-          ထွက်ရန်
-        </button>
-      </div> */}
       <Toaster toastOptions={{ duration: 3000 }} />
       <div className='select-box'>
         <select onChange={handleChange}>

@@ -2,19 +2,11 @@ import classes from "./worker-agreement.module.css";
 import { useGet } from "../../../../custom-hook/axios-post/axios-post";
 import { useEffect, useRef, useState } from "react";
 import croptype from "../../../dashboard-content/cultivation-calculator/sample.json";
-import approve from "../../../../assets/icon/success.png";
 import print from "../../../../assets/icon/print.png";
 import axios from "axios";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  CircleMarker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+
 const WorkerAgreement = () => {
   const { response } = useGet("http://localhost:5000/worker/getAgreedPosts");
   const [postList, setPostList] = useState(null);
@@ -71,20 +63,6 @@ const WorkerAgreement = () => {
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
   console.log(postInfo);
-  const MapView = () => {
-    let map = useMap();
-    map.setView(
-      [postInfo.postGeneralInfo.Latitude, postInfo.postGeneralInfo.Longitude],
-      map.getZoom()
-    );
-    //Sets geographical center and zoom for the view of the map
-    return null;
-  };
-  //   const customeIcon = L.icon({
-  //     iconUrl: point,
-  //     iconSize: [25, 35],
-  //     iconAnchor: [5, 30],
-  //   });
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -267,7 +245,6 @@ const WorkerAgreement = () => {
                   </>
                 );
               })()}
-            {/* <div className={`${classes.approved}`}>လက်ခံပြီး</div> */}
           </div>
         )}
         {postInfo && (

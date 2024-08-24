@@ -11,19 +11,14 @@ import FertilizerComponent from "../../../component/fertilizer/fertilizer.compon
 import PlowingComponent from "../../../component/plowing/plowing.component.jsx";
 import HarvestingComponent from "../../../component/harvesting/harvesting.component.jsx";
 import FungicideComponent from "../../../component/fungicide/fungicide.component.jsx";
-import point from "../../../assets/icon/location.svg";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  CircleMarker,
-  Popup,
-  useMap,
-} from "react-leaflet";
+import DatePicker from "react-datepicker";
+import { Toaster, toast } from "react-hot-toast";
+import "react-datepicker/dist/react-datepicker.css";
+
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
 import FoliarFertilizer from "../../../component/foliar-fertilizer/foliar-fertilizer.component.jsx";
 import HarvestingBean from "../../../component/harvesting-bean/harvesting-bean.component.jsx";
+import IrrigationComponent from "../../../component/irrigation/irrigation.component.jsx";
 
 const Calculator = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -32,6 +27,7 @@ const Calculator = () => {
 
   const [postPaddy, setPostPaddy] = useState(fallpaddy);
   const [postBean, setPostBean] = useState(bean);
+  const [startDate, setStartDate] = useState(null);
   const [chemical, setChemical] = useState(null);
   const [position, setposition] = useState({
     latitude: null,
@@ -99,7 +95,7 @@ const Calculator = () => {
     herbicide: null,
     fertilizer: null,
     plowing: null,
-    irrigating: null,
+    irrigation: null,
     harvesting: null,
     fungicide: null,
     foliar_fertilizer: null,
@@ -110,7 +106,7 @@ const Calculator = () => {
     herbicide: null,
     fertilizer: null,
     plowing: null,
-    irrigating: null,
+    irrigation: null,
     harvesting: null,
     fungicide: null,
     foliar_fertilizer: null,
@@ -126,21 +122,15 @@ const Calculator = () => {
     "http://localhost:5000/calculator/store-post"
   );
 
+  const handleDateChange = (date) => {
+    setStartDate(date);
+  };
   const handleChange = async (e) => {
     const value = e.target.value === "" ? null : e.target.value;
     setSelectedOption(value);
     const response = await postData({ crop: value });
     if (response) {
       console.log("response", response);
-      const seedingJobId = response.job.find(
-        (data) => data.JobCategory === "seeding"
-      )?.JobId;
-      const plantingWage = response.overallInfo.find(
-        (i) => i.JobId === seedingJobId
-      )?.Wage;
-
-      console.log("Seeding JobId:", seedingJobId);
-      console.log("Planting Wage:", plantingWage);
       if (response.cropInfo.Name === "bean") {
         setLaborNeed((prev) => ({
           ...prev,
@@ -149,6 +139,35 @@ const Calculator = () => {
         setWage((prev) => ({
           ...prev,
           planting: response.overallInfo.find((i) => i.JobId === 9)?.Wage,
+        }));
+      }
+      if (response.cropInfo.Name === "drypaddy") {
+        setLaborNeed((prev) => ({
+          ...prev,
+          planting: response.cropInfo.SeedingLabor,
+        }));
+        setWage((prev) => ({
+          ...prev,
+          irrigation: response.overallInfo.find(
+            (i) =>
+              i.JobId ===
+              response.job.find((data) => data.JobCategory === "irrigation")
+                ?.JobId
+          )?.Wage,
+          planting: response.overallInfo.find(
+            (i) =>
+              i.JobId ===
+              response.job.find((data) => data.JobCategory === "seeding")?.JobId
+          )?.Wage,
+        }));
+        setJobFrequentUsage((prev) => ({
+          ...prev,
+          irrigation: response.overallInfo.find(
+            (i) =>
+              i.JobId ===
+              response.job.find((data) => data.JobCategory === "irrigation")
+                ?.JobId
+          )?.FrequentUsage,
         }));
       }
       setFetchData(response);
@@ -164,7 +183,8 @@ const Calculator = () => {
         harvesting: response.cropInfo.HarvestLabor,
         foliar_fertilizer: response.cropInfo.FoliarLabor,
       }));
-      setJobFrequentUsage({
+      setJobFrequentUsage((prev) => ({
+        ...prev,
         pesticide: response.overallInfo.find(
           (i) =>
             i.JobId ===
@@ -199,7 +219,7 @@ const Calculator = () => {
               (data) => data.JobCategory === "foliar_fertilizer"
             )?.JobId
         )?.FrequentUsage,
-      });
+      }));
       setWage((prev) => ({
         ...prev,
         pesticide: response.overallInfo.find(
@@ -313,12 +333,13 @@ const Calculator = () => {
   const propose = () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function (position) {
-        if (selectedOption === "paddy") {
+        if (selectedOption === "paddy" || selectedOption === "drypaddy") {
           setPostPaddy((prev) => {
             const updateState = {
               ...prev,
               Cropname: selectedOption,
               Acre: acre,
+              StartDate: startDate,
               Latitude: position.coords.latitude,
               Longitude: position.coords.longitude,
               planting: {
@@ -399,6 +420,13 @@ const Calculator = () => {
                 TotalWagePerJob: null,
                 TotalCostPerJob: wage.harvesting * acre,
               },
+              ...(selectedOption === "drypaddy" && {
+                irrigation: {
+                  FrequentUsage: jobFrequentUsage.irrigation,
+                  TotalCostPerJob:
+                    wage.irrigation * acre * jobFrequentUsage.irrigation,
+                },
+              }),
               TotalChemicalPrice:
                 chemicalPrice.pesticide +
                 chemicalPrice.herbicide +
@@ -426,6 +454,7 @@ const Calculator = () => {
               ...prev,
               Cropname: selectedOption,
               Acre: acre,
+              StartDate: startDate,
               Latitude: position.coords.latitude,
               Longitude: position.coords.longitude,
               planting: {
@@ -573,8 +602,13 @@ const Calculator = () => {
       try {
         if (selectedOption === "paddy") {
           const response = await storePropose(postPaddy);
+          response && toast.success("အောင်မြင်ပါသည်");
         } else if (selectedOption === "bean") {
           const response = await storePropose(postBean);
+          response && toast.success("အောင်မြင်ပါသည်");
+        } else if (selectedOption === "drypaddy") {
+          const response = await storePropose(postPaddy);
+          response && toast.success("အောင်မြင်ပါသည်");
         }
       } catch (error) {
         console.error("Error sending data:", error); // Handle any errors
@@ -713,10 +747,11 @@ const Calculator = () => {
       console.log("Geolocation not supported");
     }
   }, [acre]);
-  console.log("wage", wage);
+  console.log("jobFrequentUsage", jobFrequentUsage);
 
   return (
     <div className={`${classes.row} row`}>
+      <Toaster toastOptions={{ duration: 3000 }} />
       <div className={`${classes.column1} col-md-6`}>
         <div className={`${classes.calculator_wrapper}`}>
           <div className={`${classes.crop}`}>
@@ -746,7 +781,9 @@ const Calculator = () => {
               />
             </div>
           </div>
-          {(selectedOption === "paddy" || selectedOption === "bean") &&
+          {(selectedOption === "paddy" ||
+            selectedOption === "bean" ||
+            selectedOption === "drypaddy") &&
             acre && (
               <PlantingComponent
                 selectedOption={selectedOption}
@@ -759,7 +796,9 @@ const Calculator = () => {
                 plantingDetail={plantingDetail}
               />
             )}
-          {(selectedOption === "paddy" || selectedOption === "bean") &&
+          {(selectedOption === "paddy" ||
+            selectedOption === "bean" ||
+            selectedOption === "drypaddy") &&
             acre && (
               <PesticideComponent
                 chemical={chemical}
@@ -771,17 +810,18 @@ const Calculator = () => {
                 acre={acre}
               />
             )}
-          {selectedOption === "paddy" && acre && (
-            <HerbicideComponent
-              chemical={chemical}
-              laborNeed={laborNeed}
-              wage={wage}
-              acre={acre}
-              chemicalPrice={chemicalPrice}
-              jobFrequentUsage={jobFrequentUsage}
-              handleHerbicidePrice={handleHerbicidePrice}
-            />
-          )}
+          {(selectedOption === "paddy" || selectedOption === "drypaddy") &&
+            acre && (
+              <HerbicideComponent
+                chemical={chemical}
+                laborNeed={laborNeed}
+                wage={wage}
+                acre={acre}
+                chemicalPrice={chemicalPrice}
+                jobFrequentUsage={jobFrequentUsage}
+                handleHerbicidePrice={handleHerbicidePrice}
+              />
+            )}
           {selectedOption === "bean" && acre && (
             <FungicideComponent
               chemical={chemical}
@@ -804,7 +844,9 @@ const Calculator = () => {
               handleFoliarFertilizerPrice={handleFoliarFertilizerPrice}
             />
           )}
-          {(selectedOption === "paddy" || selectedOption === "bean") &&
+          {(selectedOption === "paddy" ||
+            selectedOption === "bean" ||
+            selectedOption === "drypaddy") &&
             acre && (
               <FertilizerComponent
                 chemical={chemical}
@@ -816,7 +858,9 @@ const Calculator = () => {
                 handleFertilizerPrice={handleFertilizerPrice}
               />
             )}
-          {(selectedOption === "paddy" || selectedOption === "bean") &&
+          {(selectedOption === "paddy" ||
+            selectedOption === "bean" ||
+            selectedOption === "drypaddy") &&
             acre && <PlowingComponent wage={wage} acre={acre} />}
           {selectedOption === "bean" && acre && (
             <HarvestingBean
@@ -826,10 +870,16 @@ const Calculator = () => {
               jobFrequentUsage={jobFrequentUsage}
             />
           )}
-          {selectedOption === "paddy" && acre && (
-            <HarvestingComponent wage={wage} acre={acre} />
+          {(selectedOption === "paddy" || selectedOption === "drypaddy") &&
+            acre && <HarvestingComponent wage={wage} acre={acre} />}
+          {selectedOption === "drypaddy" && acre && (
+            <IrrigationComponent
+              wage={wage}
+              acre={acre}
+              jobFrequentUsage={jobFrequentUsage}
+            />
           )}
-          {selectedOption === "paddy" &&
+          {(selectedOption === "paddy" || selectedOption === "drypaddy") &&
             chemicalPrice.pesticide !== null &&
             chemicalPrice.herbicide !== null &&
             chemicalPrice.fertilizer !== null && (
@@ -871,14 +921,28 @@ const Calculator = () => {
                     </strong>
                   )}
                 </div>
-                <div className={`mt-2`}>
-                  စက်ပစ္စည်းငှားရမ်းခစုစုပေါင်း:{" "}
-                  {acre && (
-                    <strong>
-                      {wage.plowing * acre + wage.harvesting * acre} ကျပ်
-                    </strong>
-                  )}
-                </div>
+                {selectedOption === "drypaddy" ? (
+                  <div className={`mt-2`}>
+                    စက်ပစ္စည်းငှားရမ်းခစုစုပေါင်း:{" "}
+                    {acre && (
+                      <strong>
+                        {wage.plowing * acre +
+                          wage.harvesting * acre +
+                          wage.irrigation * acre}{" "}
+                        ကျပ်
+                      </strong>
+                    )}
+                  </div>
+                ) : (
+                  <div className={`mt-2`}>
+                    စက်ပစ္စည်းငှားရမ်းခစုစုပေါင်း:{" "}
+                    {acre && (
+                      <strong>
+                        {wage.plowing * acre + wage.harvesting * acre} ကျပ်
+                      </strong>
+                    )}
+                  </div>
+                )}
                 <div className={`mt-2`}>
                   စုစုပေါင်းကုန်ကျစရိတ်:{" "}
                   {acre &&
@@ -893,6 +957,8 @@ const Calculator = () => {
                           herbicideDetail.totalCost +
                           fertilizerDetail.totalCost +
                           wage.plowing * acre +
+                          (selectedOption === "drypaddy" &&
+                            wage.irrigation * acre) +
                           wage.harvesting * acre}{" "}
                         ကျပ်
                       </strong>
@@ -989,6 +1055,15 @@ const Calculator = () => {
           </div>
           <div className={`mt-2`}>ယနေ့သီးနှံပေါက်ဈေး: </div>
           <div className={`mt-2`}>အသားတင်အမြတ်ငွေ:</div>
+          <div className={`mt-2`}>
+            စတင်စိုက်ပျိုးမည့်ရက်ရွေးချယ်ရန်:{" "}
+            <DatePicker
+              selected={startDate}
+              // onSelect={handleDateSelect} //when day is clicked
+              // dateFormat='DD/MM/YYYY'
+              onChange={handleDateChange} //only when value has changed
+            />
+          </div>
           <button className={`mt-2 btn btn-primary `} onClick={propose}>
             တင်မည်
           </button>

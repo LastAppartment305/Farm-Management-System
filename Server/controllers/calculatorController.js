@@ -72,7 +72,7 @@ export const storePostData = asyncHandler(async (req, res) => {
   // console.log("ownerId", req.user.id);
 
   const insertIntoPostGeneralInfo =
-    "INSERT INTO post_general_info(UserId, Date, Acre, CropName,Latitude,Longitude) VALUES (?, ?, ?, ?,?,?)";
+    "INSERT INTO post_general_info(UserId, Date, Acre, CropName,Latitude,Longitude,StartDate) VALUES (?, ?, ?, ?,?,?,?)";
 
   const localDate = new Date();
 
@@ -173,6 +173,7 @@ export const storePostData = asyncHandler(async (req, res) => {
       req.body.Cropname,
       req.body.Latitude,
       req.body.Longitude,
+      req.body.StartDate,
     ]);
 
     if (result.insertId) {
