@@ -6,7 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
-import Labor from "../labor-wage.json";
+import Labor from "./labor-wage.json";
 
 const RainfedPaddy = () => {
   const [detail, setDetail] = useState(null);

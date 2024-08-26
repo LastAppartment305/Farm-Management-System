@@ -6,7 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
-import Labor from "../labor-wage.json";
+import Labor from "./irragated-paddy-labor-wage.json";
 const IrrigatedPaddy = () => {
   const [detail, setDetail] = useState(null);
   const [selectedChemicalCategory, setSelectedChemicalCategory] =
@@ -14,7 +14,7 @@ const IrrigatedPaddy = () => {
   const [selectedChemicalBrand, setSelectedChemicalBrand] = useState(null);
   const [laborWage, setLaborWage] = useState(Labor);
   const [chemicalUpdateValue, setChemicalUpdateValue] = useState({
-    CropId: 1,
+    CropId: 3,
     ChemCategory: null,
     Brand: null,
     Price: null,
@@ -22,6 +22,7 @@ const IrrigatedPaddy = () => {
   const [machineryCost, setMachineryCost] = useState({
     harvesting: null,
     plowing: null,
+    irrigation: null,
   });
   const { postData, response } = usePost(
     "http://localhost:5000/priceAnalyst/getRainfedPaddyInfo"
@@ -32,6 +33,7 @@ const IrrigatedPaddy = () => {
     herbicide: 2,
     fertilizer: 3,
     harvesting: 4,
+    irrigation: 5,
     plowing: 7,
     tranplanting: 8,
     seeding: 9,
@@ -75,7 +77,7 @@ const IrrigatedPaddy = () => {
   };
   useEffect(() => {
     const fetchData = async () => {
-      const postResult = await postData({ cropid: 1 });
+      const postResult = await postData({ cropid: 3 });
       console.log(postResult);
       if (postResult) {
         setDetail(postResult);
@@ -137,6 +139,9 @@ const IrrigatedPaddy = () => {
           )?.Wage,
           plowing: postResult.WageInfo.find((i) => i.JobId === jobIdMap.plowing)
             ?.Wage,
+          irrigation: postResult.WageInfo.find(
+            (i) => i.JobId === jobIdMap.irrigation
+          )?.Wage,
         });
       }
     };
@@ -155,7 +160,7 @@ const IrrigatedPaddy = () => {
   const updateMachineryPrice = async () => {
     const result = await axios.post(
       "http://localhost:5000/priceAnalyst/updateMachineryCost",
-      { cropid: 1, machineryCost }
+      { cropid: 3, machineryCost }
     );
     if (result) {
       result.data === true && toast.success("အောင်မြင်ပါသည်");
@@ -165,7 +170,7 @@ const IrrigatedPaddy = () => {
   const updateLaborWage = async () => {
     const result = await axios.post(
       "http://localhost:5000/priceAnalyst/updateLaborWage",
-      { cropid: 1, laborWage }
+      { cropid: 3, laborWage }
     );
     if (result) {
       result.data === true && toast.success("အောင်မြင်ပါသည်");
@@ -378,37 +383,6 @@ const IrrigatedPaddy = () => {
               </div>
             </div>
           </div>
-          <div className={`${classes.transplanting}`}>
-            <div className={`${classes.transplanting_header}`}>
-              <strong>ပျိုးပင်ဖြင့်စိုက်ပျိုးခြင်း</strong>
-            </div>
-            <div className={`${classes.transplanting_body}`}>
-              <div className={`${classes.individual_field}`}>
-                <div>တစ်ယောက်လုပ်အားခ</div>
-                <div>
-                  <input
-                    type='number'
-                    className={`${classes.inputs}`}
-                    name='wagePerLabor'
-                    value={laborWage?.tranplanting.wagePerLabor}
-                    onChange={(e) => handleChange("tranplanting", e)}
-                  />
-                </div>
-              </div>
-              <div className={`${classes.individual_field}`}>
-                <div>လုပ်သားလိုအပ်ချက်</div>
-                <div>
-                  <input
-                    type='number'
-                    className={`${classes.inputs}`}
-                    name='laborNeed'
-                    value={laborWage?.tranplanting.laborNeed}
-                    onChange={(e) => handleChange("tranplanting", e)}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
           <div className={`${classes.seeding}`}>
             <div className={`${classes.seeding_header}`}>
               <strong>မျိုးစေ့ကြဲစိုက်ပျိုးခြင်း</strong>
@@ -482,6 +456,20 @@ const IrrigatedPaddy = () => {
                 className={`${classes.inputs}`}
                 name='plowing'
                 value={machineryCost?.plowing}
+                onChange={(e) => handleMachinery(e)}
+              />
+            </div>
+          </div>
+          <div className={`${classes.individual_field}`}>
+            <div>
+              <strong>ရေသွင်းစရိတ်</strong>
+            </div>
+            <div>
+              <input
+                type='number'
+                className={`${classes.inputs}`}
+                name='plowing'
+                value={machineryCost?.irrigation}
                 onChange={(e) => handleMachinery(e)}
               />
             </div>

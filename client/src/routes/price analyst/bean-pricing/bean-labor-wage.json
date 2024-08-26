@@ -1,0 +1,37 @@
+{
+  "pesticide": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "herbicide": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "fertilizer": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "harvesting": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "fungicide": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "foliar_fertilizer": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "seeding": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  }
+}

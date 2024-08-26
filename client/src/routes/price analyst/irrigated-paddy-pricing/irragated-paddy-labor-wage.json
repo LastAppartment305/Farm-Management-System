@@ -1,0 +1,22 @@
+{
+  "pesticide": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "herbicide": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "fertilizer": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  },
+  "seeding": {
+    "laborNeed": null,
+    "wagePerLabor": null,
+    "jobFrequentUsage": null
+  }
+}
