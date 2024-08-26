@@ -114,7 +114,8 @@ export const sendToken = asyncHandler(async (req, res) => {
 //--------------------------------------------
 export const retrieveRainfedPaddyInfo = asyncHandler(async (req, res) => {
   // console.log("starting working getting reainfed paddy information");
-
+  const { cropid } = req.body;
+  console.log(req.body);
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
       connection.query(sql, value, (error, result) => {
@@ -124,7 +125,7 @@ export const retrieveRainfedPaddyInfo = asyncHandler(async (req, res) => {
     });
   };
 
-  const getInformation = async () => {
+  const getInformation = async (cropid) => {
     const combinedResult = {
       cropInfo: [],
       WageInfo: [],
@@ -135,13 +136,15 @@ export const retrieveRainfedPaddyInfo = asyncHandler(async (req, res) => {
     const queryChemicalInfo = "select * from chemical where CropId=?";
 
     try {
-      const cropResult = await queryDatabase(queryCropInformation, [1]);
+      const cropResult = await queryDatabase(queryCropInformation, [cropid]);
       if (cropResult[0]) {
         combinedResult.cropInfo = cropResult[0];
-        const wageResult = await queryDatabase(queryWageInformation, [1]);
+        const wageResult = await queryDatabase(queryWageInformation, [cropid]);
         if (wageResult) {
           combinedResult.WageInfo = wageResult;
-          const chemicalResult = await queryDatabase(queryChemicalInfo, [1]);
+          const chemicalResult = await queryDatabase(queryChemicalInfo, [
+            cropid,
+          ]);
           if (chemicalResult) {
             combinedResult.ChemicalInfo = chemicalResult;
             // console.log("from priceAnalystController: ", combinedResult);
@@ -155,7 +158,7 @@ export const retrieveRainfedPaddyInfo = asyncHandler(async (req, res) => {
   };
 
   try {
-    const result = await getInformation();
+    const result = await getInformation(cropid);
     if (result) {
       res.send(result);
     }
@@ -341,3 +344,5 @@ export const updateMachineryCost = asyncHandler(async (req, res) => {
     console.error(error);
   }
 });
+//---------------------------------------------------
+export const retrieveIrrigatedPaddyInfo = asyncHandler(async (req, res) => {});

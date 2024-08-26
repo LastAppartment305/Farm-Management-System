@@ -1,5 +1,8 @@
 import classes from "./irrigated-paddy-pricing.module.css";
-import { useGet } from "../../../custom-hook/axios-post/axios-post.jsx";
+import {
+  useGet,
+  usePost,
+} from "../../../custom-hook/axios-post/axios-post.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
@@ -20,9 +23,8 @@ const IrrigatedPaddy = () => {
     harvesting: null,
     plowing: null,
   });
-  const { response } = useGet(
-    "http://localhost:5000/priceAnalyst/getRainfedPaddyInfo",
-    false
+  const { postData, response } = usePost(
+    "http://localhost:5000/priceAnalyst/getRainfedPaddyInfo"
   );
 
   const jobIdMap = {
@@ -72,70 +74,74 @@ const IrrigatedPaddy = () => {
     }
   };
   useEffect(() => {
-    if (response) {
-      setDetail(response.data);
-      setSelectedChemicalCategory("pesticide");
-      setChemicalUpdateValue((prev) => ({
-        ...prev,
-        ChemCategory: "pesticide",
-      }));
-      setLaborWage({
-        pesticide: {
-          laborNeed: response.data.cropInfo.PestiLabor,
-          wagePerLabor: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.pesticide
+    const fetchData = async () => {
+      const postResult = await postData({ cropid: 1 });
+      console.log(postResult);
+      if (postResult) {
+        setDetail(postResult);
+        setSelectedChemicalCategory("pesticide");
+        setChemicalUpdateValue((prev) => ({
+          ...prev,
+          ChemCategory: "pesticide",
+        }));
+        setLaborWage({
+          pesticide: {
+            laborNeed: postResult.cropInfo.PestiLabor,
+            wagePerLabor: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.pesticide
+            )?.Wage,
+            jobFrequentUsage: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.pesticide
+            )?.FrequentUsage,
+          },
+          herbicide: {
+            laborNeed: postResult.cropInfo.HerbiLabor,
+            wagePerLabor: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.herbicide
+            )?.Wage,
+            jobFrequentUsage: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.herbicide
+            )?.FrequentUsage,
+          },
+          fertilizer: {
+            laborNeed: postResult.cropInfo.FertiLabor,
+            wagePerLabor: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.fertilizer
+            )?.Wage,
+            jobFrequentUsage: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.fertilizer
+            )?.FrequentUsage,
+          },
+          tranplanting: {
+            laborNeed: postResult.cropInfo.TransplantLabor,
+            wagePerLabor: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.tranplanting
+            )?.Wage,
+            jobFrequentUsage: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.tranplanting
+            )?.FrequentUsage,
+          },
+          seeding: {
+            laborNeed: postResult.cropInfo.SeedingLabor,
+            wagePerLabor: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.seeding
+            )?.Wage,
+            jobFrequentUsage: postResult.WageInfo.find(
+              (i) => i.JobId === jobIdMap.seeding
+            )?.FrequentUsage,
+          },
+        });
+        setMachineryCost({
+          harvesting: postResult.WageInfo.find(
+            (i) => i.JobId === jobIdMap.harvesting
           )?.Wage,
-          jobFrequentUsage: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.pesticide
-          )?.FrequentUsage,
-        },
-        herbicide: {
-          laborNeed: response.data.cropInfo.HerbiLabor,
-          wagePerLabor: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.herbicide
-          )?.Wage,
-          jobFrequentUsage: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.herbicide
-          )?.FrequentUsage,
-        },
-        fertilizer: {
-          laborNeed: response.data.cropInfo.FertiLabor,
-          wagePerLabor: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.fertilizer
-          )?.Wage,
-          jobFrequentUsage: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.fertilizer
-          )?.FrequentUsage,
-        },
-        tranplanting: {
-          laborNeed: response.data.cropInfo.TransplantLabor,
-          wagePerLabor: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.tranplanting
-          )?.Wage,
-          jobFrequentUsage: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.tranplanting
-          )?.FrequentUsage,
-        },
-        seeding: {
-          laborNeed: response.data.cropInfo.SeedingLabor,
-          wagePerLabor: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.seeding
-          )?.Wage,
-          jobFrequentUsage: response.data.WageInfo.find(
-            (i) => i.JobId === jobIdMap.seeding
-          )?.FrequentUsage,
-        },
-      });
-      setMachineryCost({
-        harvesting: response.data.WageInfo.find(
-          (i) => i.JobId === jobIdMap.harvesting
-        )?.Wage,
-        plowing: response.data.WageInfo.find(
-          (i) => i.JobId === jobIdMap.plowing
-        )?.Wage,
-      });
-    }
-  }, [response]);
+          plowing: postResult.WageInfo.find((i) => i.JobId === jobIdMap.plowing)
+            ?.Wage,
+        });
+      }
+    };
+    fetchData();
+  }, []);
   const handleChange = (category, e) => {
     const { name, value } = e.target;
     setLaborWage((prev) => ({
