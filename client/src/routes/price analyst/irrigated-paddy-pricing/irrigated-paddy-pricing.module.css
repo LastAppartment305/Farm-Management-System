@@ -1,0 +1,55 @@
+.chemical_wrapper,
+.labor_wrapper,
+.machine_wrapper {
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 5px;
+  position: relative;
+  width: 100%;
+  margin-bottom: 30px;
+}
+.main_wrapper {
+  padding: 30px;
+  width: 799px;
+}
+.chemical_header,
+.labor_header,
+.machine_header {
+  position: absolute;
+  margin-top: -36px;
+  background: white;
+  border: 3px solid white;
+}
+.chemical_body,
+.machine_body {
+  display: flex;
+  margin-bottom: 30px;
+}
+.inputs {
+  width: 200px;
+  height: 34px;
+  border-radius: 5px;
+}
+.chemical_category,
+.chemical_brand,
+.chemical_price,
+.individual_field {
+  margin-right: 30px;
+}
+.chemical_btn {
+  width: fit-content;
+}
+.pesticide_body,
+.herbicide_body,
+.fertilizer_body,
+.transplanting_body,
+.seeding_body {
+  display: flex;
+}
+.pesticide,
+.herbicide,
+.fertilizer,
+.transplanting,
+.seeding {
+  margin-bottom: 30px;
+}

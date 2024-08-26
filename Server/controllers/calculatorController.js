@@ -68,7 +68,7 @@ export const getOverallData = asyncHandler(async (req, res) => {
 });
 //------------------------------------------------------
 export const storePostData = asyncHandler(async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   // console.log("ownerId", req.user.id);
 
   const insertIntoPostGeneralInfo =

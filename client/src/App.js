@@ -4,9 +4,7 @@ import { useState, useContext } from "react";
 
 import "./App.css";
 import SignUp from "./routes/sign-up/sign-up.component";
-//import SignUp from './routes/sign-up/sign-up.component';
 import Login from "./routes/login-in/login-in.component";
-import reportWebVitals from "./reportWebVitals";
 import DashBoard from "./routes/dashboard/dashboard.component";
 import DashboardContent from "./routes/dashboard-content/dashboard-content.component";
 import AdminApproval from "./routes/dashboard-content/dashboard-content-approval.component";
@@ -30,8 +28,8 @@ import AnalystRegister from "./routes/price analyst/analyst register/analyst-reg
 import RainfedPaddy from "./routes/price analyst/rainfed-paddy-pricing/rainfed-paddy-pricing";
 import IrrigatedPaddy from "./routes/price analyst/irrigated-paddy-pricing/irrigated-paddy-pricing";
 import Bean from "./routes/price analyst/bean-pricing/bean-pricing";
+import PendingAnalysts from "./routes/dashboard-content/admin-pending-analyst/admin-pending-analyst";
 const App = () => {
-  const [admin, setadmin] = useState(true);
   const { role, verifyWorker } = useContext(authContext);
   const router = createBrowserRouter([
     {
@@ -77,6 +75,10 @@ const App = () => {
                   {
                     path: "admin/approve-reports",
                     element: <ApproveReports />,
+                  },
+                  {
+                    path: "admin/pending-analyst",
+                    element: <PendingAnalysts />,
                   },
                 ],
               },

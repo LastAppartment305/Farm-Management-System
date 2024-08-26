@@ -111,3 +111,233 @@ export const sendToken = asyncHandler(async (req, res) => {
     }
   });
 });
+//--------------------------------------------
+export const retrieveRainfedPaddyInfo = asyncHandler(async (req, res) => {
+  // console.log("starting working getting reainfed paddy information");
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const getInformation = async () => {
+    const combinedResult = {
+      cropInfo: [],
+      WageInfo: [],
+      ChemicalInfo: [],
+    };
+    const queryCropInformation = "select * from crop where CropId=?";
+    const queryWageInformation = "select * from wage where CropId=?";
+    const queryChemicalInfo = "select * from chemical where CropId=?";
+
+    try {
+      const cropResult = await queryDatabase(queryCropInformation, [1]);
+      if (cropResult[0]) {
+        combinedResult.cropInfo = cropResult[0];
+        const wageResult = await queryDatabase(queryWageInformation, [1]);
+        if (wageResult) {
+          combinedResult.WageInfo = wageResult;
+          const chemicalResult = await queryDatabase(queryChemicalInfo, [1]);
+          if (chemicalResult) {
+            combinedResult.ChemicalInfo = chemicalResult;
+            // console.log("from priceAnalystController: ", combinedResult);
+          }
+        }
+      }
+      return combinedResult;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  try {
+    const result = await getInformation();
+    if (result) {
+      res.send(result);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
+//--------------------------------------------
+export const updateChemicalPrice = asyncHandler(async (req, res) => {
+  // console.log(req.body);
+  const { CropId, ChemCategory, Brand, Price } = req.body.chemicalUpdateValue;
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const updatePrice =
+    "update chemical set Price=? where CropId=? and ChemCategory=? and Brand=?";
+
+  Promise.resolve(
+    queryDatabase(updatePrice, [Price, CropId, ChemCategory, Brand])
+  ).then((result) => {
+    if (result) {
+      res.send({ status: true });
+    }
+  });
+});
+//------------------------------------------------
+export const updateLaborWage = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { cropid, laborWage } = req.body;
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const getJobIdByCategory = (category) => {
+    const jobIdMap = {
+      pesticide: 1,
+      herbicide: 2,
+      fertilizer: 3,
+      harvesting: 4,
+      irrigation: 5,
+      fungicide: 6,
+      plowing: 7,
+      tranplanting: 8,
+      seeding: 9,
+      foliar_fertilizer: 10,
+    };
+    return jobIdMap[category];
+  };
+
+  const updateJobDetails = async (cropid, laborWage) => {
+    const jobCategories = [
+      "pesticide",
+      "herbicide",
+      "fertilizer",
+      "harvesting",
+      "irrigation",
+      "fungicide",
+      "plowing",
+      "tranplanting",
+      "seeding",
+      "foliar_fertilizer",
+    ];
+
+    for (const category of jobCategories) {
+      if (laborWage[category]) {
+        const values = [
+          laborWage[category].wagePerLabor,
+          laborWage[category].jobFrequentUsage,
+          cropid,
+          getJobIdByCategory(category),
+        ];
+
+        const sql = `
+          update wage set Wage=?,FrequentUsage=? where CropId=? and JobId=?`;
+
+        try {
+          const queryResult = await queryDatabase(sql, values);
+          // console.log("update lines", values);
+
+          // console.log("updated rows for wage:", category);
+        } catch (err) {
+          console.error("Error inserting job details:", err);
+        }
+      }
+    }
+    return { status: true };
+  };
+
+  try {
+    const result = await updateJobDetails(cropid, laborWage);
+    if (result) {
+      // console.log(result);
+      res.send(result.status);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+//---------------------------------------------------
+export const updateMachineryCost = asyncHandler(async (req, res) => {
+  const { cropid, machineryCost } = req.body;
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const getJobIdByCategory = (category) => {
+    const jobIdMap = {
+      pesticide: 1,
+      herbicide: 2,
+      fertilizer: 3,
+      harvesting: 4,
+      irrigation: 5,
+      fungicide: 6,
+      plowing: 7,
+      tranplanting: 8,
+      seeding: 9,
+      foliar_fertilizer: 10,
+    };
+    return jobIdMap[category];
+  };
+
+  const updateJobDetails = async (cropid, machineryCost) => {
+    const jobCategories = [
+      "pesticide",
+      "herbicide",
+      "fertilizer",
+      "harvesting",
+      "irrigation",
+      "fungicide",
+      "plowing",
+      "tranplanting",
+      "seeding",
+      "foliar_fertilizer",
+    ];
+
+    for (const category of jobCategories) {
+      if (machineryCost[category]) {
+        const values = [
+          machineryCost[category],
+          cropid,
+          getJobIdByCategory(category),
+        ];
+
+        const sql = `
+          update wage set Wage=? where CropId=? and JobId=?`;
+
+        try {
+          const queryResult = await queryDatabase(sql, values);
+          // console.log("update lines", values);
+
+          // console.log("updated rows for wage:", category);
+        } catch (err) {
+          console.error("Error inserting job details:", err);
+        }
+      }
+    }
+    return { status: true };
+  };
+
+  try {
+    const result = await updateJobDetails(cropid, machineryCost);
+    if (result) {
+      // console.log(result);
+      res.send(result.status);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});

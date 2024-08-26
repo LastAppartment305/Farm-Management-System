@@ -2,16 +2,11 @@ import classes from "./worker-login.module.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useContext, useEffect, useState, useRef } from "react";
-import {
-  signInWithPhoneNumber,
-  RecaptchaVerifier,
-} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 import { usePost } from "../../../custom-hook/axios-post/axios-post";
 import { toast, Toaster } from "react-hot-toast";
 import OTPInput, { ResendOTP } from "otp-input-react";
 import { authContext } from "../../../context/context";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../../firebase.config";
 import { z } from "zod";
 import { CircleX, Eye, EyeOff } from "lucide-react";
 

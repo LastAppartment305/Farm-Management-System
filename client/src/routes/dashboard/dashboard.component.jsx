@@ -17,6 +17,7 @@ import {
   CloudHail,
   SunSnow,
   Bean,
+  Clock,
 } from "lucide-react";
 import {
   useLogout,
@@ -221,6 +222,14 @@ const DashBoard = () => {
             buttonText={"ရီပို့ဓာတ်ပုံများ"}
             isActive={isActive === "admin/approve-reports"}
             onclick={() => handleClick("admin/approve-reports")}
+          />
+        )}
+        {role === "admin" && (
+          <SideBarButton
+            icon={Clock}
+            buttonText={"ဈေးပြင်ဆင်သူ"}
+            isActive={isActive === "admin/pending-analyst"}
+            onclick={() => handleClick("admin/pending-analyst")}
           />
         )}
         {role === "analyst" && (

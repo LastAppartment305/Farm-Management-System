@@ -35,3 +35,16 @@ export const workerAuthToken = (req, res, next) => {
     next();
   });
 };
+
+export const analystAuth = (req, res, next) => {
+  const authHeader = req.cookies.analystToken;
+
+  if (authHeader == null) return res.sendStatus(401);
+  jwt.verify(authHeader, process.env.ACCESS_TOKEN_SECRET, (err, analyst) => {
+    if (err) return res.status(403).send(err);
+    console.log(analyst);
+
+    req.analyst = analyst;
+    next();
+  });
+};
