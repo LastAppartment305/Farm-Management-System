@@ -18,6 +18,7 @@ import {
   SunSnow,
   Bean,
   Clock,
+  Handshake,
 } from "lucide-react";
 import {
   useLogout,
@@ -140,13 +141,12 @@ const DashBoard = () => {
     });
     const listenToEvent = async (value) => {
       // console.log(value);
-      // const getNoti = await axios.get(
-      //   "http://localhost:5000/noti/getAllNotification"
-      // );
-      // if (getNoti) {
-
-      //   setNotifications(getNoti);
-      // }
+      const getNoti = await axios.get(
+        "http://localhost:5000/noti/getAllNotification"
+      );
+      if (getNoti) {
+        setNotifications(getNoti);
+      }
       window.location.reload();
     };
     socket.on("receivingEvent", listenToEvent);
@@ -155,23 +155,25 @@ const DashBoard = () => {
       socket.off("receivingEvent", listenToEvent);
     };
   }, []);
-  // useEffect(() => {
-  //   const fetchNotication = async () => {
-  //     const getNoti = await axios.get(
-  //       "http://localhost:5000/noti/getAllNotification"
-  //     );
-  //     if (getNoti) {
-  //       console.log("No reverse: ", getNoti.data);
-  //       const reverse = getNoti.data.reverse();
-  //       console.log("reverse: ", reverse);
-  //       setNotifications(reverse);
-  //       console.log(getNoti);
-  //     }
-  //   };
-  //   if (role !== "worker") {
-  //     fetchNotication();
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (role === "owner") {
+      const fetchNotication = async () => {
+        const getNoti = await axios.get(
+          "http://localhost:5000/noti/getAllNotification"
+        );
+        if (getNoti) {
+          console.log("No reverse: ", getNoti.data);
+          const reverse = getNoti.data.reverse();
+          console.log("reverse: ", reverse);
+          setNotifications(reverse);
+          console.log(getNoti);
+        }
+      };
+      if (role !== "worker") {
+        fetchNotication();
+      }
+    }
+  }, []);
   const closeNotificationSideBar = async () => {
     const FetchNotiAgain = await axios.get(
       "http://localhost:5000/noti/changeNotiStatus"
@@ -266,8 +268,8 @@ const DashBoard = () => {
         )}
         {role === "owner" && (
           <SideBarButton
-            icon={Pickaxe}
-            buttonText={"အလုပ်နေရာချထားခြင်း"}
+            icon={Handshake}
+            buttonText={"သဘောတူညီမှု"}
             isActive={isActive === "owner/assign-worker"}
             onclick={() => handleClick("owner/assign-worker")}
           />
@@ -291,7 +293,7 @@ const DashBoard = () => {
         {role === "owner" && (
           <SideBarButton
             icon={HandCoins}
-            buttonText={"propose"}
+            buttonText={"ပရိုပို့စ်"}
             isActive={isActive === "owner/propose"}
             onclick={() => handleClick("owner/propose")}
           />
@@ -326,25 +328,27 @@ const DashBoard = () => {
             </div>
             <div className='right-side-of-nav me-2 d-flex align-items-center'>
               {/* <div className='noti-wrapper position-relative'> */}
-              {/* <a
-                href='#Noti'
-                onClick={handleNoti}
-                className='noti-btn'
-                type='button'
-                data-bs-toggle='offcanvas'
-                data-bs-target='#Noti'
-                aria-controls='offcanvasExample'
-              >
-                <Bell />
-                <div
-                  className={
-                    notifications &&
-                    notifications.find((status) => status.noti_status === 0)
-                      ? "red-dot"
-                      : ""
-                  }
-                ></div>
-              </a> */}
+              {localStorage.getItem("role") === "owner" && (
+                <a
+                  href='#Noti'
+                  onClick={handleNoti}
+                  className='noti-btn'
+                  type='button'
+                  data-bs-toggle='offcanvas'
+                  data-bs-target='#Noti'
+                  aria-controls='offcanvasExample'
+                >
+                  <Bell />
+                  <div
+                    className={
+                      notifications &&
+                      notifications.find((status) => status.noti_status === 0)
+                        ? "red-dot"
+                        : ""
+                    }
+                  ></div>
+                </a>
+              )}
               {/* </div> */}
               {/* <div className='profile-icon-wrapper ms-4'> */}
               <a

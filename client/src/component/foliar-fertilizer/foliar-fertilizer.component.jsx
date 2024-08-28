@@ -63,7 +63,7 @@ const FoliarFertilizer = ({
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
         {chemicalPrice.foliar_fertilizer !== null && acre && (
-          <strong>{chemicalPrice.foliar_fertilizer} ကျပ်</strong>
+          <strong>{chemicalPrice.foliar_fertilizer * acre} ကျပ်</strong>
         )}
       </div>
 
@@ -75,7 +75,7 @@ const FoliarFertilizer = ({
               laborNeed.foliar_fertilizer *
               acre *
               jobFrequentUsage.foliar_fertilizer +
-              parseInt(chemicalPrice.foliar_fertilizer)}{" "}
+              parseInt(chemicalPrice.foliar_fertilizer * acre)}{" "}
             ကျပ်
           </strong>
         )}

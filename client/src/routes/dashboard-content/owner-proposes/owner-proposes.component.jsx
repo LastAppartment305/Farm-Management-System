@@ -230,6 +230,20 @@ const OwnerPropose = () => {
               })()}
           </div>
         )}
+        <div className='ms-4'>
+          {postInfo && (
+            <iframe
+              width='550'
+              height='350'
+              frameborder='0'
+              style={{ border: 0 }}
+              referrerpolicy='no-referrer-when-downgrade'
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDSegWYCf5Tzfc73v-s5KDm-OUIfn9UWME &q=${postInfo.postGeneralInfo.Latitude},${postInfo.postGeneralInfo.Longitude}&zoom=18
+  &maptype=satellite`}
+              allowfullscreen
+            ></iframe>
+          )}
+        </div>
         <button onClick={handlePrint} className={`${classes.print_btn}`}>
           Print as PDF
         </button>

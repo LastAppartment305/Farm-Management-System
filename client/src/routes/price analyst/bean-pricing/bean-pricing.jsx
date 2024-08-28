@@ -193,7 +193,6 @@ const Bean = () => {
         <div className={`${classes.chemical_header}`}>
           ဆေးတန်ဖိုးများပြောင်းလဲရန်
         </div>
-        2
         <div className={`${classes.chemical_body}`}>
           <div className={`${classes.chemical_category}`}>
             <select

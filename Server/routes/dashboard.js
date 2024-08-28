@@ -40,6 +40,7 @@ router.get(
   authRole("admin"),
   postListsForAdmin
 );
+router.get("/getPostListsForOwner", authenticateToken, postListsForAdmin);
 router.post(
   "/confirmReportImages",
   authenticateToken,

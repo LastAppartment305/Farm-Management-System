@@ -13,6 +13,12 @@ const RainfedPaddy = () => {
   const [selectedChemicalCategory, setSelectedChemicalCategory] =
     useState(null);
   const [selectedChemicalBrand, setSelectedChemicalBrand] = useState(null);
+  const [newChemical, setNewChemical] = useState({
+    ChemCategory: "pesticide",
+    Brand: null,
+    MyanmarName: null,
+    Price: null,
+  });
   const [laborWage, setLaborWage] = useState(Labor);
   const [chemicalUpdateValue, setChemicalUpdateValue] = useState({
     CropId: 1,
@@ -52,6 +58,13 @@ const RainfedPaddy = () => {
     setChemicalUpdateValue((prev) => ({
       ...prev,
       Price: e.target.value,
+    }));
+  };
+  const handleNewChemicalChange = (e) => {
+    const { name, value } = e.target;
+    setNewChemical((prev) => ({
+      ...prev,
+      ChemCategory: value,
     }));
   };
   const handleBrandChange = (e) => {
@@ -180,6 +193,17 @@ const RainfedPaddy = () => {
       [name]: value,
     }));
   };
+  const handleInsertNewChemical = (e) => {
+    const { name, value } = e.target;
+    setNewChemical((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const insertNewChemicalPrice = () => {
+    console.log("new chemical", newChemical);
+  };
   console.log(response);
   return (
     <div className={`${classes.main_wrapper}`}>
@@ -240,6 +264,55 @@ const RainfedPaddy = () => {
             onClick={updateChemicalPrice}
           >
             ပြင်ဆင်မည်
+          </button>
+        </div>
+      </div>
+      <div className={`${classes.chemical_wrapper}`}>
+        <div className={`${classes.chemical_header}`}>
+          ဆေးအသစ်များထည့်သွင်းရန်
+        </div>
+        <div className={`${classes.new_chemical_body}`}>
+          <div className={`${classes.chemical_category}`}>
+            <select
+              className={`${classes.inputs}`}
+              onChange={handleNewChemicalChange}
+            >
+              <option value='pesticide'>ပိုးသတ်ဆေး</option>
+              <option value='herbicide'>ပေါင်းသတ်ဆေး</option>
+              <option value='fertilizer'>ဓါတ်မြေဩဇာ</option>
+            </select>
+          </div>
+          <div className={`${classes.chemical_brand}`}>
+            <input
+              type='text'
+              name='Brand'
+              className={`${classes.inputs}`}
+              onChange={handleInsertNewChemical}
+            />
+          </div>
+          <div className={`${classes.chemical_brand}`}>
+            <input
+              type='text'
+              name='MyanmarName'
+              className={`${classes.inputs}`}
+              onChange={handleInsertNewChemical}
+            />
+          </div>
+          <div className={`${classes.chemical_price}`}>
+            <input
+              type='number'
+              name='Price'
+              className={`${classes.inputs}`}
+              onChange={handleInsertNewChemical}
+            />
+          </div>
+        </div>
+        <div className={`${classes.chemical_price_update_btn}`}>
+          <button
+            className={`${classes.chemical_btn}  btn btn-primary`}
+            onClick={insertNewChemicalPrice}
+          >
+            ထည့်မည်
           </button>
         </div>
       </div>

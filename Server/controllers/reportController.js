@@ -8,7 +8,6 @@ import axios from "axios";
 dotenv.config();
 
 export const getReportPhoto = asyncHandler(async (req, res) => {
-  // console.log(req.user.id);
   const { postid } = req.body;
   const { id } = req.user;
 
@@ -96,6 +95,7 @@ export const getReportPhoto = asyncHandler(async (req, res) => {
 export const getDownloadAuth = asyncHandler(async (req, res) => {
   const downladTokenExpirationTime = 24 * 60 * 60;
   const downloadTokenFileName = "./b2-downloadAuth.json";
+  // console.log(req.user.id);
   const accountAuthTokenFileName = "./b2-accountAuth.json";
   const defaultExpirationTime = 24 * 60 * 60 * 1000;
   let b2AccountAuthToken = {
@@ -269,4 +269,90 @@ export const fetchB2Cloud = asyncHandler(async (req, res) => {
 
   // Send the buffer as the response
   res.send(fetchImage.data);
+});
+//-------------------------------------------
+export const ApprovedImageList = asyncHandler(async (req, res) => {
+  const { postid } = req.body;
+  const { id } = req.user;
+
+  const batchSize = 50; // Adjust the batch size based on your database capacity
+  let ids = [];
+  let paths = [];
+  let offset = 0;
+  let hasMore = true;
+
+  // const getNotiMessageAndStatus='select noti_message,noti_status from report where FarmId in(select FarmId from worker_detail where UserId=?)'
+  // const getImageIdFrom_worker_detail = `select ImageId from report where FarmId=? and exists (select * from report where FarmId=?) limit ? offset ?`;
+
+  const getImageId = `select ImageId from image where postid=? and ConfirmStatus=? limit ? offset ?`;
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  res.writeHead(200, {
+    "Content-Type": "application/json",
+    "Transfer-Encoding": "chunked",
+  });
+  res.write("[");
+
+  let isFirstBatch = true;
+  while (hasMore) {
+    const result = await queryDatabase(getImageId, [
+      postid,
+      true,
+      batchSize,
+      offset,
+    ]);
+    if (result.length > 0) {
+      result.map((item, index) => {
+        ids.push(item.ImageId);
+      });
+      offset += batchSize;
+      const placeHolder = ids.map(() => "?").join(", ");
+      const getImagePath = `select ImageId,Image_path,Report_date,Image_description,noti_message,noti_status,ConfirmStatus from image where ImageId in (${placeHolder})`;
+      const imagePath = await queryDatabase(getImagePath, ids);
+      imagePath.map((path) => {
+        paths.push(
+          // path
+          // path.Image_path
+          {
+            ImageId: path.ImageId,
+            filename: path.Image_path,
+            date: path.Report_date,
+            description: path.Image_description,
+            noti_message: path.noti_message,
+            noti_status: path.noti_status,
+            ConfirmStatus: path.ConfirmStatus,
+          }
+        );
+      });
+
+      //response with stream
+
+      paths.map((path) => {
+        if (!isFirstBatch) {
+          res.write(", ");
+        }
+        res.write(JSON.stringify(path));
+        isFirstBatch = false;
+      });
+      ids.splice(0, ids.length);
+      paths.splice(0, paths.length);
+      // Check if this is the last batch
+      if (result.length < batchSize) {
+        hasMore = false;
+      }
+    } else {
+      hasMore = false;
+    }
+  }
+
+  res.write("]");
+  res.end();
 });

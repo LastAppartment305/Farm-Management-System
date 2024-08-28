@@ -279,6 +279,7 @@ export const getAllPost = asyncHandler(async (req, res) => {
 export const approvePost = asyncHandler(async (req, res) => {
   console.log(req.body);
   const { postid } = req.body;
+  const { id } = req.user;
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
       connection.query(sql, value, (error, result) => {
@@ -287,10 +288,11 @@ export const approvePost = asyncHandler(async (req, res) => {
       });
     });
   };
-  const sql = "update post_general_info set ApproveStatus=? where PostId=?";
+  const sql =
+    "update post_general_info set ApproveStatus=?,ApprovedAdminId=? where PostId=?";
   const updatePostStatus = async () => {
     try {
-      const updateResult = await queryDatabase(sql, [true, postid]);
+      const updateResult = await queryDatabase(sql, [true, id, postid]);
       if (updateResult) {
         // console.log("post for admin", postLists);
         res.send(updateResult);
@@ -334,4 +336,97 @@ export const unapprovePost = asyncHandler(async (req, res) => {
   } catch (err) {
     console.error("Error at retrieving posts");
   }
+});
+//-------------------------------------------
+export const getAgreedPostsForOwner = asyncHandler(async (req, res) => {
+  const { id } = req.user;
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const retrievePosts = async () => {
+    // const sql = "select * from post_general_info";
+    let postDetail = {
+      postInfo: null,
+      OwnerInfo: null,
+      workerInfo: null,
+    };
+    const sql =
+      "select p.*,u.UserId,u.Name as UName,u.Phone_no as UPhone,u.Address as UAddress,u.Age as UAge,u.NRC as UNRC,w.WorkerId,w.Name as WName,w.Phone_no as WPhone,w.Address as WAddress,w.Age as WAge,w.NRC as WNRC from post_general_info p join user u on p.UserId=u.UserId join worker w on p.WorkerId=w.WorkerId where p.WorkerId is not null and p.UserId=?";
+    try {
+      const postLists = await queryDatabase(sql, [id]);
+      if (postLists) {
+        postDetail.postInfo = console.log("post for admin", postLists);
+        res.send(postLists);
+      }
+    } catch (err) {
+      console.error("Error at retrieving posts", err);
+    }
+  };
+
+  try {
+    await retrievePosts();
+  } catch (err) {
+    console.error("Error at retrieving posts");
+  }
+});
+//-----------------------------------------------------
+export const makeContractForm = asyncHandler(async (req, res) => {
+  const { postid } = req.body;
+
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const getGeneralInfo =
+    "select p.*,u.UserId,u.Name as UName,u.Phone_no as UPhone,u.Address as UAddress,u.Age as UAge,u.NRC as UNRC,w.WorkerId,w.Name as WName,w.Phone_no as WPhone,w.Address as WAddress,w.Age as WAge,w.NRC as WNRC from post_general_info p join user u on p.UserId=u.UserId join worker w on p.WorkerId=w.WorkerId where p.PostId=?";
+  const getJobInfo = "select * from post_job_info where PostId=?";
+  const getTotalCost = "select * from post_total_cost where PostId=?";
+  const getAdminDetail =
+    "select u.Name,u.NRC,u.Phone_no,u.Address from user u join post_general_info p on p.ApprovedAdminId=u.UserId where p.PostId=?";
+  // console.log("specific post id", postid);
+  const getPostDetails = async (id) => {
+    try {
+      let combinedResult = {
+        postGeneralInfo: null,
+        postJobInfo: null,
+        postTotalCost: null,
+        adminInformation: null,
+      };
+
+      const generalResult = await queryDatabase(getGeneralInfo, [postid]);
+      if (generalResult[0]) {
+        combinedResult.postGeneralInfo = generalResult[0];
+        const jobResult = await queryDatabase(getJobInfo, [id]);
+        if (jobResult) {
+          combinedResult.postJobInfo = jobResult;
+          const costResult = await queryDatabase(getTotalCost, [id]);
+          if (costResult) {
+            combinedResult.postTotalCost = costResult;
+            const adminResult = await queryDatabase(getAdminDetail, [id]);
+            if (adminResult) {
+              combinedResult.adminInformation = adminResult[0];
+            }
+            // console.log(combinedResult);
+          }
+        }
+      }
+      return combinedResult;
+    } catch (error) {
+      console.error("Error retrieving data:", error);
+      throw error;
+    }
+  };
+  const result = await getPostDetails(postid);
+  res.send(result);
 });

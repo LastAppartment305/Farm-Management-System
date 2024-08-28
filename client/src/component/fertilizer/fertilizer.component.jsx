@@ -63,7 +63,7 @@ const FertilizerComponent = ({
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
         {chemicalPrice.fertilizer !== null && acre && (
-          <strong>{chemicalPrice.fertilizer} ကျပ်</strong>
+          <strong>{chemicalPrice.fertilizer * acre} ကျပ်</strong>
         )}
       </div>
       <div className={`mt-2`}>
@@ -74,7 +74,7 @@ const FertilizerComponent = ({
               laborNeed.fertilizer *
               acre *
               jobFrequentUsage.fertilizer +
-              chemicalPrice.fertilizer}{" "}
+              parseInt(chemicalPrice.fertilizer * acre)}{" "}
             ကျပ်
           </strong>
         )}

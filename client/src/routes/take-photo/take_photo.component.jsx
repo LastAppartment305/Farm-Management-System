@@ -270,13 +270,16 @@ const TakePhoto = () => {
         <div className='date-string'>
           {mySQLDateString} ရက်နေ့အတွက် ရီပို့ တင်ရန်
         </div>
-        {position.latitude && position.longitude && (
-          <div className='location'>
-            <div>လယ်ကွက်တည်နေရာ</div>
-            <div>{`Latitude: ${position.latitude}`}</div>
-            <div>{`Logitude: ${position.longitude}`}</div>
-          </div>
-        )}
+        {position.latitude &&
+          position.longitude &&
+          sessionStorage.getItem("capturedImage") &&
+          removeImage && (
+            <div className='location'>
+              <div>လယ်ကွက်တည်နေရာ</div>
+              <div>{`Latitude: ${position.latitude}`}</div>
+              <div>{`Logitude: ${position.longitude}`}</div>
+            </div>
+          )}
       </div>
       {openCamera && (
         <div className='video'>
@@ -333,26 +336,16 @@ const TakePhoto = () => {
             removeImage &&
             position.latitude &&
             position.longitude && (
-              <MapContainer
-                style={{ height: 600, width: 600 }}
-                classsName='map'
-                center={[position.latitude, position.longitude]}
-                zoom={30}
-                scrollWheelZoom={false}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> 
-        contributors'
-                  url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-                />
-                <Marker
-                  icon={customeIcon}
-                  position={[position.latitude, position.longitude]}
-                >
-                  {/* <Popup>{display_name}</Popup> */}
-                </Marker>
-                <MapView />
-              </MapContainer>
+              <iframe
+                width='550'
+                height='350'
+                frameborder='0'
+                style={{ border: 0 }}
+                referrerpolicy='no-referrer-when-downgrade'
+                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDSegWYCf5Tzfc73v-s5KDm-OUIfn9UWME &q=${position.latitude},${position.longitude}&zoom=18
+  &maptype=satellite`}
+                allowfullscreen
+              ></iframe>
             )}
         </div>
       </div>

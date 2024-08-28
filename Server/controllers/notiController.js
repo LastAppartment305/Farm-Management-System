@@ -40,7 +40,7 @@ export const getNotification = asyncHandler(async (req, res) => {
   const { id } = req.user;
   console.log(id);
   const queryNotification =
-    "select ImageId,noti_message,noti_status from image where ImageId in (select ImageId from report where FarmId in (select FarmId from farm where UserId=?)) order by ImageId asc";
+    "select i.ImageId,i.noti_message,i.noti_status from image i join post_general_info p on p.PostId=i.PostId where p.UserId=? order by ImageId asc";
 
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
@@ -68,9 +68,9 @@ export const NotiStatus = asyncHandler(async (req, res) => {
   const { id } = req.user;
 
   const changeNotiQuery =
-    "update image set noti_status=? where ImageId in (select ImageId from report where FarmId in (select FarmId from farm where UserId=?))";
+    "UPDATE image i JOIN post_general_info p ON p.PostId = i.PostId SET i.noti_status = ? WHERE p.UserId = ?";
   const queryNotification =
-    "select ImageId,noti_message,noti_status from image where ImageId in (select ImageId from report where FarmId in (select FarmId from farm where UserId=?)) order by ImageId asc";
+    "select i.ImageId,i.noti_message,i.noti_status from image i join post_general_info p on p.PostId=i.PostId where p.UserId=? order by ImageId asc";
 
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {

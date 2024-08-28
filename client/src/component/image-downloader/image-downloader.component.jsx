@@ -100,13 +100,9 @@ const ImageDownloader = ({
         <div
           className={`${classes.individual_image_wrapper} position-relative`}
         >
-          {confirmStatus ? (
+          {confirmStatus === null ? null : (
             <div className={`${classes.mark} position-absolute`}>
-              <img src={success} />
-            </div>
-          ) : (
-            <div className={`${classes.mark} position-absolute`}>
-              <img src={redCross} />
+              <img src={confirmStatus ? success : redCross} />
             </div>
           )}
           <div>{localDate}</div>

@@ -61,7 +61,7 @@ const HerbicideComponent = ({
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
         {chemicalPrice.herbicide !== null && acre && (
-          <strong>{chemicalPrice.herbicide} ကျပ်</strong>
+          <strong>{chemicalPrice.herbicide * acre} ကျပ်</strong>
         )}
       </div>
 
@@ -73,7 +73,7 @@ const HerbicideComponent = ({
               laborNeed.herbicide *
               acre *
               jobFrequentUsage.herbicide +
-              chemicalPrice.herbicide}{" "}
+              parseInt(chemicalPrice.herbicide * acre)}{" "}
             ကျပ်
           </strong>
         )}

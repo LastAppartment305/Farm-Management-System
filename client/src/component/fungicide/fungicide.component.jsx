@@ -62,7 +62,7 @@ const FungicideComponent = ({
       <div className={`mt-2`}>
         သီးနှံကာလတစ်ခုလုံးအတွက်ဆေးတန်ဖိုး:
         {chemicalPrice.fungicide !== null && acre && (
-          <strong>{chemicalPrice.fungicide} ကျပ်</strong>
+          <strong>{chemicalPrice.fungicide * acre} ကျပ်</strong>
         )}
       </div>
 
@@ -74,7 +74,7 @@ const FungicideComponent = ({
               laborNeed.fungicide *
               acre *
               jobFrequentUsage.fungicide +
-              parseInt(chemicalPrice.fungicide)}{" "}
+              parseInt(chemicalPrice.fungicide * acre)}{" "}
             ကျပ်
           </strong>
         )}

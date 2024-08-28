@@ -1,214 +1,306 @@
 import classes from "./dashboard-content-assignworker.module.css";
-import {
-  useGet,
-  usePost,
-  useDelete,
-} from "../../../custom-hook/axios-post/axios-post.jsx";
-import success from "../../../assets/icon/success.png";
+import { useGet } from "../../../custom-hook/axios-post/axios-post.jsx";
 import { useState, useEffect, useRef } from "react";
-import numtowords from "number-to-words";
 import axios from "axios";
-// import { Offcanvas } from "bootstrap";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import * as bootstrap from 'bootstrap';
-// window.bootstrap = bootstrap;
+import croptype from "./crop.json";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import print from "../../../assets/icon/print.png";
 
 const AssignWorker = () => {
-  const [farmlist, setFarmList] = useState([]);
-  const [workerlist, setworkerlist] = useState([]);
-  const [assignWorker, setAssignWorker] = useState(false);
-  const assignWorkerRef = useRef([]);
-  const [openRightNavBar, setopenRightNavBar] = useState(false);
-  const [selectedFarmId, setSelectedFarmId] = useState(null);
+  const { response } = useGet("http://localhost:5000/getAgreedPosts");
+  const [postList, setPostList] = useState(null);
+  const [postId, setPostId] = useState(null);
+  const reportRef = useRef();
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [postInfo, setPostInfo] = useState(null);
 
-  const { response } = useGet(
-    "http://localhost:5000/farm/getfarmlist",
-    assignWorker
-  );
-  const { response: res } = useGet("http://localhost:5000/dashboard/staff");
-  const { postData } = usePost(
-    "http://localhost:5000/dashboard/staff/assign-worker"
-  );
-  const { deleteData } = useDelete(
-    "http://localhost:5000/dashboard/staff/assign-worker"
-  );
-
-  //console.log("assign-worker component")
-  useEffect(() => {
-    if (response && res) {
-      setFarmList(response.data);
-      setworkerlist(res.data.worker);
-      //console.log("dashboard farm component: ", assignWorkerRef.current.length);
+  const getPostDetail = async (id) => {
+    // console.log("post Id", id);
+    setPostId(id);
+    setSelectedPostId(id);
+    const result = await axios.post("http://localhost:5000/makeContract", {
+      postid: id,
+    });
+    if (result) {
+      // console.log(result);
+      setPostInfo(result.data);
     }
-    return () => {
-      for (let i = assignWorkerRef.current.length - 1; i >= 0; i--) {
-        assignWorkerRef.current.splice([i], 1);
-      }
-    };
-  }, [response, res, assignWorker]);
-  const assignWorkerbtn = (data) => {
-    setSelectedFarmId(data);
   };
 
-  const deleteAssignWorker = async (FarmId, WorkerId) => {
-    const deleteResult = await axios.delete(
-      "http://localhost:5000/dashboard/staff/assign-worker",
-      { data: { id: { farmid: FarmId, workerid: WorkerId } } }
-    );
-    setAssignWorker(!assignWorker);
-    //const deleteResult = await deleteData({id:FarmId});
-  };
-  const assignWorkerToFarm = async (workerData, farmData) => {
-    const result = await postData({ workerId: workerData, farmId: farmData });
+  useEffect(() => {
+    if (response) {
+      const approvedPosts = response.data.filter(
+        (post) => post.ApproveStatus === 1
+      );
+      setPostList(approvedPosts);
+    }
+  }, [response]);
+  const handlePrint = () => {
+    const input = reportRef.current;
 
-    setAssignWorker((prev) => !prev);
-    return () => {
-      for (let i = assignWorkerRef.current.length - 1; i >= 0; i--) {
-        assignWorkerRef.current.splice([i], 1);
-      }
-    };
+    html2canvas(input, { scale: 2 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/jpeg", 0.8); // Use JPEG format with compression
+      const pdf = new jsPDF("p", "mm", "a4"); // Adjust page size and orientation
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+
+      pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight);
+      pdf.save("expense-report.pdf");
+    });
   };
+  const jobLabels = {
+    1: "ပေါင်းသတ်ခြင်း",
+    2: "ပိုးသတ်ခြင်း",
+    3: "ဓါတ်မြေဩဇာ",
+    4: "ရိတ်သိမ်းစရိတ်",
+    5: "ရေသွင်းခြင်း",
+    6: "မှိုသတ်ခြင်း",
+    7: "မြေပြင်စရိတ်",
+    8: "စိုက်ပျိုးစရိတ်",
+    10: "ရွက်ဖြန်းမြေဩဇာ",
+  };
+  console.log(postList);
   // console.log("dashboard-assignworker com", selectedFarmId);
   return (
-    <div className={`${classes.content} p-5`}>
-      <div class='accordion' id='accordionExample'>
-        {farmlist?.map((res, index) => (
-          <div class='accordion-item' key={index}>
-            <h2 class='accordion-header'>
-              <button
-                class='accordion-button collapsed'
-                type='button'
-                data-bs-toggle='collapse'
-                data-bs-target={`#collapse${numtowords.toWords(index + 1)}`}
-                aria-expanded='false'
-                aria-controls={`collapse${numtowords.toWords(index + 1)}`}
-              >
-                <div className='row w-100'>
-                  <div className='col-4'>{res.Name}</div>
-                  <div className='col-4'>{res.Crop_type}</div>
-                  <div className='col-4'>
-                    {res.WorkerId && (
-                      <div className=' d-flex justify-content-end me-3'>
-                        <img
-                          src={success}
-                          className={`${classes.success_icon} ms-3`}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </button>
-            </h2>
+    <div className={`${classes.component_wrapper}`}>
+      <div className={`${classes.left_side}`}>
+        <div className={`${classes.left_side_header}`}>
+          လက်ခံထားသည့်အလုပ်များ
+        </div>
+        {postList && postList.length > 0 ? (
+          postList.map((post, index) => (
             <div
-              id={`collapse${numtowords.toWords(index + 1)}`}
-              class='accordion-collapse collapse'
-              aria-labelledby='headingOne'
-              data-bs-parent='#accordionExample'
+              type='div'
+              key={index}
+              className={`${classes.post_button}`}
+              onClick={() => getPostDetail(post.PostId)}
+              style={{
+                backgroundColor:
+                  selectedPostId === post.PostId ? "#e8d3c0" : "",
+              }}
             >
-              <div class={`accordion-body ${classes.accordion_body}`}>
-                <div className='fw-bold d-flex w-100 justify-content-between'>
-                  <div>အလုပ်သမား အချက်အလက်</div>
-                  <div>
-                    {res.WorkerId && (
-                      <button
-                        className='btn btn-danger'
-                        onClick={() =>
-                          deleteAssignWorker(res.FarmId, res.WorkerId)
-                        }
-                      >
-                        ထုတ်မည်
-                      </button>
-                    )}
-                    {!res.WorkerId && (
-                      <button
-                        type='button'
-                        className={`${classes.assign_worker_btn} btn btn-primary`}
-                        onClick={() => assignWorkerbtn(res.FarmId)}
-                        data-bs-toggle='offcanvas'
-                        href='#assignWorker'
-                        data-bs-target='#assignWorker'
-                        aria-controls='offcanvasExample'
-                      >
-                        အလုပ်သမားထည့်ရန်
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <table className='table table-striped w-100'>
-                  <tbody>
-                    {workerlist
-                      ?.filter((data) => data.WorkerId === res.WorkerId)
-                      .map((filteredData) => (
-                        <>
-                          <tr className='w-100' key={filteredData.WorkerId}>
-                            <td>အမည်</td>
-                            <td>{filteredData.Name}</td>
-                          </tr>
-                          <tr>
-                            <td>ဖုန်းနံပါတ်</td>
-                            <td>{filteredData.Phone_no}</td>
-                          </tr>
-                          <div className='d-none'>
-                            {assignWorkerRef.current.push(
-                              filteredData.WorkerId
-                            )}
-                          </div>
-                        </>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div
-              class={`offcanvas offcanvas-end ${classes.assign_worker_offcanvas}`}
-              tabindex='-1'
-              id='assignWorker'
-              aria-labelledby='offcanvasExampleLabel'
-              aria-modal='false'
-            >
-              <div class='offcanvas-header'>
-                <button
-                  type='button'
-                  class='btn-close text-reset'
-                  data-bs-dismiss='offcanvas'
-                  aria-label='Close'
-                ></button>
-              </div>
-              <div class='offcanvas-body'>
-                <h5 class='offcanvas-title' id='offcanvasExampleLabel'>
-                  ကျန်သောအလုပ်သမားများ
-                </h5>
-                {selectedFarmId && (
-                  <div
-                    className={`${classes.assign_worker_content} mt-3 list-group`}
-                  >
-                    {workerlist
-                      .filter(
-                        (worker) =>
-                          !assignWorkerRef.current.includes(worker.WorkerId)
-                      )
-                      .map((r, index) => (
-                        <button
-                          key={index}
-                          className='list-group-item list-group-item-action'
-                          type='button'
-                          onClick={() => {
-                            assignWorkerToFarm(r.WorkerId, selectedFarmId);
-                          }}
-                        >
-                          {r.Name}
-                        </button>
-                      ))}
+              {/* {post.CropName} */}
+              <div className={`${classes.mini_post_header}`}>
+                <strong>{post.UName}</strong>
+                {post.ApproveStatus === 1 && (
+                  // <img
+                  //   src={approve}
+                  //   className={`${classes.success_icon} ms-3`}
+                  // />
+                  <div className={`${classes.success_icon} text-success ms-3`}>
+                    approved
                   </div>
                 )}
               </div>
+              <div className={`${classes.mini_post_body}`}>
+                <div className='me-3'>
+                  {
+                    croptype.crop.find((crop) => crop.value === post.CropName)
+                      .name
+                  }
+                </div>
+                <div>{post.Acre} ဧက</div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <div className={`${classes.no_post}`}>no post</div>
+        )}
       </div>
-      <div className='empty-farm'>
-        {farmlist.length == 0 && <div>လယ်ကွက်များမရှိပါ</div>}
+      <div className={`${classes.right_side}`}>
+        {postId && (
+          <div className={`${classes.expense_wrapper}`} ref={reportRef}>
+            {postInfo &&
+              postInfo.postGeneralInfo &&
+              // Destructure postGeneralInfo
+              (() => {
+                const localDate = new Date(
+                  postInfo.postGeneralInfo.Date
+                ).toLocaleDateString();
+                const {
+                  Acre,
+                  Latitude,
+                  Longitude,
+                  UName,
+                  UNRC,
+                  WName,
+                  WAddress,
+                  UAddress,
+                  WNRC,
+                } = postInfo.postGeneralInfo;
+                const startDate = new Date(
+                  postInfo.postGeneralInfo.StartDate
+                ).toLocaleDateString();
+                const { Name, NRC, Address } = postInfo.adminInformation;
+                // const { username } = postInfo;
+                return (
+                  <>
+                    <div className={`${classes.owner_info}`}>
+                      <div className={`${classes.owner_info_wrapper} `}>
+                        <div className='fw-bold fs-6 mb-2'>
+                          လယ်ပိုင်ရှင်အချက်အလက်
+                        </div>
+                        <div>
+                          ရက်စွဲ : <strong>{localDate}</strong>
+                        </div>
+                        <div>
+                          ပိုင်ရှင်အမည် : <strong>{UName}</strong>
+                        </div>
+                        <div>
+                          ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :<strong>{UNRC}</strong>
+                        </div>
+                        <div className={`${classes.wrap_text}`}>
+                          နေရပ်လိပ်စာ :<strong>{UAddress}</strong>
+                        </div>
+                        <div className='fw-bold fs-6 mb-2 mt-2'>
+                          အလုပ်သမားအချက်အလက်
+                        </div>
+                        <div>
+                          အလုပ်သမားအမည် : <strong>{WName}</strong>
+                        </div>
+                        <div>
+                          အလုပ်သမားမှတ်ပုံတင်အမှတ် :<strong>{WNRC}</strong>
+                        </div>
+                        <div className={`${classes.wrap_text}`}>
+                          နေရပ်လိပ်စာ :<strong>{WAddress}</strong>
+                        </div>
+                        <div className='fw-bold fs-6 mb-2 mt-2'>
+                          အတည်ပြုသူအချက်အလက်
+                        </div>
+                        <div>
+                          အတည်ပြုသူအမည် : <strong>{Name}</strong>
+                        </div>
+                        <div className={`${classes.wrap_text}`}>
+                          အတည်ပြုသူမှတ်ပုံတင်အမှတ် :<strong>{NRC}</strong>
+                        </div>
+                        <div>
+                          နေရပ်လိပ်စာ :<strong>{Address}</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div className={`${classes.farm_info}`}>
+                      <div className={`${classes.farm_info_wrapper} `}>
+                        <div>
+                          ကွင်းအကျယ်အဝန်း : <strong>{Acre} ဧက</strong>
+                        </div>
+                        <div>
+                          စိုက်ပျိုးသီးနှံ :{" "}
+                          <strong>
+                            {
+                              croptype.crop.find(
+                                (crop) =>
+                                  crop.value ===
+                                  postInfo.postGeneralInfo.CropName
+                              ).name
+                            }
+                          </strong>
+                        </div>
+                        <div>
+                          လတ္တီကျု:<strong>{Latitude}</strong>
+                        </div>
+                        <div>
+                          လောင်ဂျီကျု:<strong>{Longitude}</strong>
+                        </div>
+                        <div>
+                          စတင်စိုက်ပျိုးမည့်နေ့ရက်:<strong>{startDate}</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+
+            <div className={`${classes.expenses} mt-3`}>
+              <div className={`${classes.expense_table_header} mb-3`}>
+                အထွေထွေကုန်ကျစရိတ်
+              </div>
+              <table
+                className={`${classes.expense_table} table table-bordered`}
+              >
+                <thead>
+                  <tr>
+                    <th scope='col'>အကြောင်းအရာ</th>
+                    <th scope='col'>ဆေးတန်ဖိုး</th>
+                    <th scope='col'>လူဉီးရေ</th>
+                    <th scope='col'>တစ်ယောက်လုပ်အားခ</th>
+                    <th scope='col'>ဆေးဖြန်းနှုန်း(ကြိမ်)</th>
+                    <th scope='col'>စုစုပေါင်း</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {postInfo &&
+                    postInfo.postJobInfo.map((job, index) => (
+                      <tr key={index}>
+                        <th scope='row'>{jobLabels[job.JobId]}</th>
+                        <td>{job.ChemicalPrice || "-"}</td>
+                        <td>{job.LaborNeed || "-"}</td>
+                        <td>{job.WagePerLabor || "-"}</td>
+                        <td>{job.FrequentUsage || "-"}</td>
+                        <td>{job.TotalCostPerJob || "-"}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+            {postInfo &&
+              postInfo.postTotalCost &&
+              // Destructure postGeneralInfo
+              (() => {
+                const {
+                  TotalChemicalPrice,
+                  TotalMachineryCost,
+                  TotalWage,
+                  TotalExpense,
+                } = postInfo.postTotalCost[0];
+                return (
+                  <>
+                    <div className={`${classes.total_expense_wrapper} mt-3`}>
+                      <div className={`${classes.total_expense} `}>
+                        <div>
+                          {" "}
+                          ဆေးတန်ဖိုးစုစုပေါင်း :{" "}
+                          <strong>{TotalChemicalPrice} ကျပ်</strong>
+                        </div>
+                        <div>
+                          လုပ်အားခစုစုပေါင်း : <strong>{TotalWage} ကျပ်</strong>
+                        </div>
+                        <div>
+                          စက်ပစ္စည်းငှားရမ်းခစုစုပေါင်း :{" "}
+                          <strong>{TotalMachineryCost} ကျပ်</strong>
+                        </div>
+                        <div>
+                          စုစုပေါင်းကုန်ကျစရိတ် :{" "}
+                          <strong>{TotalExpense} ကျပ်</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+          </div>
+        )}
+        {postInfo && (
+          <button className={`${classes.approve_btn}`} onClick={handlePrint}>
+            <img src={print} /> printထုတ်မည်
+          </button>
+        )}
+        <div className={`${classes.embed_map}`}>
+          {postInfo &&
+            postInfo.postGeneralInfo.Latitude &&
+            postInfo.postGeneralInfo.Longitude && (
+              <iframe
+                width='550'
+                height='350'
+                frameborder='0'
+                style={{ border: 0 }}
+                referrerpolicy='no-referrer-when-downgrade'
+                src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyDSegWYCf5Tzfc73v-s5KDm-OUIfn9UWME &q=${postInfo.postGeneralInfo.Latitude},${postInfo.postGeneralInfo.Longitude}&zoom=18
+  &maptype=satellite`}
+                allowfullscreen
+              ></iframe>
+            )}
+        </div>
       </div>
     </div>
   );

@@ -57,6 +57,7 @@ const WorkerAgreement = () => {
     2: "ပိုးသတ်ခြင်း",
     3: "ဓါတ်မြေဩဇာ",
     4: "ရိတ်သိမ်းစရိတ်",
+    5: "ရေသွင်းခြင်း",
     6: "မှိုသတ်ခြင်း",
     7: "မြေပြင်စရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
@@ -121,6 +122,7 @@ const WorkerAgreement = () => {
                 ).toLocaleDateString();
                 const { Acre, Latitude, Longitude, UName, UNRC, WName, WNRC } =
                   postInfo.postGeneralInfo;
+                const { Name, NRC } = postInfo.adminInformation;
                 // const { username } = postInfo;
                 return (
                   <>
@@ -146,6 +148,15 @@ const WorkerAgreement = () => {
                         </div>
                         <div>
                           အလုပ်သမားမှတ်ပုံတင်အမှတ် :<strong>{WNRC}</strong>
+                        </div>
+                        <div className='fw-bold fs-6 mb-2 mt-2'>
+                          အတည်ပြုသူအချက်အလက်
+                        </div>
+                        <div>
+                          အတည်ပြုသူအမည် : <strong>{Name}</strong>
+                        </div>
+                        <div>
+                          အတည်ပြုသူမှတ်ပုံတင်အမှတ် :<strong>{NRC}</strong>
                         </div>
                       </div>
                     </div>

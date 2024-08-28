@@ -316,6 +316,8 @@ export const makeContractForm = asyncHandler(async (req, res) => {
     "select p.*,u.UserId,u.Name as UName,u.Phone_no as UPhone,u.Address as UAddress,u.Age as UAge,u.NRC as UNRC,w.WorkerId,w.Name as WName,w.Phone_no as WPhone,w.Address as WAddress,w.Age as WAge,w.NRC as WNRC from post_general_info p join user u on p.UserId=u.UserId join worker w on p.WorkerId=w.WorkerId where p.PostId=?";
   const getJobInfo = "select * from post_job_info where PostId=?";
   const getTotalCost = "select * from post_total_cost where PostId=?";
+  const getAdminDetail =
+    "select u.Name,u.NRC,u.Phone_no from user u join post_general_info p on p.ApprovedAdminId=u.UserId where p.PostId=?";
   // console.log("specific post id", postid);
   const getPostDetails = async (id) => {
     try {
@@ -323,6 +325,7 @@ export const makeContractForm = asyncHandler(async (req, res) => {
         postGeneralInfo: null,
         postJobInfo: null,
         postTotalCost: null,
+        adminInformation: null,
       };
 
       const generalResult = await queryDatabase(getGeneralInfo, [postid]);
@@ -334,6 +337,10 @@ export const makeContractForm = asyncHandler(async (req, res) => {
           const costResult = await queryDatabase(getTotalCost, [id]);
           if (costResult) {
             combinedResult.postTotalCost = costResult;
+            const adminResult = await queryDatabase(getAdminDetail, [id]);
+            if (adminResult) {
+              combinedResult.adminInformation = adminResult[0];
+            }
             // console.log(combinedResult);
           }
         }

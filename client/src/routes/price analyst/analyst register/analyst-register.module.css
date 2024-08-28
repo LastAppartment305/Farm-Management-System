@@ -41,7 +41,7 @@
 }
 
 /* Common Label Styles */
-label {
+.form label {
   color: #fff;
   font-size: 2rem;
   justify-content: center;
