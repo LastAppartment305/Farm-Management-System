@@ -127,6 +127,7 @@ const App = () => {
                 children: [
                   {
                     path: "worker/home",
+                    index: true,
                     element: <WorkerHome />,
                   },
                   {

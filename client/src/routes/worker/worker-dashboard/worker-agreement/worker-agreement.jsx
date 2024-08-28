@@ -6,11 +6,13 @@ import print from "../../../../assets/icon/print.png";
 import axios from "axios";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import ShowQR from "../../../../component/show-QR/show-QR.component";
 
 const WorkerAgreement = () => {
   const { response } = useGet("http://localhost:5000/worker/getAgreedPosts");
   const [postList, setPostList] = useState(null);
   const [postId, setPostId] = useState(null);
+  const [isShowQR, setIsShowQR] = useState(false);
   const reportRef = useRef();
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [postInfo, setPostInfo] = useState(null);
@@ -120,9 +122,20 @@ const WorkerAgreement = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
-                const { Acre, Latitude, Longitude, UName, UNRC, WName, WNRC } =
-                  postInfo.postGeneralInfo;
-                const { Name, NRC } = postInfo.adminInformation;
+                const {
+                  Acre,
+                  Latitude,
+                  Longitude,
+                  UName,
+                  UNRC,
+                  WName,
+                  WNRC,
+                  UPhone,
+                  UAddress,
+                  WPhone,
+                  WAddress,
+                } = postInfo.postGeneralInfo;
+                const { Name, NRC, Address } = postInfo.adminInformation;
                 // const { username } = postInfo;
                 return (
                   <>
@@ -140,23 +153,8 @@ const WorkerAgreement = () => {
                         <div>
                           ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :<strong>{UNRC}</strong>
                         </div>
-                        <div className='fw-bold fs-6 mb-2 mt-2'>
-                          အလုပ်သမားအချက်အလက်
-                        </div>
                         <div>
-                          အလုပ်သမားအမည် : <strong>{WName}</strong>
-                        </div>
-                        <div>
-                          အလုပ်သမားမှတ်ပုံတင်အမှတ် :<strong>{WNRC}</strong>
-                        </div>
-                        <div className='fw-bold fs-6 mb-2 mt-2'>
-                          အတည်ပြုသူအချက်အလက်
-                        </div>
-                        <div>
-                          အတည်ပြုသူအမည် : <strong>{Name}</strong>
-                        </div>
-                        <div>
-                          အတည်ပြုသူမှတ်ပုံတင်အမှတ် :<strong>{NRC}</strong>
+                          နေရပ်လိပ်စာ :<strong>{UAddress}</strong>
                         </div>
                       </div>
                     </div>
@@ -184,6 +182,41 @@ const WorkerAgreement = () => {
                           လောင်ဂျီကျု:<strong>{Longitude}</strong>
                         </div>
                       </div>
+                    </div>
+                    <div className={`${classes.person} mt-3`}>
+                      <table
+                        className={`${classes.expense_table} table table-bordered`}
+                      >
+                        <thead>
+                          <tr>
+                            <th scope='col'>အချက်အလက်များ</th>
+                            <th scope='col'>အလုပ်သမား</th>
+                            <th scope='col'>အတည်ပြုသူ</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope='row'>အမည်</th>
+                            <td>{WName}</td>
+                            <td>{Name}</td>
+                          </tr>
+                          <tr>
+                            <th scope='row'>မှတ်ပုံတင်အမှတ်</th>
+                            <td>{WNRC}</td>
+                            <td>{UNRC}</td>
+                          </tr>
+                          <tr>
+                            <th scope='row'>ဖုန်းနံပါတ်</th>
+                            <td>{UPhone}</td>
+                            <td>{WPhone}</td>
+                          </tr>
+                          <tr>
+                            <th scope='row'>နေရပ်လိပ်စာ</th>
+                            <td>{WAddress}</td>
+                            <td>{Address}</td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </div>
                   </>
                 );
@@ -259,10 +292,14 @@ const WorkerAgreement = () => {
           </div>
         )}
         {postInfo && (
-          <button className={`${classes.approve_btn}`} onClick={handlePrint}>
-            <img src={print} /> printထုတ်မည်
-          </button>
+          <div className={`${classes.button_group}`}>
+            <button className={`${classes.approve_btn}`} onClick={handlePrint}>
+              <img src={print} /> printထုတ်မည်
+            </button>
+          </div>
         )}
+
+        {isShowQR && <ShowQR />}
         <div className={`${classes.embed_map}`}>
           {postInfo &&
             postInfo.postGeneralInfo.Latitude &&

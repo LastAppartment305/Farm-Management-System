@@ -113,7 +113,7 @@ const ApprovedPosts = () => {
                 const startDate = new Date(
                   postInfo.postGeneralInfo.StartDate
                 ).toLocaleDateString();
-                const { Acre, Latitude, Longitude, Name } =
+                const { Acre, Latitude, Longitude, Name, Phone_no, Address } =
                   postInfo.postGeneralInfo;
                 return (
                   <>
@@ -130,6 +130,12 @@ const ApprovedPosts = () => {
                           <strong>
                             {postInfo && postInfo.postGeneralInfo.NRC}
                           </strong>
+                        </div>
+                        <div>
+                          နေရပ်လိပ်စာ : <strong>{Address}</strong>
+                        </div>
+                        <div>
+                          ဖုန်းနံပါတ် : <strong>{Phone_no}</strong>
                         </div>
                       </div>
                     </div>

@@ -258,10 +258,8 @@ const TakePhoto = () => {
             postList.length > 0 &&
             postList.map((i, index) => (
               <option key={index} value={i.PostId}>
-                <div>{i.UName}</div>
-                <div>
-                  {croptype.crop.find((crop) => crop.value === i.CropName).name}
-                </div>
+                {i.UName} -{" "}
+                {croptype.crop.find((crop) => crop.value === i.CropName).name}
               </option>
             ))}
         </select>

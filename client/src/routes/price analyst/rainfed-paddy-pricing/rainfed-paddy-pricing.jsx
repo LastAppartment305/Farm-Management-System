@@ -201,10 +201,18 @@ const RainfedPaddy = () => {
     }));
   };
 
-  const insertNewChemicalPrice = () => {
-    console.log("new chemical", newChemical);
+  const insertNewChemicalPrice = async () => {
+    // console.log("new chemical", newChemical);
+    const result = await axios.post(
+      "http://localhost:5000/priceAnalyst/addNewChemical",
+      { cropid: 1, newChemical }
+    );
+    if (result) {
+      result.data === true && toast.success("အောင်မြင်ပါသည်");
+      // console.log(result);
+    }
   };
-  console.log(response);
+  // console.log(response);
   return (
     <div className={`${classes.main_wrapper}`}>
       <Toaster toastOptions={{ duration: 3000 }} />
@@ -214,6 +222,7 @@ const RainfedPaddy = () => {
         </div>
         <div className={`${classes.chemical_body}`}>
           <div className={`${classes.chemical_category}`}>
+            <strong>ဆေးအမျိုးအစား</strong>
             <select
               className={`${classes.inputs}`}
               onChange={handleChemicalChange}
@@ -224,6 +233,7 @@ const RainfedPaddy = () => {
             </select>
           </div>
           <div className={`${classes.chemical_brand}`}>
+            <strong>ဘရန်းနှင့်ဆေးအမည်</strong>
             <select
               className={`${classes.inputs}`}
               onChange={handleBrandChange}
@@ -238,7 +248,7 @@ const RainfedPaddy = () => {
                         value={chem.Price}
                         data-brand={chem.Brand}
                       >
-                        {chem.Brand}
+                        {chem.Brand}({chem.MyanmarName})
                       </option>
                     );
                   }
@@ -246,6 +256,7 @@ const RainfedPaddy = () => {
             </select>
           </div>
           <div className={`${classes.chemical_price}`}>
+            <strong>ဈေးနှုန်း</strong>
             <input
               type='number'
               className={`${classes.inputs}`}
@@ -267,14 +278,20 @@ const RainfedPaddy = () => {
           </button>
         </div>
       </div>
-      <div className={`${classes.chemical_wrapper}`}>
+      <form
+        className={`${classes.chemical_wrapper}`}
+        onSubmit={insertNewChemicalPrice}
+      >
         <div className={`${classes.chemical_header}`}>
           ဆေးအသစ်များထည့်သွင်းရန်
         </div>
         <div className={`${classes.new_chemical_body}`}>
           <div className={`${classes.chemical_category}`}>
+            <div>
+              <strong>ဆေးအမျိုးအစား</strong>
+            </div>
             <select
-              className={`${classes.inputs}`}
+              className={`${classes.inputs} mb-3`}
               onChange={handleNewChemicalChange}
             >
               <option value='pesticide'>ပိုးသတ်ဆေး</option>
@@ -283,39 +300,51 @@ const RainfedPaddy = () => {
             </select>
           </div>
           <div className={`${classes.chemical_brand}`}>
+            <div>
+              <strong>ဘရန်း</strong>
+            </div>
             <input
               type='text'
               name='Brand'
-              className={`${classes.inputs}`}
+              className={`${classes.inputs} mb-3`}
               onChange={handleInsertNewChemical}
+              required='required'
             />
           </div>
           <div className={`${classes.chemical_brand}`}>
+            <div>
+              <strong>ဆေးအမည်(မြန်မာဖြင့်)</strong>
+            </div>
             <input
               type='text'
               name='MyanmarName'
-              className={`${classes.inputs}`}
+              className={`${classes.inputs} mb-3`}
               onChange={handleInsertNewChemical}
+              required='required'
             />
           </div>
           <div className={`${classes.chemical_price}`}>
+            <div>
+              <strong>ဈေးနှုန်း</strong>
+            </div>
             <input
               type='number'
               name='Price'
-              className={`${classes.inputs}`}
+              className={`${classes.inputs} mb-3`}
               onChange={handleInsertNewChemical}
+              required='required'
             />
           </div>
         </div>
         <div className={`${classes.chemical_price_update_btn}`}>
           <button
+            type='submit'
             className={`${classes.chemical_btn}  btn btn-primary`}
-            onClick={insertNewChemicalPrice}
           >
             ထည့်မည်
           </button>
         </div>
-      </div>
+      </form>
       <div className={`${classes.labor_wrapper}`}>
         <div className={`${classes.labor_header}`}>
           လုပ်သားလိုအပ်ချက်နှင့်လုပ်အားခများပြင်ဆင်ရန်

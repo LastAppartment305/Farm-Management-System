@@ -430,3 +430,26 @@ export const makeContractForm = asyncHandler(async (req, res) => {
   const result = await getPostDetails(postid);
   res.send(result);
 });
+//--------------------------------------
+export const getQRCode = asyncHandler(async (req, res) => {
+  // console.log(req.body);
+
+  const { id } = req.body;
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const sql = "select ReceiverQR from post_general_info where PostId=?";
+
+  Promise.resolve(queryDatabase(sql, [id])).then((result) => {
+    if (result.length > 0) {
+      res.set("Content-Type", "image/png"); // Adjust based on the image type you expect
+      res.send(result[0].ReceiverQR);
+    }
+  });
+});

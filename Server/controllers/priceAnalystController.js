@@ -345,4 +345,28 @@ export const updateMachineryCost = asyncHandler(async (req, res) => {
   }
 });
 //---------------------------------------------------
-export const retrieveIrrigatedPaddyInfo = asyncHandler(async (req, res) => {});
+export const addNewChemical = asyncHandler(async (req, res) => {
+  console.log("add New Chemical", req.body);
+  const { cropid } = req.body;
+  const { ChemCategory, Brand, MyanmarName, Price } = req.body.newChemical;
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const sql =
+    "insert into chemical(CropId,ChemCategory,Brand,Price,MyanmarName) values(?,?,?,?,?)";
+
+  Promise.resolve(
+    queryDatabase(sql, [cropid, ChemCategory, Brand, Price, MyanmarName])
+  ).then((result) => {
+    if (result) {
+      res.send({ status: true });
+      // console.log(result);
+    }
+  });
+});

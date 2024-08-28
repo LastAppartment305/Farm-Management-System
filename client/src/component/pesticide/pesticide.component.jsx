@@ -23,7 +23,7 @@ const PesticideComponent = ({
             if (item.ChemCategory === "pesticide") {
               return (
                 <option key={index} value={item.Price}>
-                  {item.Brand}
+                  {item.Brand}({item.MyanmarName})
                 </option>
               );
               // console.log(item.Brand);

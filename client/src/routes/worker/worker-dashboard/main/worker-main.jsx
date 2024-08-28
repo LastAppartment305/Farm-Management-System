@@ -23,6 +23,12 @@ const WorkerMain = () => {
 
     navigate("/worker-login");
   };
+  useEffect(() => {
+    if (role === "worker") {
+      navigate("/dashboard/worker/home");
+      setIsActive("worker/home");
+    }
+  }, [role]);
   console.log(isActive);
   return (
     <Fragment>

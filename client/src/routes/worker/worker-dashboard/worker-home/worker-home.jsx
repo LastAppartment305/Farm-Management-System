@@ -3,7 +3,7 @@ import { useGet } from "../../../../custom-hook/axios-post/axios-post";
 import { useEffect, useRef, useState } from "react";
 import croptype from "../../../dashboard-content/cultivation-calculator/sample.json";
 import axios from "axios";
-
+import ReceiverQR from "../../../../component/receiver-QR/receiver-QR.component";
 import "leaflet/dist/leaflet.css";
 
 const WorkerHome = () => {
@@ -13,6 +13,7 @@ const WorkerHome = () => {
   const [postList, setPostList] = useState(null);
   const [postId, setPostId] = useState(null);
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [isAgreeAPropose, setIsAgreeAPropose] = useState(false);
   const [postInfo, setPostInfo] = useState(null);
 
   const getPostDetail = async (id) => {
@@ -40,12 +41,7 @@ const WorkerHome = () => {
     }
   }, [response]);
   const agreePropose = async (id) => {
-    const result = await axios.post(
-      "http://localhost:5000/worker/agreePropose",
-      {
-        postid: id,
-      }
-    );
+    setIsAgreeAPropose(true);
   };
   const jobLabels = {
     1: "ပေါင်းသတ်ခြင်း",
@@ -57,6 +53,27 @@ const WorkerHome = () => {
     7: "မြေပြင်စရိတ်",
     8: "စိုက်ပျိုးစရိတ်",
     10: "ရွက်ဖြန်းမြေဩဇာ",
+  };
+  const agreeProposeInReal = async (image, id) => {
+    const formData = new FormData();
+    formData.append("postid", id);
+    formData.append("avatar", image);
+    try {
+      const result = await axios.post(
+        "http://localhost:5000/worker/agreePropose",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (result) {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error("Error uploading image and postId:", error);
+    }
   };
   console.log(postList);
   return (
@@ -112,8 +129,15 @@ const WorkerHome = () => {
                 const localDate = new Date(
                   postInfo.postGeneralInfo.Date
                 ).toLocaleDateString();
-                const { Acre, Latitude, Longitude, Name, NRC } =
-                  postInfo.postGeneralInfo;
+                const {
+                  Acre,
+                  Latitude,
+                  Longitude,
+                  Name,
+                  NRC,
+                  Address,
+                  Phone_no,
+                } = postInfo.postGeneralInfo;
                 // const { username } = postInfo;
                 return (
                   <>
@@ -127,6 +151,12 @@ const WorkerHome = () => {
                         </div>
                         <div>
                           ပိုင်ရှင်မှတ်ပုံတင်အမှတ် :<strong>{NRC}</strong>
+                        </div>
+                        <div>
+                          နေရပ်လိပ်စာ : <strong>{Address}</strong>
+                        </div>
+                        <div>
+                          ဖုန်းနံပါတ် : <strong>{Phone_no}</strong>
                         </div>
                       </div>
                     </div>
@@ -232,6 +262,11 @@ const WorkerHome = () => {
             >
               လက်ခံမည်
             </button>
+            {isAgreeAPropose && (
+              <ReceiverQR
+                submit={(image) => agreeProposeInReal(image, postId)}
+              />
+            )}
             <div className='mt-3'>
               {postInfo &&
                 postInfo.postGeneralInfo.Latitude &&

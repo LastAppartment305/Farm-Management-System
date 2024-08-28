@@ -11,6 +11,7 @@ import {
   unapprovePost,
   getAgreedPostsForOwner,
   makeContractForm,
+  getQRCode,
 } from "../controllers/registerController.js";
 import { authenticateToken, authRole } from "../auth/authorization.js";
 //import { retrieveDataForDashboard } from '../controllers/dashboardController.js';
@@ -26,6 +27,7 @@ router.post("/getSpecificPost", authenticateToken, getSpecificPost);
 router.get("/getAllPost", authenticateToken, authRole("admin"), getAllPost);
 router.get("/getAgreedPosts", authenticateToken, getAgreedPostsForOwner);
 router.post("/makeContract", authenticateToken, makeContractForm);
+router.post("/getQR", authenticateToken, getQRCode);
 router.post(
   "/approvePropose",
   authenticateToken,

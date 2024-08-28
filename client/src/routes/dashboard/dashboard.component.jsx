@@ -274,22 +274,22 @@ const DashBoard = () => {
             onclick={() => handleClick("owner/assign-worker")}
           />
         )}
-        {role === "owner" && (
+        {/* {role === "owner" && (
           <SideBarButton
             icon={User}
             buttonText={"အလုပ်သမား စာရင်း"}
             isActive={isActive === "owner/staff"}
             onclick={() => handleClick("owner/staff")}
           />
-        )}
-        {role === "owner" && (
+        )} */}
+        {/* {role === "owner" && (
           <SideBarButton
             icon={Sprout}
             buttonText={"လယ် စာရင်း"}
             isActive={isActive === "owner/farm"}
             onclick={() => handleClick("owner/farm")}
           />
-        )}
+        )} */}
         {role === "owner" && (
           <SideBarButton
             icon={HandCoins}

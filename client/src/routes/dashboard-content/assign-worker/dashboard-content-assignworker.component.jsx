@@ -6,11 +6,14 @@ import croptype from "./crop.json";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import print from "../../../assets/icon/print.png";
+import ShowQR from "../../../component/show-QR/show-QR.component.jsx";
 
 const AssignWorker = () => {
   const { response } = useGet("http://localhost:5000/getAgreedPosts");
   const [postList, setPostList] = useState(null);
   const [postId, setPostId] = useState(null);
+  const [imageSrc, setImageSrc] = useState(null);
+  const [isShowQR, setIsShowQR] = useState(false);
   const reportRef = useRef();
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [postInfo, setPostInfo] = useState(null);
@@ -60,7 +63,30 @@ const AssignWorker = () => {
     8: "စိုက်ပျိုးစရိတ်",
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
-  console.log(postList);
+  const handleShowQR = async (id) => {
+    try {
+      const result = await axios.post(
+        "http://localhost:5000/getQR",
+        { id },
+        { responseType: "blob" }
+      );
+      if (result) {
+        // console.log(result);
+        const imageBlob = new Blob([result.data], {
+          type: "image/png",
+        });
+        const imageUrl = URL.createObjectURL(imageBlob);
+        // console.log(imageUrl);
+        setImageSrc(imageUrl);
+      }
+    } catch (error) {
+      console.error("Error at showing QR: ", error);
+    }
+  };
+  const handleClose = () => {
+    setImageSrc(null);
+  };
+  console.log(postInfo);
   // console.log("dashboard-assignworker com", selectedFarmId);
   return (
     <div className={`${classes.component_wrapper}`}>
@@ -124,6 +150,8 @@ const AssignWorker = () => {
                   Longitude,
                   UName,
                   UNRC,
+                  UPhone,
+                  WPhone,
                   WName,
                   WAddress,
                   UAddress,
@@ -153,29 +181,8 @@ const AssignWorker = () => {
                         <div className={`${classes.wrap_text}`}>
                           နေရပ်လိပ်စာ :<strong>{UAddress}</strong>
                         </div>
-                        <div className='fw-bold fs-6 mb-2 mt-2'>
-                          အလုပ်သမားအချက်အလက်
-                        </div>
                         <div>
-                          အလုပ်သမားအမည် : <strong>{WName}</strong>
-                        </div>
-                        <div>
-                          အလုပ်သမားမှတ်ပုံတင်အမှတ် :<strong>{WNRC}</strong>
-                        </div>
-                        <div className={`${classes.wrap_text}`}>
-                          နေရပ်လိပ်စာ :<strong>{WAddress}</strong>
-                        </div>
-                        <div className='fw-bold fs-6 mb-2 mt-2'>
-                          အတည်ပြုသူအချက်အလက်
-                        </div>
-                        <div>
-                          အတည်ပြုသူအမည် : <strong>{Name}</strong>
-                        </div>
-                        <div className={`${classes.wrap_text}`}>
-                          အတည်ပြုသူမှတ်ပုံတင်အမှတ် :<strong>{NRC}</strong>
-                        </div>
-                        <div>
-                          နေရပ်လိပ်စာ :<strong>{Address}</strong>
+                          ဖုန်းနံပါတ် :<strong>{UPhone}</strong>
                         </div>
                       </div>
                     </div>
@@ -207,10 +214,44 @@ const AssignWorker = () => {
                         </div>
                       </div>
                     </div>
+                    <div className={`${classes.person} mt-3`}>
+                      <table
+                        className={`${classes.expense_table} table table-bordered`}
+                      >
+                        <thead>
+                          <tr>
+                            <th scope='col'>အချက်အလက်များ</th>
+                            <th scope='col'>အလုပ်သမား</th>
+                            <th scope='col'>အတည်ပြုသူ</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope='row'>အမည်</th>
+                            <td>{WName}</td>
+                            <td>{Name}</td>
+                          </tr>
+                          <tr>
+                            <th scope='row'>မှတ်ပုံတင်အမှတ်</th>
+                            <td>{WNRC}</td>
+                            <td>{UNRC}</td>
+                          </tr>
+                          <tr>
+                            <th scope='row'>ဖုန်းနံပါတ်</th>
+                            <td>{UPhone}</td>
+                            <td>{WPhone}</td>
+                          </tr>
+                          <tr>
+                            <th scope='row'>နေရပ်လိပ်စာ</th>
+                            <td>{WAddress}</td>
+                            <td>{Address}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </>
                 );
               })()}
-
             <div className={`${classes.expenses} mt-3`}>
               <div className={`${classes.expense_table_header} mb-3`}>
                 အထွေထွေကုန်ကျစရိတ်
@@ -281,10 +322,19 @@ const AssignWorker = () => {
           </div>
         )}
         {postInfo && (
-          <button className={`${classes.approve_btn}`} onClick={handlePrint}>
-            <img src={print} /> printထုတ်မည်
-          </button>
+          <div>
+            <button className={`${classes.approve_btn}`} onClick={handlePrint}>
+              <img src={print} /> printထုတ်မည်
+            </button>
+            <button
+              className={`btn btn-primary ms-3`}
+              onClick={() => handleShowQR(postId)}
+            >
+              ငွေချေမည်
+            </button>
+          </div>
         )}
+        {imageSrc && <ShowQR imageSrc={imageSrc} handleClose={handleClose} />}
         <div className={`${classes.embed_map}`}>
           {postInfo &&
             postInfo.postGeneralInfo.Latitude &&

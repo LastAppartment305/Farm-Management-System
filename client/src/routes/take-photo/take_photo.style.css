@@ -35,6 +35,7 @@ video {
 .select-box select {
   width: 500px;
   height: 3rem;
+  margin-top: 30px;
 }
 .video {
   display: flex;

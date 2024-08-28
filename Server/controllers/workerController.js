@@ -233,9 +233,10 @@ export const getSpecificPost = asyncHandler(async (req, res) => {
 export const agreePropose = asyncHandler(async (req, res) => {
   const { postid } = req.body;
   const { id } = req.worker;
+  const avatar = req.file;
 
   console.log(postid, id);
-
+  console.log(avatar);
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
       connection.query(sql, value, (error, result) => {
@@ -245,11 +246,17 @@ export const agreePropose = asyncHandler(async (req, res) => {
     });
   };
 
-  const agreementSql = "update post_general_info set WorkerId=? where PostId=?";
+  const agreementSql =
+    "update post_general_info set WorkerId=?,ReceiverQR=? where PostId=?";
   const makeAgreement = async () => {
     try {
-      const agreementResult = await queryDatabase(agreementSql, [id, postid]);
-      console.log("agreement result: ", agreementResult);
+      const agreementResult = await queryDatabase(agreementSql, [
+        id,
+        avatar.buffer,
+        postid,
+      ]);
+      res.send(agreementResult);
+      // console.log("agreement result: ", agreementResult);
     } catch (err) {
       console.error("Error at making agreement: ", err);
     }
@@ -317,7 +324,7 @@ export const makeContractForm = asyncHandler(async (req, res) => {
   const getJobInfo = "select * from post_job_info where PostId=?";
   const getTotalCost = "select * from post_total_cost where PostId=?";
   const getAdminDetail =
-    "select u.Name,u.NRC,u.Phone_no from user u join post_general_info p on p.ApprovedAdminId=u.UserId where p.PostId=?";
+    "select u.Name,u.NRC,u.Phone_no,u.Address from user u join post_general_info p on p.ApprovedAdminId=u.UserId where p.PostId=?";
   // console.log("specific post id", postid);
   const getPostDetails = async (id) => {
     try {

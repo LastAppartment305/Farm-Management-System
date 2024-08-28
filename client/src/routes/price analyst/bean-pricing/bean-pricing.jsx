@@ -13,6 +13,12 @@ const Bean = () => {
     useState(null);
   const [selectedChemicalBrand, setSelectedChemicalBrand] = useState(null);
   const [laborWage, setLaborWage] = useState(Labor);
+  const [newChemical, setNewChemical] = useState({
+    ChemCategory: "pesticide",
+    Brand: null,
+    MyanmarName: null,
+    Price: null,
+  });
   const [chemicalUpdateValue, setChemicalUpdateValue] = useState({
     CropId: 2,
     ChemCategory: null,
@@ -71,6 +77,31 @@ const Bean = () => {
     );
     if (result) {
       result.data.status === true && toast.success("အောင်မြင်ပါသည်");
+      // console.log(result);
+    }
+  };
+  const handleNewChemicalChange = (e) => {
+    const { name, value } = e.target;
+    setNewChemical((prev) => ({
+      ...prev,
+      ChemCategory: value,
+    }));
+  };
+  const handleInsertNewChemical = (e) => {
+    const { name, value } = e.target;
+    setNewChemical((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  const insertNewChemicalPrice = async () => {
+    // console.log("new chemical", newChemical);
+    const result = await axios.post(
+      "http://localhost:5000/priceAnalyst/addNewChemical",
+      { cropid: 3, newChemical }
+    );
+    if (result) {
+      result.data === true && toast.success("အောင်မြင်ပါသည်");
       // console.log(result);
     }
   };
@@ -195,6 +226,7 @@ const Bean = () => {
         </div>
         <div className={`${classes.chemical_body}`}>
           <div className={`${classes.chemical_category}`}>
+            <strong>ဆေးအမျိုးအစား</strong>
             <select
               className={`${classes.inputs}`}
               onChange={handleChemicalChange}
@@ -206,6 +238,7 @@ const Bean = () => {
             </select>
           </div>
           <div className={`${classes.chemical_brand}`}>
+            <strong>ဘရန်းနှင့်ဆေးအမည်</strong>
             <select
               className={`${classes.inputs}`}
               onChange={handleBrandChange}
@@ -220,7 +253,7 @@ const Bean = () => {
                         value={chem.Price}
                         data-brand={chem.Brand}
                       >
-                        {chem.Brand}
+                        {chem.Brand}({chem.MyanmarName})
                       </option>
                     );
                   }
@@ -228,6 +261,7 @@ const Bean = () => {
             </select>
           </div>
           <div className={`${classes.chemical_price}`}>
+            <strong>ဈေးနှုန်း</strong>
             <input
               type='number'
               className={`${classes.inputs}`}
@@ -249,6 +283,74 @@ const Bean = () => {
           </button>
         </div>
       </div>
+      <form
+        className={`${classes.chemical_wrapper}`}
+        onSubmit={insertNewChemicalPrice}
+      >
+        <div className={`${classes.chemical_header}`}>
+          ဆေးအသစ်များထည့်သွင်းရန်
+        </div>
+        <div className={`${classes.new_chemical_body}`}>
+          <div className={`${classes.chemical_category}`}>
+            <div>
+              <strong>ဆေးအမျိုးအစား</strong>
+            </div>
+            <select
+              className={`${classes.inputs} mb-3`}
+              onChange={handleNewChemicalChange}
+            >
+              <option value='pesticide'>ပိုးသတ်ဆေး</option>
+              <option value='fertilizer'>ဓါတ်မြေဩဇာ</option>
+              <option value='foliar_fertilizer'>ရွက်ဖြန်းမြေဩဇာ</option>
+              <option value='fungicide'>မှိုသတ်ဆေး</option>
+            </select>
+          </div>
+          <div className={`${classes.chemical_brand}`}>
+            <div>
+              <strong>ဘရန်း</strong>
+            </div>
+            <input
+              type='text'
+              name='Brand'
+              className={`${classes.inputs} mb-3`}
+              onChange={handleInsertNewChemical}
+              required='required'
+            />
+          </div>
+          <div className={`${classes.chemical_brand}`}>
+            <div>
+              <strong>ဆေးအမည်(မြန်မာဖြင့်)</strong>
+            </div>
+            <input
+              type='text'
+              name='MyanmarName'
+              className={`${classes.inputs} mb-3`}
+              onChange={handleInsertNewChemical}
+              required='required'
+            />
+          </div>
+          <div className={`${classes.chemical_price}`}>
+            <div>
+              <strong>ဈေးနှုန်း</strong>
+            </div>
+            <input
+              type='number'
+              name='Price'
+              className={`${classes.inputs} mb-3`}
+              onChange={handleInsertNewChemical}
+              required='required'
+            />
+          </div>
+        </div>
+        <div className={`${classes.chemical_price_update_btn}`}>
+          <button
+            type='submit'
+            className={`${classes.chemical_btn}  btn btn-primary`}
+          >
+            ထည့်မည်
+          </button>
+        </div>
+      </form>
       <div className={`${classes.labor_wrapper}`}>
         <div className={`${classes.labor_header}`}>
           လုပ်သားလိုအပ်ချက်နှင့်လုပ်အားခများပြင်ဆင်ရန်

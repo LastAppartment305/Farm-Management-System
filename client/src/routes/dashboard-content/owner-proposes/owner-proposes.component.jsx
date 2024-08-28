@@ -56,10 +56,11 @@ const OwnerPropose = () => {
     8: "စိုက်ပျိုးစရိတ်",
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
-  console.log("postInfo", postInfo);
+  // console.log("postInfo", postInfo);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
+        <div className={`${classes.left_side_header}`}>မိမိစိုက်ခင်းများ</div>
         {postList &&
           postList.map((post, index) => (
             <div
@@ -109,7 +110,8 @@ const OwnerPropose = () => {
                 const startDate = new Date(
                   postInfo.postGeneralInfo.StartDate
                 ).toLocaleDateString();
-                const { Acre, Latitude, Longitude } = postInfo.postGeneralInfo;
+                const { Acre, Latitude, Longitude, Phone_no } =
+                  postInfo.postGeneralInfo;
                 const { username } = postInfo;
                 return (
                   <>
@@ -126,6 +128,9 @@ const OwnerPropose = () => {
                           <strong>
                             {postInfo && postInfo.postGeneralInfo.NRC}
                           </strong>
+                        </div>
+                        <div>
+                          ဖုန်းနံပါတ် : <strong>{Phone_no}</strong>
                         </div>
                       </div>
                     </div>
@@ -244,9 +249,9 @@ const OwnerPropose = () => {
             ></iframe>
           )}
         </div>
-        <button onClick={handlePrint} className={`${classes.print_btn}`}>
+        {/* <button onClick={handlePrint} className={`${classes.print_btn}`}>
           Print as PDF
-        </button>
+        </button> */}
       </div>
     </div>
   );

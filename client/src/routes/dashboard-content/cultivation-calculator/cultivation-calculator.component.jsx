@@ -267,7 +267,7 @@ const Calculator = () => {
         )?.Wage,
       }));
     }
-    console.log("initaial result", response);
+    // console.log("initaial result", response);
     setInitialResult(response);
     const detail = crops[value];
     setSelectedOptionDetail(detail);
@@ -747,7 +747,7 @@ const Calculator = () => {
       console.log("Geolocation not supported");
     }
   }, [acre]);
-  console.log("jobFrequentUsage", jobFrequentUsage);
+  console.log("chemical", chemical);
 
   return (
     <div className={`${classes.row} row`}>

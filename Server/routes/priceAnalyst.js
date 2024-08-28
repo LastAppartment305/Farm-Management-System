@@ -6,7 +6,7 @@ import {
   updateChemicalPrice,
   updateLaborWage,
   updateMachineryCost,
-  retrieveIrrigatedPaddyInfo,
+  addNewChemical,
 } from "../controllers/priceAnalystController.js";
 import { analystAuth } from "../auth/authorization.js";
 
@@ -18,5 +18,6 @@ router.post("/getRainfedPaddyInfo", analystAuth, retrieveRainfedPaddyInfo);
 router.post("/updateChemicalPrice", analystAuth, updateChemicalPrice);
 router.post("/updateLaborWage", analystAuth, updateLaborWage);
 router.post("/updateMachineryCost", analystAuth, updateMachineryCost);
-router.get("/getIrrigatedPaddyInfo", analystAuth, retrieveIrrigatedPaddyInfo);
+// router.get("/getIrrigatedPaddyInfo", analystAuth, retrieveIrrigatedPaddyInfo);
+router.post("/addNewChemical", analystAuth, addNewChemical);
 export default router;
