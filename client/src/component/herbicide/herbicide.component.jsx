@@ -15,14 +15,14 @@ const HerbicideComponent = ({
         <select
           className={`${classes.inputs} w-100`}
           onChange={handleHerbicidePrice}
-          value={chemicalPrice.herbicide}
+          // value={chemicalPrice.herbicide}
         >
           <option value={null}></option>
           {chemical?.map((item, index) => {
             if (item.ChemCategory === "herbicide") {
               return (
                 <option key={index} value={item.Price}>
-                  {item.Brand}
+                  {item.Brand}({item.MyanmarName})
                 </option>
               );
               // console.log(item.Brand);

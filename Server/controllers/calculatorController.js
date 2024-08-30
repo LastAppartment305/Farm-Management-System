@@ -136,7 +136,7 @@ export const storePostData = asyncHandler(async (req, res) => {
   };
   const insertTotalCosts = async (postId) => {
     const sql =
-      "insert into post_total_cost(PostId,TotalChemicalPrice,TotalWage,TotalMachineryCost,TotalExpense) values(?,?,?,?,?)";
+      "insert into post_total_cost(PostId,TotalChemicalPrice,TotalWage,TotalMachineryCost,TotalExpense,SeedCost) values(?,?,?,?,?,?)";
     try {
       await queryDatabase(sql, [
         postId,
@@ -144,6 +144,7 @@ export const storePostData = asyncHandler(async (req, res) => {
         req.body.TotalWage,
         req.body.TotalMachineryCost,
         req.body.TotalExpense,
+        req.body.planting.SeedCost,
       ]);
       console.log("inserting total costs success");
     } catch (err) {

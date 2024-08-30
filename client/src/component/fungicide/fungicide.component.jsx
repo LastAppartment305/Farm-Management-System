@@ -16,14 +16,14 @@ const FungicideComponent = ({
         <select
           className={`${classes.inputs} w-100`}
           onChange={handleFungicidePrice}
-          value={chemicalPrice.fungicide}
+          // value={chemicalPrice.fungicide}
         >
           <option value={null}></option>
           {chemical?.map((item, index) => {
             if (item.ChemCategory === "fungicide") {
               return (
                 <option key={index} value={item.Price}>
-                  {item.Brand}
+                  {item.Brand}({item.MyanmarName})
                 </option>
               );
               // console.log(item.Brand);

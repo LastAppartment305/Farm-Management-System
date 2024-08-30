@@ -24,12 +24,14 @@ const MainPage = () => {
         <div className={`${classes.nav}`}>
           <div className={`${classes.main_page_icon_wrapper}`}>
             <img src={logo} />
-            <div className={`${classes.text_logo}`}>FieldLog</div>
+            <div className={`${classes.text_logo}`}>
+              Farm Calculation System
+            </div>
           </div>
           <div className={`${classes.nav_button_wrapper}`}>
-            <button className={`${classes.nav_btn}`} onClick={goToSingUp}>
+            {/* <button className={`${classes.nav_btn}`} onClick={goToSingUp}>
               စတင်ရန်
-            </button>
+            </button> */}
           </div>
         </div>
         <div className={`${classes.banner}`}>
@@ -38,7 +40,9 @@ const MainPage = () => {
           </div>
           <div className={`${classes.banner_content}`}>
             <img src={logo} />
-            <div className={`${classes.banner_text_logo}`}>FieldLog</div>
+            <div className={`${classes.banner_text_logo}`}>
+              Farm Calculation System
+            </div>
           </div>
         </div>
         <div className={`${classes.features}`}>

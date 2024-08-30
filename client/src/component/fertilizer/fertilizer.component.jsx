@@ -16,7 +16,7 @@ const FertilizerComponent = ({
         <select
           className={`${classes.inputs} w-100`}
           onChange={handleFertilizerPrice}
-          value={chemicalPrice.fertilizer}
+          // value={chemicalPrice.fertilizer}
         >
           <option value={null}></option>
           {chemical?.map((item, index) => {

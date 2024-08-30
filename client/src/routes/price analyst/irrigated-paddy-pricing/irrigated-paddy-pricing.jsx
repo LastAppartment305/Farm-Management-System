@@ -13,6 +13,7 @@ const IrrigatedPaddy = () => {
     useState(null);
   const [selectedChemicalBrand, setSelectedChemicalBrand] = useState(null);
   const [laborWage, setLaborWage] = useState(Labor);
+  const [cropBuyingPrice, setCropBuyingPrice] = useState(null);
   const [chemicalUpdateValue, setChemicalUpdateValue] = useState({
     CropId: 3,
     ChemCategory: null,
@@ -215,12 +216,30 @@ const IrrigatedPaddy = () => {
       [name]: value,
     }));
   };
+  const handleCropBuyingPrice = (e) => {
+    setCropBuyingPrice(e.target.value);
+  };
+  const updateCropBuyingPrice = async () => {
+    const result = await axios.post(
+      "http://localhost:5000/priceAnalyst/changeBuyingPrice",
+      { cropid: 3, cropBuyingPrice }
+    );
+    if (result.status) {
+      toast.success("အောင်မြင်ပါသည်");
+    }
+  };
   return (
     <div className={`${classes.main_wrapper}`}>
       <Toaster toastOptions={{ duration: 3000 }} />
       <div className={`${classes.chemical_wrapper}`}>
         <div className={`${classes.chemical_header}`}>
           ဆေးတန်ဖိုးများပြောင်းလဲရန်
+        </div>
+        <div className={`mb-3`}>
+          <strong>
+            *
+            သီးနှံကာတစ်ခုလုံးတွင်ကုန်ကျမည့်တစ်ဧကအတွက်ဆေးတန်ဖိုးများကိုသာသတ်မှတ်ရမည်။
+          </strong>
         </div>
         <div className={`${classes.chemical_body}`}>
           <div className={`${classes.chemical_category}`}>
@@ -580,6 +599,32 @@ const IrrigatedPaddy = () => {
           <button
             className={`${classes.chemical_btn}  btn btn-primary`}
             onClick={updateMachineryPrice}
+          >
+            ပြင်ဆင်မည်
+          </button>
+        </div>
+      </div>
+      <div className={`${classes.machine_wrapper}`}>
+        <div className={`${classes.machine_header}`}>စပါးဈေးပြုပြင်ရန်</div>
+
+        <div className={`${classes.machine_body}`}>
+          <div className={`${classes.individual_field}`}>
+            <div>
+              <strong>စပါးဈေး</strong>
+            </div>
+            <div>
+              <input
+                type='number'
+                className={`${classes.inputs}`}
+                onChange={handleCropBuyingPrice}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={`${classes.machine_price_update_btn}`}>
+          <button
+            className={`${classes.chemical_btn}  btn btn-primary`}
+            onClick={updateCropBuyingPrice}
           >
             ပြင်ဆင်မည်
           </button>

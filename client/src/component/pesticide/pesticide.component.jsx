@@ -16,17 +16,18 @@ const PesticideComponent = ({
         <select
           className={`${classes.inputs} w-100`}
           onChange={handlePesticidePrice}
-          value={chemicalPrice.pesticide}
+          // value={chemicalPrice.pesticide}
         >
+          {console.log(chemical)}
           <option value={null}></option>
           {chemical?.map((item, index) => {
             if (item.ChemCategory === "pesticide") {
               return (
                 <option key={index} value={item.Price}>
                   {item.Brand}({item.MyanmarName})
+                  {console.log(chemicalPrice.pesticide, chemical.MyanmarName)}
                 </option>
               );
-              // console.log(item.Brand);
             }
           })}
         </select>

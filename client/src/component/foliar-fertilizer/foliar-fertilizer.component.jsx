@@ -15,14 +15,14 @@ const FoliarFertilizer = ({
         <select
           className={`${classes.inputs} w-100`}
           onChange={handleFoliarFertilizerPrice}
-          value={chemicalPrice.foliar_fertilizer}
+          // value={chemicalPrice.foliar_fertilizer}
         >
           <option value={null}></option>
           {chemical?.map((item, index) => {
             if (item.ChemCategory === "foliar_fertilizer") {
               return (
                 <option key={index} value={item.Price}>
-                  {item.Brand}
+                  {item.Brand}({item.MyanmarName})
                 </option>
               );
               // console.log(item.Brand);

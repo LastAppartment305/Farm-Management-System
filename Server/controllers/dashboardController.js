@@ -746,3 +746,23 @@ export const confirmToImages = asyncHandler(async (req, res) => {
     console.error("error at calling function", err);
   }
 });
+//-----------------------------------------
+export const getList = asyncHandler(async (req, res) => {
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+
+  const sql =
+    "select w.* from worker w join post_general_info p on w.WorkerId=p.WorkerId where UserId=?";
+
+  Promise.resolve(queryDatabase(sql, [req.user.id])).then((result) => {
+    if (result) {
+      res.send(result);
+    }
+  });
+});

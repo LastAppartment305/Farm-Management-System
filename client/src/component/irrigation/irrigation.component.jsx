@@ -8,12 +8,23 @@ const IrrigationComponent = ({ wage, acre, jobFrequentUsage }) => {
       <div className={`mt-2`}>
         စက်ပစ္စည်းငှားရမ်းခ:
         {wage.irrigation && jobFrequentUsage.irrigation && acre && (
+          <strong>{wage.irrigation} ကျပ်</strong>
+        )}
+      </div>
+      <div className={`mt-2`}>
+        အကြိမ်အရေအတွက်:
+        {jobFrequentUsage.irrigation && acre && (
+          <strong>{jobFrequentUsage.irrigation} ကြိမ်</strong>
+        )}
+      </div>
+      <div className={`mt-2`}>
+        ကုန်ကျငွေ:{" "}
+        {wage.irrigation && jobFrequentUsage.irrigation && acre && (
           <strong>
             {wage.irrigation * acre * jobFrequentUsage.irrigation} ကျပ်
           </strong>
         )}
       </div>
-      {/* <div className={`mt-2`}>ကုန်ကျငွေ: </div> */}
     </div>
   );
 };

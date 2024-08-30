@@ -168,8 +168,9 @@ export const retrieveRainfedPaddyInfo = asyncHandler(async (req, res) => {
 });
 //--------------------------------------------
 export const updateChemicalPrice = asyncHandler(async (req, res) => {
-  // console.log(req.body);
-  const { CropId, ChemCategory, Brand, Price } = req.body.chemicalUpdateValue;
+  console.log(req.body.chemicalUpdateValue);
+  const { CropId, ChemCategory, Brand, Price, MyanmarName } =
+    req.body.chemicalUpdateValue;
   const queryDatabase = (sql, value) => {
     return new Promise((resolve, reject) => {
       connection.query(sql, value, (error, result) => {
@@ -180,12 +181,19 @@ export const updateChemicalPrice = asyncHandler(async (req, res) => {
   };
 
   const updatePrice =
-    "update chemical set Price=? where CropId=? and ChemCategory=? and Brand=?";
+    "update chemical set Price=? where CropId=? and ChemCategory=? and Brand=? and MyanmarName=?";
 
   Promise.resolve(
-    queryDatabase(updatePrice, [Price, CropId, ChemCategory, Brand])
+    queryDatabase(updatePrice, [
+      Price,
+      CropId,
+      ChemCategory,
+      Brand,
+      MyanmarName,
+    ])
   ).then((result) => {
     if (result) {
+      console.log(result);
       res.send({ status: true });
     }
   });
@@ -369,4 +377,26 @@ export const addNewChemical = asyncHandler(async (req, res) => {
       // console.log(result);
     }
   });
+});
+//---------------------------------
+export const changeBuyingPrice = asyncHandler(async (req, res) => {
+  console.log(req.body);
+  const { cropid, cropBuyingPrice } = req.body;
+  const queryDatabase = (sql, value) => {
+    return new Promise((resolve, reject) => {
+      connection.query(sql, value, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+  };
+  const sql = "update crop set BuyingPrice=? where CropId=?";
+  Promise.resolve(queryDatabase(sql, [cropBuyingPrice, cropid])).then(
+    (result) => {
+      if (result) {
+        res.send({ status: true });
+        // console.log(result);
+      }
+    }
+  );
 });

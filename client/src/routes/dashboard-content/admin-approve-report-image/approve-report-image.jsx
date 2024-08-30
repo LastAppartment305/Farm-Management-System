@@ -80,9 +80,7 @@ const ApproveReports = () => {
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
-        <div className={`${classes.left_side_header}`}>
-          လက်ခံထားသည့်အလုပ်များ
-        </div>
+        <div className={`${classes.left_side_header}`}></div>
         {postList !== null && Object.keys(groupPosts).length > 0 ? (
           Object.values(groupPosts).map(
             (post, index) => (

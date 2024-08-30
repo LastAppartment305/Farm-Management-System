@@ -102,3 +102,13 @@
   white-space: pre-wrap;
   max-width: 60ch;
 }
+.show_QR img {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px -2px;
+}
+.show_QR {
+  border: none;
+  background: none;
+}

@@ -4,9 +4,10 @@ import { z } from "zod";
 import axios from "axios";
 import { toast, Toaster } from "react-hot-toast";
 import PhoneInput from "react-phone-input-2";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { CircleX, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { authContext } from "../../../context/context";
 
 const AnalystRegister = () => {
   const registerSchema = z.object({
@@ -52,6 +53,7 @@ const AnalystRegister = () => {
     address: "",
     age: "",
   });
+  const { setRole, role } = useContext(authContext);
   const [isChecked, setIsChecked] = useState(false);
   const validationErrors = useRef("");
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -86,8 +88,9 @@ const AnalystRegister = () => {
             toast.error(response.data.message);
           } else {
             localStorage.setItem("role", response.data.role);
+            localStorage.setItem("username", data.name);
             console.log(response.data.role);
-            navigate("/dashboard/price-analyst/rainfed-paddy");
+            setRole(response.data.role);
           }
         }
       } catch (error) {
@@ -172,6 +175,11 @@ const AnalystRegister = () => {
       age: "",
     }));
   };
+  useEffect(() => {
+    if (role === "analyst") {
+      navigate("/dashboard/price-analyst/rainfed-paddy");
+    }
+  }, [role]);
   //   console.log(data);
   return (
     <div className={`${classes.main_wrapper}`}>

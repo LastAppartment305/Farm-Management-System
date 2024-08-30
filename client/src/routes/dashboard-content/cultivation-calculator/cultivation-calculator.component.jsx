@@ -24,10 +24,12 @@ const Calculator = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [isPost, setIsPost] = useState(false);
   const [selectedOptionDetail, setSelectedOptionDetail] = useState(null);
+  const [predictedHarvest, setPredictedHarvest] = useState(null);
 
   const [postPaddy, setPostPaddy] = useState(fallpaddy);
   const [postBean, setPostBean] = useState(bean);
   const [startDate, setStartDate] = useState(null);
+  const [cropBuyingPrice, setCropBuyingPrice] = useState(null);
   const [chemical, setChemical] = useState(null);
   const [position, setposition] = useState({
     latitude: null,
@@ -131,6 +133,8 @@ const Calculator = () => {
     const response = await postData({ crop: value });
     if (response) {
       console.log("response", response);
+      setPredictedHarvest(response.cropInfo.PredictedHarvest);
+      setCropBuyingPrice(response.cropInfo.BuyingPrice);
       if (response.cropInfo.Name === "bean") {
         setLaborNeed((prev) => ({
           ...prev,
@@ -300,9 +304,12 @@ const Calculator = () => {
     }));
   };
   const handlePesticidePrice = (e) => {
+    console.log(e.target.value);
+    const selectedValue = e.target.value;
+    const [price, myanmarName] = selectedValue.split("-");
     setChemicalPrice((prev) => ({
       ...prev,
-      pesticide: e.target.value === "" ? null : parseInt(e.target.value),
+      pesticide: price === "" ? null : parseInt(price),
     }));
   };
   const handleHerbicidePrice = (e) => {
@@ -436,13 +443,29 @@ const Calculator = () => {
                 pesticideDetail.totalLaborWage +
                 herbicideDetail.totalLaborWage +
                 fertilizerDetail.totalLaborWage,
-              TotalMachineryCost: wage.plowing * acre + wage.harvesting * acre,
-              TotalExpense:
-                plantingDetail.totalCost +
-                pesticideDetail.totalCost +
-                herbicideDetail.totalCost +
-                fertilizerDetail.totalCost +
-                (wage.plowing * acre + wage.harvesting * acre),
+              ...(selectedOption === "drypaddy" && {
+                TotalMachineryCost:
+                  wage.plowing * acre +
+                  wage.harvesting * acre +
+                  wage.irrigation * acre * jobFrequentUsage.irrigation,
+                TotalExpense:
+                  plantingDetail.totalCost +
+                  pesticideDetail.totalCost +
+                  herbicideDetail.totalCost +
+                  fertilizerDetail.totalCost +
+                  (wage.plowing * acre + wage.harvesting * acre) +
+                  wage.irrigation * acre * jobFrequentUsage.irrigation,
+              }),
+              ...(selectedOption === "paddy" && {
+                TotalMachineryCost:
+                  wage.plowing * acre + wage.harvesting * acre,
+                TotalExpense:
+                  plantingDetail.totalCost +
+                  pesticideDetail.totalCost +
+                  herbicideDetail.totalCost +
+                  fertilizerDetail.totalCost +
+                  (wage.plowing * acre + wage.harvesting * acre),
+              }),
             };
             console.log(updateState);
             return updateState;
@@ -747,7 +770,9 @@ const Calculator = () => {
       console.log("Geolocation not supported");
     }
   }, [acre]);
-  console.log("chemical", chemical);
+  // console.log("chemical", chemical);
+  // console.log("response", response);
+  // console.log(wage.plowing, wage.harvesting, wage.irrigation);
 
   return (
     <div className={`${classes.row} row`}>
@@ -928,7 +953,9 @@ const Calculator = () => {
                       <strong>
                         {wage.plowing * acre +
                           wage.harvesting * acre +
-                          wage.irrigation * acre}{" "}
+                          wage.irrigation *
+                            acre *
+                            jobFrequentUsage.irrigation}{" "}
                         ကျပ်
                       </strong>
                     )}
@@ -958,7 +985,9 @@ const Calculator = () => {
                           fertilizerDetail.totalCost +
                           wage.plowing * acre +
                           (selectedOption === "drypaddy" &&
-                            wage.irrigation * acre) +
+                            wage.irrigation *
+                              acre *
+                              jobFrequentUsage.irrigation) +
                           wage.harvesting * acre}{" "}
                         ကျပ်
                       </strong>
@@ -1051,10 +1080,15 @@ const Calculator = () => {
       <div className={`${classes.column2} col-md-6`}>
         <div className={`${classes.decision_wrapper} bg-red`}>
           <div className={`mt-2`}>
-            ခန့်မှန်းသီးနှံအထွက်နှုန်း:<strong>{acre * 100} တင်း</strong>
+            ခန့်မှန်းသီးနှံအများဆုံးအထွက်နှုန်း:
+            {predictedHarvest && acre && (
+              <strong>{acre * parseInt(predictedHarvest)} တင်း</strong>
+            )}
           </div>
-          <div className={`mt-2`}>ယနေ့သီးနှံပေါက်ဈေး: </div>
-          <div className={`mt-2`}>အသားတင်အမြတ်ငွေ:</div>
+          <div className={`mt-2`}>
+            ယနေ့သီးနှံပေါက်ဈေး:{" "}
+            {cropBuyingPrice && <strong>{cropBuyingPrice} သိန်း</strong>}
+          </div>
           <div className={`mt-2`}>
             စတင်စိုက်ပျိုးမည့်ရက်ရွေးချယ်ရန်:{" "}
             <DatePicker

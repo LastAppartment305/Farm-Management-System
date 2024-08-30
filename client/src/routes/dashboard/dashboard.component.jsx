@@ -147,7 +147,6 @@ const DashBoard = () => {
       if (getNoti) {
         setNotifications(getNoti);
       }
-      window.location.reload();
     };
     socket.on("receivingEvent", listenToEvent);
 
@@ -194,14 +193,14 @@ const DashBoard = () => {
           Dashboard
         </h2>
 
-        {role === "admin" && (
+        {/* {role === "admin" && (
           <SideBarButton
             icon={PieChart}
             buttonText={"အချက်အလက်များ"}
             isActive={isActive === "admin"}
             onclick={() => handleClick("admin")}
           />
-        )}
+        )} */}
         {role === "admin" && (
           <SideBarButton
             icon={CalendarClock}
@@ -226,14 +225,14 @@ const DashBoard = () => {
             onclick={() => handleClick("admin/approve-reports")}
           />
         )}
-        {role === "admin" && (
+        {/* {role === "admin" && (
           <SideBarButton
             icon={Clock}
             buttonText={"ဈေးပြင်ဆင်သူ"}
             isActive={isActive === "admin/pending-analyst"}
             onclick={() => handleClick("admin/pending-analyst")}
           />
-        )}
+        )} */}
         {role === "analyst" && (
           <SideBarButton
             icon={CloudHail}
@@ -274,14 +273,14 @@ const DashBoard = () => {
             onclick={() => handleClick("owner/assign-worker")}
           />
         )}
-        {/* {role === "owner" && (
+        {role === "owner" && (
           <SideBarButton
             icon={User}
             buttonText={"အလုပ်သမား စာရင်း"}
             isActive={isActive === "owner/staff"}
             onclick={() => handleClick("owner/staff")}
           />
-        )} */}
+        )}
         {/* {role === "owner" && (
           <SideBarButton
             icon={Sprout}

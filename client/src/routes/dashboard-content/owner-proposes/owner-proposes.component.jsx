@@ -56,7 +56,7 @@ const OwnerPropose = () => {
     8: "စိုက်ပျိုးစရိတ်",
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
-  // console.log("postInfo", postInfo);
+  console.log("postInfo", postInfo);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -207,11 +207,16 @@ const OwnerPropose = () => {
                   TotalMachineryCost,
                   TotalWage,
                   TotalExpense,
+                  SeedCost,
                 } = postInfo.postTotalCost[0];
                 return (
                   <>
                     <div className={`${classes.total_expense_wrapper} mt-3`}>
                       <div className={`${classes.total_expense} `}>
+                        <div>
+                          {" "}
+                          မျိုးစရိတ် : <strong>{SeedCost} ကျပ်</strong>
+                        </div>
                         <div>
                           {" "}
                           ဆေးတန်ဖိုးစုစုပေါင်း :{" "}

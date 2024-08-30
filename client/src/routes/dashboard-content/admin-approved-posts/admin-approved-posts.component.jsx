@@ -212,11 +212,16 @@ const ApprovedPosts = () => {
                   TotalMachineryCost,
                   TotalWage,
                   TotalExpense,
+                  SeedCost,
                 } = postInfo.postTotalCost[0];
                 return (
                   <>
                     <div className={`${classes.total_expense_wrapper} mt-3`}>
                       <div className={`${classes.total_expense} `}>
+                        <div>
+                          {" "}
+                          မျိုးစရိတ် : <strong>{SeedCost} ကျပ်</strong>
+                        </div>
                         <div>
                           {" "}
                           ဆေးတန်ဖိုးစုစုပေါင်း :{" "}

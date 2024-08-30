@@ -7,6 +7,7 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import print from "../../../assets/icon/print.png";
 import ShowQR from "../../../component/show-QR/show-QR.component.jsx";
+import wave from "../../../assets/icon/waveicon.jpeg";
 
 const AssignWorker = () => {
   const { response } = useGet("http://localhost:5000/getAgreedPosts");
@@ -293,11 +294,16 @@ const AssignWorker = () => {
                   TotalMachineryCost,
                   TotalWage,
                   TotalExpense,
+                  SeedCost,
                 } = postInfo.postTotalCost[0];
                 return (
                   <>
                     <div className={`${classes.total_expense_wrapper} mt-3`}>
                       <div className={`${classes.total_expense} `}>
+                        <div>
+                          {" "}
+                          မျိုးစရိတ် : <strong>{SeedCost} ကျပ်</strong>
+                        </div>
                         <div>
                           {" "}
                           ဆေးတန်ဖိုးစုစုပေါင်း :{" "}
@@ -327,10 +333,10 @@ const AssignWorker = () => {
               <img src={print} /> printထုတ်မည်
             </button>
             <button
-              className={`btn btn-primary ms-3`}
+              className={`${classes.show_QR} ms-3`}
               onClick={() => handleShowQR(postId)}
             >
-              ငွေချေမည်
+              <img src={wave} />
             </button>
           </div>
         )}

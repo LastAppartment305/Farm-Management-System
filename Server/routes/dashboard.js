@@ -12,6 +12,7 @@ import {
   retrieveWorkerInfo,
   postListsForAdmin,
   confirmToImages,
+  getList,
 } from "../controllers/dashboardController.js";
 import {
   authenticateToken,
@@ -25,6 +26,7 @@ router.post("/", authenticateToken, authRole("admin"), deleteUser);
 router.post("/staff", authenticateToken, createWorker);
 router.get("/staff", authenticateToken, retrieveWorkerDataForOwner);
 router.delete("/staff", authenticateToken, deleteWorker);
+router.get("/getStaffList", authenticateToken, getList);
 router.post("/staff/editworker", authenticateToken, editWorker);
 router.post("/staff/assign-worker", authenticateToken, assignWorkerToFarm);
 router.delete(
