@@ -48,10 +48,10 @@ const ApproveReports = () => {
 
   useEffect(() => {
     if (response) {
-      const approvedPosts = response.data.filter(
-        (post) => post.ApproveStatus === 1
-      );
-      setPostList(approvedPosts);
+      // const approvedPosts = response.data.filter(
+      //   (post) => post.ApproveStatus === 1
+      // );
+      setPostList(response?.data);
     }
   }, [response]);
 
@@ -76,7 +76,10 @@ const ApproveReports = () => {
 
       return acc;
     }, {});
-  // console.log(Object.values(groupPosts));
+  // console.log(
+  //   "post list from admin report aprove: ",
+  //   Object.values(groupPosts)
+  // );
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -84,45 +87,48 @@ const ApproveReports = () => {
         {postList !== null && Object.keys(groupPosts).length > 0 ? (
           Object.values(groupPosts).map(
             (post, index) => (
-              <div
-                type='div'
-                key={index}
-                className={`${classes.post_button}`}
-                onClick={() => getPostDetail(post.posts[0].PostId)}
-                style={{
-                  backgroundColor:
-                    selectedPostId === post.posts[0].PostId ? "#e8d3c0" : "",
-                }}
-              >
-                {console.log(post)}
-                {post.NeedToAlert && (
-                  <div className={`${classes.red_dot}`}></div>
-                )}
-                {/* {post.CropName} */}
-                <div className={`${classes.mini_post_header}`}>
-                  <strong>{post.posts[0].Name}</strong>
-                  {post.posts[0].ApproveStatus === 1 && (
-                    // <img
-                    //   src={approve}
-                    //   className={`${classes.success_icon} ms-3`}
-                    // />
-                    <div
-                      className={`${classes.success_icon} text-success ms-3`}
-                    >
-                      approved
+              <div type='div' key={index} className={`${classes.post_body}`}>
+                {console.log("post: ", post)}
+                {post.posts.map((i, index2) => (
+                  <div
+                    className={`${classes.post_button}`}
+                    style={{
+                      backgroundColor:
+                        selectedPostId === i.PostId ? "#e8d3c0" : "",
+                    }}
+                    onClick={() => getPostDetail(i.PostId)}
+                    key={index2}
+                  >
+                    {post.NeedToAlert && (
+                      <div className={`${classes.red_dot}`}></div>
+                    )}
+                    {/* {post.CropName} */}
+                    <div className={`${classes.mini_post_header}`}>
+                      <strong>{i.Name}</strong>
+                      {i.ApproveStatus === 1 && (
+                        // <img
+                        //   src={approve}
+                        //   className={`${classes.success_icon} ms-3`}
+                        // />
+                        <div
+                          className={`${classes.success_icon} text-success ms-3`}
+                        >
+                          approved
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className={`${classes.mini_post_body}`}>
-                  <div className='me-3'>
-                    {
-                      croptype.crop.find(
-                        (crop) => crop.value === post.posts[0].CropName
-                      ).name
-                    }
+                    <div className={`${classes.mini_post_body}`}>
+                      <div className='me-3'>
+                        {
+                          croptype.crop.find(
+                            (crop) => crop.value === i.CropName
+                          ).name
+                        }
+                      </div>
+                      <div>{i.Acre} ဧက</div>
+                    </div>
                   </div>
-                  <div>{post.posts[0].Acre} ဧက</div>
-                </div>
+                ))}
               </div>
             )
             // console.log(post)

@@ -100,7 +100,7 @@ const WorkerLogin = () => {
         {!showOTP ? (
           <form className={classes.form_content} onSubmit={loginSubmit}>
             <div className={classes.form_title}>
-              နိုင်ငံရွေးချယ်၍ ဖုန်းနံပါတ်ဖြည့်သွင်းပါ
+              အလုပ်သမားအဖြစ် လော့ဂ်အင်ဝင်ပါ
             </div>
             <div className='mt-3 w-100'>
               <div className='row'>

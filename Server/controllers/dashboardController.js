@@ -696,12 +696,16 @@ export const postListsForAdmin = asyncHandler(async (req, res) => {
   };
 
   const sql =
-    "select p.*,u.Name,i.ConfirmStatus from post_general_info p join user u on p.UserId=u.UserId join image i on p.PostId=i.PostId where ApproveStatus=? and WorkerId is not null";
+    "select p.*,u.Name from post_general_info p join user u on p.UserId=u.UserId where ApproveStatus=? and WorkerId is not null";
+
   const retrievePosts = async () => {
     try {
       const postLists = await queryDatabase(sql, [1]);
       if (postLists) {
-        console.log(postLists);
+        console.log(
+          "post list: ",
+          postLists.map((i) => i.PostId)
+        );
         // postDetail.postInfo = console.log("post for admin", postLists);
         res.send(postLists);
       }
