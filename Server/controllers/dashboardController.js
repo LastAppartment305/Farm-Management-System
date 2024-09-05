@@ -696,16 +696,31 @@ export const postListsForAdmin = asyncHandler(async (req, res) => {
   };
 
   const sql =
-    "select p.*,u.Name from post_general_info p join user u on p.UserId=u.UserId where ApproveStatus=? and WorkerId is not null";
+    "select p.*,u.Name,i.ConfirmStatus from post_general_info p join user u on p.UserId=u.UserId join image i on p.PostId=i.PostId where ApproveStatus=? and WorkerId is not null GROUP BY p.PostId";
 
   const retrievePosts = async () => {
     try {
       const postLists = await queryDatabase(sql, [1]);
       if (postLists) {
-        console.log(
-          "post list: ",
-          postLists.map((i) => i.PostId)
+        let ids = [];
+        postLists.map((i) => ids.push(i.PostId));
+        let tempArray = "";
+        ids?.map((i) => {
+          if (tempArray.length != 0) {
+            tempArray = tempArray + ",?";
+          } else {
+            tempArray = tempArray + "?";
+          }
+        });
+        console.log(tempArray);
+        const queryUnapprovedImages = `select PostId,ImageId from image where ConfirmStatus is null and PostId in (${tempArray})`;
+        const unapprovedImages = await queryDatabase(
+          queryUnapprovedImages,
+          ids
         );
+        if (unapprovedImages) {
+          console.log("image list: ", unapprovedImages);
+        }
         // postDetail.postInfo = console.log("post for admin", postLists);
         res.send(postLists);
       }

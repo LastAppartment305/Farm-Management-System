@@ -58,28 +58,24 @@ const ApproveReports = () => {
   const groupPosts =
     postList &&
     postList.reduce((acc, post) => {
-      const { UserId, ConfirmStatus } = post;
-      if (!acc[UserId]) {
-        acc[UserId] = { posts: [], NeedToAlert: false };
+      const { UserId, PostId, ConfirmStatus } = post;
+      if (!acc[PostId]) {
+        acc[PostId] = { posts: [], NeedToAlert: false };
       }
 
-      acc[UserId].posts.push(post);
+      acc[PostId].posts.push(post);
 
-      const hasNullStatus = acc[UserId].posts.some(
+      const hasNullStatus = acc[PostId].posts.some(
         (p) => p.ConfirmStatus === null
       );
-      const hasConfirmedStatus = acc[UserId].posts.some(
+      const hasConfirmedStatus = acc[PostId].posts.some(
         (p) => p.ConfirmStatus === 1 || p.ConfirmStatus === 0
       );
-      acc[UserId].NeedToAlert =
-        hasNullStatus || (hasNullStatus && hasConfirmedStatus);
+      acc[PostId].NeedToAlert = hasNullStatus;
 
       return acc;
     }, {});
-  // console.log(
-  //   "post list from admin report aprove: ",
-  //   Object.values(groupPosts)
-  // );
+  // console.log("post list from admin report aprove: ", postList);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
