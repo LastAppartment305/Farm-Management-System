@@ -60,7 +60,7 @@ const ApprovedPosts = () => {
     8: "စိုက်ပျိုးစရိတ်",
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
-  console.log(postList);
+  // console.log(postList);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>

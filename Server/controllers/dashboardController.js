@@ -700,8 +700,13 @@ export const postListsForAdmin = asyncHandler(async (req, res) => {
 
   const retrievePosts = async () => {
     try {
+      let combinedResult = {
+        list: null,
+        haveUnapprovedImagePosts: null,
+      };
       const postLists = await queryDatabase(sql, [1]);
-      if (postLists) {
+      if (postLists.length > 0) {
+        combinedResult.list = postLists;
         let ids = [];
         postLists.map((i) => ids.push(i.PostId));
         let tempArray = "";
@@ -712,16 +717,18 @@ export const postListsForAdmin = asyncHandler(async (req, res) => {
             tempArray = tempArray + "?";
           }
         });
-        console.log(tempArray);
-        const queryUnapprovedImages = `select PostId,ImageId from image where ConfirmStatus is null and PostId in (${tempArray})`;
+        const queryUnapprovedImages = `select PostId from image where ConfirmStatus is null and PostId in (${tempArray}) group by PostId`;
         const unapprovedImages = await queryDatabase(
           queryUnapprovedImages,
           ids
         );
         if (unapprovedImages) {
+          combinedResult.haveUnapprovedImagePosts = unapprovedImages;
+          res.send(combinedResult);
           console.log("image list: ", unapprovedImages);
         }
         // postDetail.postInfo = console.log("post for admin", postLists);
+      } else {
         res.send(postLists);
       }
     } catch (err) {

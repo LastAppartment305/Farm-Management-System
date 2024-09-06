@@ -59,7 +59,7 @@ const MainPage = () => {
               အလုပ်သမားအဖြစ်မှတ်ပုံတင်မည်
             </div>
             <div className={`${classes.login}`} onClick={loginAsWorker}>
-              အလုပ်သမားအဖြစ်ဝင်ရောက်ပါ
+              အလုပ်သမားအဖြစ်ဝင်ရောက်မည်
             </div>
           </div>
         </div>

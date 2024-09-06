@@ -7,9 +7,11 @@ import croptype from "../cultivation-calculator/sample.json";
 import ImageDownloader from "../../../component/image-downloader/image-downloader.component";
 const ApproveReports = () => {
   const { response } = useGet(
-    "http://localhost:5000/dashboard/getPostListsToApprove"
+    "http://localhost:5000/dashboard/getPostListsToApprove",
+    false
   );
   const [postList, setPostList] = useState(null);
+  const [needToAlertPosts, setNeedToAlertPosts] = useState(null);
   const [fetchedData, setFetchedData] = useState({
     imageList: null,
     apiInfo: null,
@@ -51,14 +53,19 @@ const ApproveReports = () => {
       // const approvedPosts = response.data.filter(
       //   (post) => post.ApproveStatus === 1
       // );
-      setPostList(response?.data);
+      console.log("response: ", response);
+      setPostList(response?.data.list);
+      setNeedToAlertPosts(response?.data.haveUnapprovedImagePosts);
     }
   }, [response]);
-
+  //
+  //
+  //
+  //--Warrning! groupPosts is designed to use in RED DOT NOTI ALERT.But it isn't used anymore.
   const groupPosts =
     postList &&
     postList.reduce((acc, post) => {
-      const { UserId, PostId, ConfirmStatus } = post;
+      const { PostId } = post;
       if (!acc[PostId]) {
         acc[PostId] = { posts: [], NeedToAlert: false };
       }
@@ -80,55 +87,49 @@ const ApproveReports = () => {
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
         <div className={`${classes.left_side_header}`}></div>
-        {postList !== null && Object.keys(groupPosts).length > 0 ? (
-          Object.values(groupPosts).map(
-            (post, index) => (
-              <div type='div' key={index} className={`${classes.post_body}`}>
-                {console.log("post: ", post)}
-                {post.posts.map((i, index2) => (
-                  <div
-                    className={`${classes.post_button}`}
-                    style={{
-                      backgroundColor:
-                        selectedPostId === i.PostId ? "#e8d3c0" : "",
-                    }}
-                    onClick={() => getPostDetail(i.PostId)}
-                    key={index2}
-                  >
-                    {post.NeedToAlert && (
-                      <div className={`${classes.red_dot}`}></div>
-                    )}
-                    {/* {post.CropName} */}
-                    <div className={`${classes.mini_post_header}`}>
-                      <strong>{i.Name}</strong>
-                      {i.ApproveStatus === 1 && (
-                        // <img
-                        //   src={approve}
-                        //   className={`${classes.success_icon} ms-3`}
-                        // />
-                        <div
-                          className={`${classes.success_icon} text-success ms-3`}
-                        >
-                          approved
-                        </div>
-                      )}
-                    </div>
-                    <div className={`${classes.mini_post_body}`}>
-                      <div className='me-3'>
-                        {
-                          croptype.crop.find(
-                            (crop) => crop.value === i.CropName
-                          ).name
-                        }
+        {postList !== null &&
+        postList?.length > 0 &&
+        Object.keys(groupPosts).length > 0 ? (
+          Object.values(groupPosts).map((post, index) => (
+            <div type='div' key={index} className={`${classes.post_body}`}>
+              {/* {console.log("post: ", post)} */}
+              {post.posts.map((i, index2) => (
+                <div
+                  className={`${classes.post_button}`}
+                  style={{
+                    backgroundColor:
+                      selectedPostId === i.PostId ? "#e8d3c0" : "",
+                  }}
+                  onClick={() => getPostDetail(i.PostId)}
+                  key={index2}
+                >
+                  {needToAlertPosts?.find((id) => id.PostId === i.PostId) && (
+                    <div className={`${classes.red_dot}`}></div>
+                  )}
+
+                  <div className={`${classes.mini_post_header}`}>
+                    <strong>{i.Name}</strong>
+                    {i.ApproveStatus === 1 && (
+                      <div
+                        className={`${classes.success_icon} text-success ms-3`}
+                      >
+                        approved
                       </div>
-                      <div>{i.Acre} ဧက</div>
-                    </div>
+                    )}
                   </div>
-                ))}
-              </div>
-            )
-            // console.log(post)
-          )
+                  <div className={`${classes.mini_post_body}`}>
+                    <div className='me-3'>
+                      {
+                        croptype.crop.find((crop) => crop.value === i.CropName)
+                          .name
+                      }
+                    </div>
+                    <div>{i.Acre} ဧက</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))
         ) : (
           <div className={`${classes.no_post}`}>no post</div>
         )}
@@ -148,7 +149,6 @@ const ApproveReports = () => {
                 description={i.description}
                 confirmStatus={i.ConfirmStatus}
               />
-              // <div></div>
             ))
           : fetchedData.imageList !== null && (
               <div className={`${classes.empty_report}`}>ဓာတ်ပုံမရှိပါ</div>
