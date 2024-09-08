@@ -1,7 +1,7 @@
 import classes from "./dashboard-content-report.module.css";
 import { useGet } from "../../../custom-hook/axios-post/axios-post";
 import Form from "react-bootstrap/Form";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ImageDownloader from "../../../component/image-downloader/image-downloader.component.jsx";
@@ -9,6 +9,7 @@ import croptype from "./crop.json";
 const ReportContent = () => {
   const { response } = useGet("http://localhost:5000/getPosts");
   const [postList, setPostList] = useState(null);
+  const [isPending, startTransition] = useTransition();
   const [fetchedData, setFetchedData] = useState({
     imageList: null,
     apiInfo: null,
@@ -41,8 +42,10 @@ const ReportContent = () => {
   };
   const getPostDetail = async (id) => {
     // console.log("post Id", id);
-    setSelectedPostId(id);
-    await getImageListAtFirstVisit(id);
+    startTransition(async () => {
+      setSelectedPostId(id);
+      await getImageListAtFirstVisit(id);
+    });
   };
 
   useEffect(() => {

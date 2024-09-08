@@ -1,7 +1,7 @@
 import classes from "./approve-report-image.module.css";
 import axios from "axios";
 import { useGet } from "../../../custom-hook/axios-post/axios-post";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import approve from "../../../assets/icon/success.png";
 import croptype from "../cultivation-calculator/sample.json";
 import ImageDownloader from "../../../component/image-downloader/image-downloader.component";
@@ -12,6 +12,7 @@ const ApproveReports = () => {
   );
   const [postList, setPostList] = useState(null);
   const [needToAlertPosts, setNeedToAlertPosts] = useState(null);
+  const [isPending, startTransition] = useTransition();
   const [fetchedData, setFetchedData] = useState({
     imageList: null,
     apiInfo: null,
@@ -44,8 +45,10 @@ const ApproveReports = () => {
   };
   const getPostDetail = async (id) => {
     // console.log("post Id", id);
-    setSelectedPostId(id);
-    await getImageListAtFirstVisit(id);
+    startTransition(async () => {
+      setSelectedPostId(id);
+      await getImageListAtFirstVisit(id);
+    });
   };
 
   useEffect(() => {

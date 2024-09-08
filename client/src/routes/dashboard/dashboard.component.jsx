@@ -340,7 +340,7 @@ const DashBoard = () => {
                   <Bell />
                   <div
                     className={
-                      notifications &&
+                      notifications?.length > 0 &&
                       notifications.find((status) => status.noti_status === 0)
                         ? "red-dot"
                         : ""
@@ -495,15 +495,16 @@ const DashBoard = () => {
             ></button>
           </div>
           <div class='offcanvas-body'>
-            {notifications?.map((item, index) => (
-              <div
-                key={index}
-                className={!item.noti_status && "notification-content"}
-              >
-                <div>{item.noti_message}</div>
-                <hr></hr>
-              </div>
-            ))}
+            {notifications?.length > 0 &&
+              notifications.map((item, index) => (
+                <div
+                  key={index}
+                  className={!item.noti_status && "notification-content"}
+                >
+                  <div>{item.noti_message}</div>
+                  <hr></hr>
+                </div>
+              ))}
           </div>
         </div>
       </div>
