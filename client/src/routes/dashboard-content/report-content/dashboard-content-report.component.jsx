@@ -79,40 +79,6 @@ const ReportContent = () => {
       return acc;
     }, {});
   return (
-    // <div>
-    //   <div className={`${classes.select_box}`}>
-    //     <Form.Select
-    //       id='selected'
-    //       aria-label={`Default select`}
-    //       className={`${classes.select_farm}`}
-    //       onChange={fetchPhoto}
-    //     >
-    //       {farmList?.map((res, index) => (
-    //         <option value={index + 1} key={index} farmid={res.FarmId}>
-    //           {res.Name}
-    //         </option>
-    //       ))}
-    //     </Form.Select>
-    //   </div>
-    //   <div className={`${classes.image_group}`}>
-    //     {fetchedData.imageList.length > 0 ? (
-    //       fetchedData.imageList.map((i, index) => (
-    //         <ImageDownloader
-    //           downloadUrl={fetchedData.apiInfo.downloadUrl}
-    //           downloadToken={
-    //             fetchedData.apiInfo.downloadToken.authorizationToken
-    //           }
-    //           bucketName={"FarmManagement"}
-    //           fileName={i.filename}
-    //           date={i.date}
-    //           description={i.description}
-    //         />
-    //       ))
-    //     ) : (
-    //       <div className={`${classes.empty_report}`}>ဓာတ်ပုံမရှိပါ</div>
-    //     )}
-    //   </div>
-    // </div>
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
         {postList &&

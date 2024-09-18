@@ -78,7 +78,7 @@ const RainfedPaddy = () => {
       MyanmarName: e.target.options[e.target.selectedIndex].dataset.myanmar,
     }));
   };
-  console.log(chemicalUpdateValue);
+  // console.log(chemicalUpdateValue);
   const updateChemicalPrice = async () => {
     const result = await axios.post(
       "http://localhost:5000/priceAnalyst/updateChemicalPrice",
@@ -94,7 +94,7 @@ const RainfedPaddy = () => {
   useEffect(() => {
     const fetchData = async () => {
       const postResult = await postData({ cropid: 1 });
-      console.log(postResult);
+      console.log("rainfed-paddy data: ", postResult);
       if (postResult) {
         setDetail(postResult);
         setSelectedChemicalCategory("pesticide");
@@ -228,7 +228,7 @@ const RainfedPaddy = () => {
       toast.success("အောင်မြင်ပါသည်");
     }
   };
-  console.log(response);
+  // console.log(response);
   return (
     <div className={`${classes.main_wrapper}`}>
       <Toaster toastOptions={{ duration: 3000 }} />
@@ -271,7 +271,7 @@ const RainfedPaddy = () => {
                         data-myanmar={chem.MyanmarName}
                         data-brand={chem.Brand}
                       >
-                        {console.log("chemical", chem.MyanmarName)}
+                        {/* {console.log("chemical", chem.MyanmarName)} */}
                         {chem.Brand}({chem.MyanmarName})
                       </option>
                     );
