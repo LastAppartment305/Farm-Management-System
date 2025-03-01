@@ -33,7 +33,7 @@ const TakePhoto = () => {
   });
   const imageDescription = useRef("");
   const [openCamera, setOpenCamera] = useState(false);
-  const { postData } = usePost(
+  const { postData, loading } = usePost(
     "http://localhost:5000/dashboard/uploadbase64image"
   );
   const { response } = useGet("http://localhost:5000/worker/getAgreedPosts");
@@ -64,7 +64,6 @@ const TakePhoto = () => {
       -resizedCanvas.width,
       resizedCanvas.height
     );
-    // const imageUrl = resizedCanvas.toDataURL();
     const imageUrl = resizedCanvas.toDataURL("image/jpeg", 0.7); // 0.7 indicates 70% quality
 
     // Store image in session storage
@@ -83,7 +82,6 @@ const TakePhoto = () => {
     } else {
       console.log("Geolocation not supported");
     }
-    // const response = await postData({ url: imageUrl });
   };
 
   const getVideo = async () => {
@@ -117,8 +115,6 @@ const TakePhoto = () => {
   };
 
   useEffect(() => {
-    // response && setWorkerInformation(response.data.Name);
-
     const handleVideo = async () => {
       if (openCamera) {
         await getVideo();
@@ -128,14 +124,6 @@ const TakePhoto = () => {
     };
 
     handleVideo();
-
-    // const getCookie = Cookie.get("workerAuth");
-    // if (getCookie) {
-    //   console.log("cookie exist.");
-    // } else {
-    //   navigate("/worker-login");
-    // }
-
     console.log(verifyWorker);
     return async () => {
       await stopVideo();
@@ -149,30 +137,6 @@ const TakePhoto = () => {
       setPostList(approvedPosts);
     }
   }, [response]);
-  //To Do ---------------commented to avoid temporar error ?need to fix ?---------------
-  // useEffect(() => {
-  //   const fetchingWorkerInformation = async () => {
-  //     const x = await axios.get(
-  //       "http://localhost:5000/dashboard/getWorkerInfo"
-  //     );
-  //     if (x) {
-  //       setWorkerInformation(x.data.Name);
-  //     }
-  //   };
-  //   fetchingWorkerInformation();
-  // }, []);
-  // useEffect(() => {
-  //   if ("geolocation" in navigator) {
-  //     navigator.geolocation.getCurrentPosition(function (position) {
-  //       console.log("Latitude: ", position.coords.latitude);
-  //       console.log("Logitude: ", position.coords.longitude);
-  //     });
-  //   } else {
-  //     console.log("Geolocation not supported");
-  //   }
-
-  //   // const success = (position) => {};
-  // }, []);
 
   const handleUpload = async () => {
     const socket = io.connect("http://localhost:5000", {
@@ -186,14 +150,11 @@ const TakePhoto = () => {
         url: imageUrl,
         description: imageDescription.current,
       });
-      console.log("take photo", response);
       if (response === undefined) {
-        // setVerifyWorker(false);
-        // navigate("/worker-login");
         sessionStorage.removeItem("capturedImage");
       } else {
         toast.success("အောင်မြင်ပါသည်");
-        setRemoveImage(!removeImage);
+        setRemoveImage((removeImage) => !removeImage);
         sessionStorage.removeItem("capturedImage");
         socket.emit("emittingEvent", "This is text");
       }
@@ -224,16 +185,7 @@ const TakePhoto = () => {
       counter.innerHTML = count;
     }
     imageDescription.current = e.target.value;
-    console.log("from useRef: ", imageDescription.current);
-
-    // const count = max - document.getElementById(textbox).value.length;
-    // if (count == 0) {
-    //   // document.getElementById(counter).innerHTML = count;
-    // } else {
-    //   document.getElementById(counter).innerHTML = count;
-    // }
   };
-  // console.log("verifyWorker from take-photo: ", response);
 
   const MapView = () => {
     let map = useMap();
@@ -246,8 +198,6 @@ const TakePhoto = () => {
     iconSize: [25, 35],
     iconAnchor: [5, 30],
   });
-  // console.log(postList);
-  // console.log(selectedOption);
   return (
     <div className='container-fluid'>
       <Toaster toastOptions={{ duration: 3000 }} />
@@ -323,7 +273,7 @@ const TakePhoto = () => {
                 onFocus={countChars}
               />
               <button className='upload-btn' onClick={handleUpload}>
-                <SendHorizonal />
+                {loading ? <div>sending...</div> : <SendHorizonal />}
               </button>
             </div>
           </>

@@ -38,7 +38,7 @@ const DashboardContent = () => {
 
   const validationErrors = useRef("");
   const workerdata = response?.data.worker;
-  const farmdata = response?.data.farm;
+  const analystdata = response?.data.analyst;
   const { postData } = usePost("http://localhost:5000/dashboard");
 
   const [data, setData] = useState({
@@ -149,8 +149,8 @@ const DashboardContent = () => {
           <div className='col-lg-4 col-md-6'>
             <DetailCard
               icon={Users}
-              response={farmdata?.length}
-              cardTitle={"လယ် စုစုပေါင်း"}
+              response={analystdata?.length}
+              cardTitle={"Analyst စုစုပေါင်း"}
             />
           </div>
         </div>

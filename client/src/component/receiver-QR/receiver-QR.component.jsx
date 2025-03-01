@@ -2,7 +2,7 @@ import classes from "./receiver-QR.module.css";
 
 import { useState } from "react";
 
-const ReceiverQR = ({ submit }) => {
+const ReceiverQR = ({ submit, cancel }) => {
   const [image, setImage] = useState(null);
 
   const handleFileChange = (e) => {
@@ -11,6 +11,10 @@ const ReceiverQR = ({ submit }) => {
 
   const handleSubmit = () => {
     submit(image);
+  };
+
+  const handleCancel = () => {
+    cancel();
   };
   return (
     <div>
@@ -27,7 +31,11 @@ const ReceiverQR = ({ submit }) => {
             onChange={handleFileChange}
           />
           <div className={`${classes.button_group}`}>
-            <button type='button' class='btn btn-light w-100 me-3'>
+            <button
+              type='button'
+              class='btn btn-light w-100 me-3'
+              onClick={handleCancel}
+            >
               မလုပ်တော့ပါ
             </button>
             <button

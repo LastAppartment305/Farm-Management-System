@@ -18,6 +18,7 @@ const ApproveReports = () => {
     apiInfo: null,
   });
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const getImageListAtFirstVisit = async (id) => {
     try {
@@ -85,7 +86,10 @@ const ApproveReports = () => {
 
       return acc;
     }, {});
-  // console.log("post list from admin report aprove: ", postList);
+  const loadingStateHandlerFunction = (data) => {
+    setLoading(data);
+  };
+  // console.log("loading state for admin image approve ", loading);
   return (
     <div className={`${classes.component_wrapper}`}>
       <div className={`${classes.left_side}`}>
@@ -138,6 +142,7 @@ const ApproveReports = () => {
         )}
       </div>
       <div className={`${classes.image_group}`}>
+        {loading && <div className={`${classes.loading_spinner}`}></div>}
         {fetchedData.imageList !== null && fetchedData.imageList.length > 0
           ? fetchedData.imageList.map((i, index) => (
               <ImageDownloader
@@ -151,6 +156,7 @@ const ApproveReports = () => {
                 date={i.date}
                 description={i.description}
                 confirmStatus={i.ConfirmStatus}
+                loadingState={loadingStateHandlerFunction}
               />
             ))
           : fetchedData.imageList !== null && (
