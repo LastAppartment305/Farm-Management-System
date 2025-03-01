@@ -5,6 +5,7 @@ import croptype from "../../../dashboard-content/cultivation-calculator/sample.j
 import axios from "axios";
 import ReceiverQR from "../../../../component/receiver-QR/receiver-QR.component";
 import "leaflet/dist/leaflet.css";
+import { toast, Toaster } from "react-hot-toast";
 
 const WorkerHome = () => {
   const { response } = useGet(
@@ -55,29 +56,38 @@ const WorkerHome = () => {
     10: "ရွက်ဖြန်းမြေဩဇာ",
   };
   const agreeProposeInReal = async (image, id) => {
-    const formData = new FormData();
-    formData.append("postid", id);
-    formData.append("avatar", image);
-    try {
-      const result = await axios.post(
-        "http://localhost:5000/worker/agreePropose",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+    if (image) {
+      const formData = new FormData();
+      formData.append("postid", id);
+      formData.append("avatar", image);
+      try {
+        const result = await axios.post(
+          "http://localhost:5000/worker/agreePropose",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        if (result) {
+          window.location.reload();
         }
-      );
-      if (result) {
-        window.location.reload();
+      } catch (error) {
+        console.error("Error uploading image and postId:", error);
       }
-    } catch (error) {
-      console.error("Error uploading image and postId:", error);
+    } else {
+      toast.error("ငွေလက်ခံ QR ဖြည့်သွင်းရန်လိုအပ်ပါသည်");
     }
   };
-  console.log(postList);
+  const cancelPuttingQR = () => {
+    // console.log("canceling QR input", setCancel);
+    setIsAgreeAPropose((prevState) => !prevState);
+  };
+  // console.log(postList);
   return (
     <div className={`${classes.component_wrapper}`}>
+      <Toaster toastOptions={{ duration: 3000 }} />
       <div className={`${classes.left_side}`}>
         {postList && postList.length > 0 ? (
           postList.map((post, index) => (
@@ -265,6 +275,7 @@ const WorkerHome = () => {
             {isAgreeAPropose && (
               <ReceiverQR
                 submit={(image) => agreeProposeInReal(image, postId)}
+                cancel={(setCancel) => cancelPuttingQR(setCancel)}
               />
             )}
             <div className='mt-3'>

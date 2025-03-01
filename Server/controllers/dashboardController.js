@@ -15,11 +15,11 @@ export const retrieveDataForDashboard = asyncHandler(async (req, res) => {
   const tableData = {
     user: "",
     worker: "",
-    farm: "",
+    analyst: "",
   };
   const sqlUser = "select * from user";
   const sqlWorker = "select * from worker";
-  const sqlFarm = "select * from farm";
+  const sqlAnalyst = "select * from price_analyst";
 
   const queryDatabase = (sql) => {
     return new Promise((resolve, reject) => {
@@ -33,12 +33,12 @@ export const retrieveDataForDashboard = asyncHandler(async (req, res) => {
   Promise.all([
     queryDatabase(sqlUser),
     queryDatabase(sqlWorker),
-    queryDatabase(sqlFarm),
+    queryDatabase(sqlAnalyst),
   ])
-    .then(([userResult, workerResult, farmResult]) => {
+    .then(([userResult, workerResult, analystResult]) => {
       tableData.user = userResult;
       tableData.worker = workerResult;
-      tableData.farm = farmResult;
+      tableData.analyst = analystResult;
       res.json(tableData);
     })
     .catch((err) => {
@@ -508,23 +508,6 @@ export const receiveUploadPhoto = asyncHandler(async (req, res) => {
           queryDatabase(insertImageIdTo_image, valuesToInsert_image)
         ).then(async (response) => {
           console.log("inserted data to image table : ", response);
-          // if (response) {
-          //   const workerName = await queryDatabase(getWorkerName, [workerid]);
-          //   if (workerName) {
-          //     console.log("workerName: ", workerName[0].Name);
-          //   }
-          //   const farmName = await queryDatabase(getFarmName, [farmid]);
-          //   if (farmName) {
-          //     console.log("farm name: ", farmName);
-          //   }
-          //   const queryResult = await queryDatabase(connectImageIdWithFarmId, [
-          //     farmid,
-          //     response.insertId,
-          //   ]);
-          //   return {
-          //     queryResult,
-          //   };
-          // }
         });
       })
       .catch((err) => {
@@ -756,11 +739,18 @@ export const confirmToImages = asyncHandler(async (req, res) => {
   };
 
   const sql = "update image set ConfirmStatus=? where ImageId=?";
+  const retrieveConfirmStatus =
+    "select ConfirmStatus from image where ImageId=?";
 
   const changeConfirmStatus = async () => {
     try {
       const changeResult = await queryDatabase(sql, [confirmStatus, imageId]);
-      res.send(changeResult);
+      if (changeResult) {
+        const newConfirmStatus = await queryDatabase(retrieveConfirmStatus, [
+          imageId,
+        ]);
+        changeResult && res.send(newConfirmStatus);
+      }
     } catch (err) {
       console.error("Error at changing status: ", err);
     }

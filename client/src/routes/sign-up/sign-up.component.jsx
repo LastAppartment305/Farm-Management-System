@@ -66,7 +66,7 @@ const SignUp = () => {
     const result = registerSchema.safeParse(data);
     if (result.success) {
       if (data.password === data.confirm_password) {
-        console.log("it is the same password");
+        // console.log("it is the same password");
         try {
           const nameRegularExpression = /^[^\d].*$/i;
           if (nameRegularExpression.test(data.name) == false) {

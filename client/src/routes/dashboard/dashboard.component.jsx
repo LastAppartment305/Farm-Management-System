@@ -2,9 +2,9 @@ import { useEffect, useState, Fragment, useContext, useRef } from "react";
 import "./dashboard.style.css";
 import DetailCard from "../../component/Dashboard-Card/detail-card.component";
 import {
+  House,
   Bell,
   PieChart,
-  Captions,
   CalendarCheck,
   Pickaxe,
   User,
@@ -203,6 +203,14 @@ const DashBoard = () => {
         )} */}
         {role === "admin" && (
           <SideBarButton
+            icon={House}
+            buttonText={"ပင်မ"}
+            isActive={isActive === "admin"}
+            onclick={() => handleClick("admin")}
+          />
+        )}
+        {role === "admin" && (
+          <SideBarButton
             icon={CalendarClock}
             buttonText={"စောင့်ဆိုင်းပို့စ်များ"}
             isActive={isActive === "admin/approval"}
@@ -225,6 +233,7 @@ const DashBoard = () => {
             onclick={() => handleClick("admin/approve-reports")}
           />
         )}
+
         {/* {role === "admin" && (
           <SideBarButton
             icon={Clock}
